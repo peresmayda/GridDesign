@@ -36,11 +36,11 @@ body{background:var(--paper);color:var(--ink);font-family:var(--type);font-size:
 button,select,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-.app{display:grid;grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:auto minmax(0,1fr);height:100%}
+.app{display:grid;grid-template-columns:340px minmax(0,1fr) 340px;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"top top top" "left work right";column-gap:14px;height:100%;
+  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 
 /* ---- topo ---- */
-.top{grid-column:1/-1;display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;
-  padding-block:20px 14px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.top{grid-area:top;display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;padding-block:20px 14px}
 .mark{margin:0;font-weight:800;font-size:clamp(30px,3.4vw,46px);line-height:.88;letter-spacing:-.045em}
 .mark span{display:block;color:var(--gray)}
 .hstats{margin-left:auto;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;padding-bottom:4px}
@@ -50,10 +50,9 @@ button,select,input{font:inherit;color:inherit}
 #resetBtn{align-self:flex-end}
 
 /* ---- área de trabalho ---- */
-.work{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;
-  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:20px;padding-bottom:20px}
+.work{grid-area:work;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;padding-bottom:20px}
 .toolbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.tool{display:inline-flex;align-items:flex-start;gap:3px;height:38px;padding:0 16px;border:0;background:var(--sheet);border-radius:19px;cursor:pointer;
+.tool{display:inline-flex;align-items:flex-start;gap:3px;height:38px;padding:0 14px;border:0;background:var(--sheet);border-radius:19px;cursor:pointer;
   font-weight:700;font-size:14px;letter-spacing:-.01em;line-height:38px}
 .tool kbd{font:500 10px/1 var(--type);color:var(--gray);margin-top:9px}
 .tool:hover{background:#fff}
@@ -79,7 +78,9 @@ button,select,input{font:inherit;color:inherit}
 .hint{display:none}
 
 /* ---- faixas ---- */
-aside{overflow-y:auto;min-height:0;padding:0 max(20px,env(safe-area-inset-right,0px)) 20px 0;display:grid;gap:8px;align-content:start}
+aside{overflow-y:auto;min-height:0;padding-bottom:20px;display:grid;gap:8px;align-content:start;scrollbar-width:thin}
+.side-l{grid-area:left}
+.side-r{grid-area:right}
 .band{--bg:var(--sheet);--t:var(--gray);--fg:var(--ink);--line:var(--rule);--field:rgba(255,255,255,.45);
   background:var(--bg);color:var(--fg);border-radius:24px;padding:16px 18px 20px;display:grid;gap:12px}
 .b-yellow{--bg:var(--yellow);--t:var(--yellow-t)}
@@ -190,14 +191,19 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
 .modal textarea{width:100%;min-height:240px;font:12px/1.4 ui-monospace,Menlo,monospace;background:#fff;color:var(--ink);border:0;border-radius:12px;padding:10px}
 .modal .btn{justify-self:start}
 
-@media (max-width:900px){
-  .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;height:auto}
-  .work{padding-right:max(16px,env(safe-area-inset-right,0px));padding-left:max(16px,env(safe-area-inset-left,0px))}
-  .top{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-  .stage{flex:none;min-height:0;border-radius:24px;padding:18px 14px 14px}
-  aside{padding:0 max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));overflow:visible}
+@media (max-width:1180px){
+  .app{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;grid-template-areas:"top top" "work work" "left right";height:auto;row-gap:14px}
+  .stage{flex:none;min-height:0}
+  aside{overflow:visible}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "work" "left" "right";row-gap:8px;
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .stage{border-radius:24px;padding:18px 14px 14px}
   .hstats{margin-left:0;width:100%;order:3}
-  .readout{margin-left:0;width:100%;text-align:left}
+  .readout{text-align:left}
+  aside{padding-bottom:0}
+  .side-r{padding-bottom:24px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -220,7 +226,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
       <button class="tool" data-mode="move" aria-pressed="false">Mover logo<kbd>M</kbd></button>
       <span class="sep"></span>
       <button class="tool" id="hideSel" disabled>Ocultar<kbd>Del</kbd></button>
-      <button class="tool" id="restore">Restaurar ocultas</button>
+      <button class="tool" id="restore">Restaurar</button>
       <span class="readout" id="readout">Clique numa guia para selecionar. Arraste guias retas para mover.</span>
     </div>
     <div class="stage m-select" id="stage">
@@ -230,7 +236,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
     </div>
   </div>
 
-  <aside>
+  <aside class="side-l" aria-label="Logo, detecção e elementos">
     <section class="band b-yellow">
       <div class="sec-h"><span class="num">1</span><h2>Logo<span>arquivo SVG</span></h2></div>
       <div class="file">
@@ -264,6 +270,9 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
       <div class="els" id="elements"></div>
     </section>
 
+  </aside>
+
+  <aside class="side-r" aria-label="Estilo, quadro e exportação">
     <section class="band b-khaki">
       <div class="sec-h"><span class="num">4</span><h2>Estilo<span>cores do grid</span></h2></div>
       <div class="chips" id="presets"></div>
@@ -740,7 +749,7 @@ function render(){
   $("canvasHost").innerHTML=buildSVG(true);svgEl=$("canvasHost").querySelector("svg.art");
   const st=$("stage"),cs=getComputedStyle(st);
   const avW=st.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
-  const avH=matchMedia("(max-width:900px)").matches?avW*1.25:st.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-40;
+  const avH=matchMedia("(max-width:1180px)").matches?avW*1.25:st.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-40;
   let dispW=Math.min(avW,640);
   if(avW>0&&avH>0){const k=Math.min(avW/F.W,avH/F.H);dispW=Math.floor(F.W*k);svgEl.style.width=dispW+"px";svgEl.style.height=Math.floor(F.H*k)+"px"}
   $("canvasHost").insertAdjacentHTML("beforeend",rulerSVG(dispW));

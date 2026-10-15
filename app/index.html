@@ -129,6 +129,8 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
 .btn.ghost:hover{background:var(--field)}
 .top .btn{height:36px;background:var(--sheet);color:var(--ink)}
 .top .btn:hover{background:#fff}
+.top .btn.anim{background:var(--ink);color:#fff;display:inline-flex;align-items:center;text-decoration:none;align-self:flex-end}
+.top .btn.anim:hover{background:#262626}
 #resetBtn.arm{background:var(--warn);color:#fff}
 .b-black .btn{background:var(--lime);color:var(--ink)}
 .b-black .btn:hover{background:#F0FF8A}
@@ -227,6 +229,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
     <h1 class="mark"><a href="../" aria-label="GridGrid, página inicial">Grid<span aria-hidden="true"><i class="c1">G</i><i class="c2">r</i><i class="c3">i</i><i class="c4">d</i></span></a></h1>
     <div class="hstats" id="hstats" aria-live="polite"></div>
     <button class="btn" id="resetBtn">Resetar</button>
+    <a class="btn anim" id="animBtn" href="animar.html">Animar o grid</a>
   </header>
 
   <div class="work">
@@ -1004,6 +1007,12 @@ function syncUI(){
 
 /* ---------- input: file, drop, paste ---------- */
 $("pick").addEventListener("click",()=>$("fileIn").click());
+$("animBtn").addEventListener("click",e=>{
+  e.preventDefault();
+  try{localStorage.setItem("malha:scene",JSON.stringify({svg:buildSVG(false),bg:S.bg,transparent:!!S.transparent,name:fileName,W:F.W,H:F.H}))}
+  catch(err){toast("Não consegui levar o grid para a animação. O arquivo pode ser grande demais.");return}
+  location.href="animar.html";
+});
 $("removeLogo").addEventListener("click",()=>{if(setLogo(SAMPLE,SAMPLE_NAME))toast("Logo removido. O exemplo voltou.")});
 $("fileIn").addEventListener("change",async e=>{const f=e.target.files[0];if(f)readFile(f);e.target.value=""});
 async function readFile(f){
@@ -1023,7 +1032,7 @@ document.addEventListener("paste",e=>{
 
 /* ---------- export ---------- */
 function exportSVG(){return`<?xml version="1.0" encoding="UTF-8"?>\n`+buildSVG(false)}
-const baseName=()=>(fileName.replace(/\.svg$/i,"").replace(/[^\w\-]+/g,"-").replace(/^-|-$/g,"")||"logo")+"-grid";
+const baseName=()=>(fileName.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\.svg$/i,"").replace(/[^\w\-]+/g,"-").replace(/^-|-$/g,"")||"logo")+"-grid";
 let dl;const dlReady=(async()=>{try{dl=await window.claude?.use?.("downloads")}catch(e){dl=null}})();
 async function offer(filename,data,fallback){
   await dlReady;

@@ -256,7 +256,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
         <small id="fmeta"></small>
       </div>
       <p class="warn" id="warn" hidden></p>
-      <div class="btns"><button class="btn wide" id="pick">Subir SVG</button></div>
+      <div class="btns"><button class="btn wide" id="pick">Subir SVG</button><button class="btn ghost" id="removeLogo" hidden>Remover logo</button></div>
       <input type="file" id="fileIn" accept=".svg,image/svg+xml" hidden>
       <p class="note">Arraste o arquivo para o palco ou cole o código SVG com Ctrl/Cmd+V. Textos precisam estar convertidos em contorno.</p>
     </section>
@@ -642,13 +642,16 @@ function visibleSets(){
 function angleLabel(th){const deg=th*180/Math.PI;const fromH=Math.min(deg,180-deg);const v=fromH>45?90-fromH:fromH;return fmt(v,1)+"°"}
 
 /* ---------- state ---------- */
-let G=null,AUTO=[],MANUAL=[],HIDDEN=new Set(),SEL=null,MODE="select",fileName="Exemplo de demonstração",mid=0;
+const SAMPLE_NAME="Exemplo de demonstração";
+let G=null,AUTO=[],MANUAL=[],HIDDEN=new Set(),SEL=null,MODE="select",fileName=SAMPLE_NAME,mid=0;
 let F=null; // frame mapping
 function setLogo(text,name){
   try{G=parseSVG(text)}catch(e){toast(e.message);return false}
   fileName=name;MANUAL=[];HIDDEN=new Set();SEL=null;
-  try{if(text.length<400000)localStorage.setItem("malha:logo",JSON.stringify({text,name}))}catch(e){}
+  const isSample=name===SAMPLE_NAME;
+  try{if(isSample)localStorage.removeItem("malha:logo");else if(text.length<400000)localStorage.setItem("malha:logo",JSON.stringify({text,name}))}catch(e){}
   $("fname").textContent=name;
+  $("removeLogo").hidden=isSample;$("pick").classList.toggle("wide",isSample);
   const w=[];if(G.flags.hasText)w.push("Há texto não convertido em contorno; ele ficou de fora.");
   if(G.flags.hasUse)w.push("Há elementos <use> (símbolos reutilizados); eles ficaram de fora. Expanda-os antes de exportar o SVG.");
   $("warn").hidden=!w.length;$("warn").textContent=w.join(" ");
@@ -1001,6 +1004,7 @@ function syncUI(){
 
 /* ---------- input: file, drop, paste ---------- */
 $("pick").addEventListener("click",()=>$("fileIn").click());
+$("removeLogo").addEventListener("click",()=>{if(setLogo(SAMPLE,SAMPLE_NAME))toast("Logo removido. O exemplo voltou.")});
 $("fileIn").addEventListener("change",async e=>{const f=e.target.files[0];if(f)readFile(f);e.target.value=""});
 async function readFile(f){
   if(!/svg/i.test(f.type)&&!/\.svg$/i.test(f.name)){toast("Use um arquivo .svg. PNG e JPG não trazem os pontos vetoriais.");return}
@@ -1060,8 +1064,8 @@ let tt;function toast(msg){const h=$("toastHost");h.innerHTML=`<div class="toast
 /* ---------- boot ---------- */
 syncUI();
 let booted=false;
-try{const r=localStorage.getItem("malha:logo");if(r){const o=JSON.parse(r);booted=setLogo(o.text,o.name)}}catch(e){}
-if(!booted)setLogo(SAMPLE,"Exemplo de demonstração");
+try{const r=localStorage.getItem("malha:logo");if(r){const o=JSON.parse(r);booted=setLogo(o.text,o.name);if(booted&&o.name!==SAMPLE_NAME)toast("Último logo aberto: "+o.name)}}catch(e){}
+if(!booted)setLogo(SAMPLE,SAMPLE_NAME);
 requestAnimationFrame(render);
 })();
 </script>

@@ -1,4 +1,4 @@
-# Malha de Construção
+# GridGrid
 
 Ferramenta web que gera o grid de construção de um logo a partir do arquivo SVG.
 

@@ -1,24 +1,16 @@
 # GridGrid
 
-Ferramenta web que gera o grid de construção de um logo a partir do arquivo SVG.
-
-Ela lê os pontos de ancoragem e as alças Bézier do vetor e monta:
-
-- guias horizontais e verticais nos alinhamentos
-- diagonais com o ângulo marcado
-- círculos de construção nas curvas circulares
-- nós e alças Bézier
-
-Cada elemento tem quantidade, opacidade, espessura e tamanho ajustáveis. O quadro aceita proporção, margem, escala e posição do logo. A exportação sai em SVG com camadas nomeadas, ou em PNG 2× e 4×, com ou sem fundo.
-
-## Uso
-
-Abra o site, suba um SVG (ou arraste para o palco, ou cole o código) e ajuste. Textos precisam estar convertidos em contorno.
+Suba o SVG de um logo e receba o grid de construção: guias, diagonais com ângulo, círculos de construção, nós e alças Bézier. Cada camada é ajustável e a exportação sai em SVG com grupos nomeados ou PNG.
 
 ## Estrutura
 
-Um único `index.html`, sem build e sem dependências. Para rodar localmente, abra o arquivo no navegador.
+- `index.html`: landing page
+- `app/index.html`: a ferramenta
+- `favicon.svg`
+- `vercel.json`: URLs limpas (`/app` em vez de `/app/index.html`)
+
+Sem build e sem dependências. Tudo roda no navegador; nenhum arquivo é enviado para servidor. A tipografia é a Inter Tight, carregada do Google Fonts.
 
 ## Publicação
 
-Hospedado na Vercel com Framework Preset "Other", sem build command. Cada commit na branch `main` publica uma nova versão.
+Vercel, Framework Preset "Other", sem build command. Cada commit na branch `main` publica uma nova versão.

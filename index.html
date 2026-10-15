@@ -3,1067 +3,285 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Gere o grid de construção de um logo a partir do SVG: guias, diagonais com ângulo, círculos, nós e alças Bézier. Exporta SVG em camadas e PNG.">
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>GridGrid</title>
+<meta name="description" content="Suba o SVG do seu logo e receba o grid de construção: guias, diagonais com ângulo, círculos, nós e alças Bézier. Gratuito, direto no navegador.">
+<meta property="og:title" content="GridGrid">
+<meta property="og:description" content="Suba o SVG. Receba o grid de construção do seu logo.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700;800&display=swap">
 <style>
-@font-face{font-family:"Helvetica Now Display";font-weight:400;font-style:normal;font-display:swap;src:local("Helvetica Now Display"),local("HelveticaNowDisplay-Regular"),url("fonts/HelveticaNowDisplay-Regular.woff2") format("woff2")}
-@font-face{font-family:"Helvetica Now Display";font-weight:500;font-style:normal;font-display:swap;src:local("Helvetica Now Display Medium"),local("HelveticaNowDisplay-Medium"),url("fonts/HelveticaNowDisplay-Medium.woff2") format("woff2")}
-@font-face{font-family:"Helvetica Now Display";font-weight:700;font-style:normal;font-display:swap;src:local("Helvetica Now Display Bold"),local("HelveticaNowDisplay-Bold"),url("fonts/HelveticaNowDisplay-Bold.woff2") format("woff2")}
-@font-face{font-family:"Helvetica Now Display";font-weight:800;font-style:normal;font-display:swap;src:local("Helvetica Now Display ExtraBold"),local("HelveticaNowDisplay-ExtraBold"),url("fonts/HelveticaNowDisplay-ExtraBold.woff2") format("woff2")}
-
-/* Layout: bancada Bauhaus — palco arredondado à esquerda com régua de medidas;
-   à direita, o fluxo de trabalho em seis faixas de cor empilhadas, cada uma com título em dois tons. */
+/* Layout: página Bauhaus em blocos — manchete enorme em dois tons, demonstração ao vivo num palco quadriculado,
+   três cartões de passo, galeria em grade 3×2, recursos em faixas de cor empilhadas, fechamento em bloco preto. */
 :root{
-  /* papel e tinta */
-  --paper:#E4E5E7;  --sheet:#EFEFED;  --stage:#D7D8DB;  --ink:#000000;  --gray:#9FA0A4;  --rule:rgba(0,0,0,.14);
-  /* faixas Bauhaus: cor de fundo + tom escuro do mesmo matiz para a segunda linha */
+  --paper:#E4E5E7; --sheet:#EFEFED; --stage:#D7D8DB; --ink:#000; --gray:#9FA0A4; --soft:#55565A;
   --yellow:#FFE94A; --yellow-t:#A89300;
   --blue:#8EA6E4;   --blue-t:#3F58AD;
   --pink:#F7B8EF;   --pink-t:#B3459F;
   --khaki:#C9C7BB;  --khaki-t:#7D7B70;
   --sage:#A9CCB8;   --sage-t:#3A7556;
+  --olive:#4E6440;  --olive-t:#A9BF96;
   --lime:#E3FF3A;
-  --accent:#2F55FF; /* só para seleção no palco e foco */
-  --warn:#C2410C;
-  --type:"Helvetica Now Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --type:"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif;
   color-scheme:light;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 }
-html,body{height:100%}
-[hidden]{display:none!important}
-body{background:var(--paper);color:var(--ink);font-family:var(--type);font-size:14px;line-height:1.35;-webkit-font-smoothing:antialiased}
 *{box-sizing:border-box}
-button,select,input{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--type);font-size:17px;line-height:1.45;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid #2F55FF;outline-offset:3px}
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 
-.app{display:grid;grid-template-columns:340px minmax(0,1fr) 340px;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"top top top" "left work right";column-gap:14px;height:100%;
-  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+/* nav */
+.nav{display:flex;align-items:center;gap:28px;padding-block:22px}
+.logo{font-weight:800;font-size:30px;letter-spacing:-.045em;text-decoration:none;line-height:1;white-space:nowrap}
+.logo .c1{color:var(--yellow)}.logo .c2{color:var(--blue)}.logo .c3{color:var(--pink)}.logo .c4{color:var(--sage)}
+.logo i{font-style:normal}
+.nav-links{display:flex;gap:24px;margin-left:auto}
+.nav-links a{text-decoration:none;font-weight:700;font-size:15px;letter-spacing:-.01em}
+.nav-links a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+.pill{display:inline-flex;align-items:center;height:46px;padding:0 22px;border-radius:23px;background:var(--ink);color:#fff;text-decoration:none;
+  font-weight:700;font-size:15px;letter-spacing:-.01em;white-space:nowrap;border:0;cursor:pointer}
+.pill:hover{background:#262626}
+.pill.light{background:var(--sheet);color:var(--ink)}
+.pill.light:hover{background:#fff}
+.pill.lime{background:var(--lime);color:var(--ink)}
+.pill.lime:hover{background:#F0FF8A}
 
-/* ---- topo ---- */
-.top{grid-area:top;display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;padding-block:20px 14px}
-.mark{margin:0;font-weight:800;font-size:clamp(30px,3.4vw,46px);line-height:.88;letter-spacing:-.045em}
-.mark{white-space:nowrap}
-.mark span{display:inline}
-.mark i{font-style:normal}
-.mark .c1{color:var(--yellow)}.mark .c2{color:var(--blue)}.mark .c3{color:var(--pink)}.mark .c4{color:var(--sage)}
-.hstats{margin-left:auto;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;padding-bottom:4px}
-.hstats .st{font-weight:700;font-size:16px;letter-spacing:-.02em;white-space:nowrap}
-.hstats .st sup{font-weight:500;font-size:10px;color:var(--gray);margin-left:2px;letter-spacing:0}
-.hstats .st.dim{color:var(--gray);font-weight:500}
-#resetBtn{align-self:flex-end}
+/* hero */
+.hero{padding-block:28px 24px}
+.headline{margin:0;font-weight:800;font-size:clamp(54px,9.4vw,152px);line-height:.84;letter-spacing:-.055em;text-wrap:balance}
+.headline span{display:block;color:var(--gray)}
+.hero-row{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:20px;margin-top:40px;align-items:stretch}
+.hero-copy{display:flex;flex-direction:column;gap:22px;justify-content:space-between;padding-top:6px}
+.lede{margin:0;font-size:19px;line-height:1.42;max-width:34ch;font-weight:500;letter-spacing:-.01em}
+.cta-row{display:flex;gap:8px;flex-wrap:wrap}
+.facts{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1.5px solid var(--ink)}
+.facts li{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(0,0,0,.14);font-weight:700;font-size:15px}
+.facts li span{color:var(--soft);font-weight:500;text-align:right}
 
-/* ---- área de trabalho ---- */
-.work{grid-area:work;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;padding-bottom:20px}
-.toolbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.tool{display:inline-flex;align-items:flex-start;gap:3px;height:38px;padding:0 14px;border:0;background:var(--sheet);border-radius:19px;cursor:pointer;
-  font-weight:700;font-size:14px;letter-spacing:-.01em;line-height:38px}
-.tool kbd{font:500 10px/1 var(--type);color:var(--gray);margin-top:9px}
-.tool:hover{background:#fff}
-.tool[aria-pressed="true"]{background:var(--ink);color:#fff}
-.tool[aria-pressed="true"] kbd{color:#8A8B8F}
-.tool:disabled{opacity:.4;cursor:default;background:var(--sheet)}
-.sep{width:12px}
-.readout{flex:1 1 260px;min-width:0;font-size:13px;color:#6E6F73;text-align:right}
-
-.stage{flex:1;min-height:340px;display:grid;place-items:center;padding:28px 28px 20px;overflow:hidden;position:relative;border-radius:30px;
+.demo{position:relative;border-radius:32px;padding:28px 28px 18px;display:grid;gap:12px;
   background-color:var(--stage);
-  background-image:linear-gradient(rgba(0,0,0,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.045) 1px,transparent 1px);
-  background-size:32px 32px;background-position:-1px -1px}
-#canvasHost{display:grid;justify-items:center;gap:10px}
-.stage svg.art{display:block;max-width:100%;border-radius:4px;box-shadow:0 30px 60px -30px rgba(0,0,0,.45);touch-action:none}
-.stage.m-h svg.art,.stage.m-v svg.art,.stage.m-d svg.art{cursor:crosshair}
-.stage.m-move svg.art{cursor:grab}
-.stage.m-move.grabbing svg.art{cursor:grabbing}
-.ruler{display:block;overflow:visible}
-.drop{position:absolute;inset:0;border-radius:30px;background:var(--yellow);display:grid;place-items:center;padding:24px}
-.drop strong{font-weight:800;font-size:clamp(40px,7vw,96px);letter-spacing:-.05em;line-height:.9;text-align:left}
-.drop strong span{display:block;color:var(--yellow-t)}
-.hint{display:none}
+  background-image:linear-gradient(rgba(0,0,0,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.045) 1px,transparent 1px);background-size:32px 32px}
+.demo-svg{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 34px 60px -34px rgba(0,0,0,.5)}
+.demo-bar{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.demo-bar .st{font-weight:700;font-size:15px;letter-spacing:-.02em}
+.demo-bar .st sup{font-weight:500;font-size:10px;color:var(--gray);margin-left:2px}
+.replay{margin-left:auto;height:36px;padding:0 16px;border-radius:18px;border:0;background:var(--sheet);font:700 14px var(--type);cursor:pointer}
+.replay:hover{background:#fff}
 
-/* ---- faixas ---- */
-aside{overflow-y:auto;min-height:0;padding-bottom:20px;display:grid;gap:8px;align-content:start;scrollbar-width:thin}
-.side-l{grid-area:left}
-.side-r{grid-area:right}
-.band{--bg:var(--sheet);--t:var(--gray);--fg:var(--ink);--line:var(--rule);--field:rgba(255,255,255,.45);
-  background:var(--bg);color:var(--fg);border-radius:24px;padding:16px 18px 20px;display:grid;gap:12px}
-.b-yellow{--bg:var(--yellow);--t:var(--yellow-t)}
-.b-blue{--bg:var(--blue);--t:var(--blue-t)}
-.b-pink{--bg:var(--pink);--t:var(--pink-t)}
-.b-khaki{--bg:var(--khaki);--t:var(--khaki-t)}
-.b-sage{--bg:var(--sage);--t:var(--sage-t)}
-.b-black{--bg:var(--ink);--t:#76777B;--fg:#fff;--line:rgba(255,255,255,.18);--field:rgba(255,255,255,.08)}
-.b-black h2{color:var(--lime)}
-.sec-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;margin-bottom:2px}
-.num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;
-  background:color-mix(in srgb,var(--t) 22%,transparent);color:var(--fg)}
-.b-black .num{background:var(--lime);color:var(--ink)}
-.band h2{margin:0;font-weight:800;font-size:25px;line-height:.95;letter-spacing:-.035em;padding-top:2px}
-.band h2 span{display:block;color:var(--t)}
-.band .note{color:color-mix(in srgb,var(--fg) 62%,var(--bg));font-size:12.5px;line-height:1.45;margin:0;max-width:60ch}
+/* animação da demonstração: o logo já está lá, o grid se desenha por cima */
+.demo.play .g-contorno path,.demo.play .g-guias line,.demo.play .g-diagonais line,.demo.play .g-circulos circle,.demo.play .g-alcas line{
+  stroke-dasharray:1;animation:draw .9s cubic-bezier(.55,0,.15,1) both}
+.demo.play .g-contorno path{animation-delay:calc(.15s + var(--i)*.08s)}
+.demo.play .g-guias line{animation-delay:calc(.55s + var(--i)*.035s)}
+.demo.play .g-diagonais line{animation-delay:calc(1.5s + var(--i)*.1s)}
+.demo.play .g-circulos circle{animation-delay:calc(1.7s + var(--i)*.09s)}
+.demo.play .g-alcas line{animation-delay:calc(2.1s + var(--i)*.02s)}
+.demo.play .g-alcas circle,.demo.play .g-nos circle,.demo.play .g-nos rect{transform-box:fill-box;transform-origin:center;animation:pop .35s cubic-bezier(.3,1.6,.5,1) both}
+.demo.play .g-alcas circle{animation-delay:calc(2.3s + var(--i)*.02s)}
+.demo.play .g-nos circle,.demo.play .g-nos rect{animation-delay:calc(2.3s + var(--i)*.025s)}
+.demo.play .g-rotulos text{animation:fade .5s ease both;animation-delay:2.9s}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
 
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
-.rng{display:grid;grid-template-columns:96px minmax(0,1fr) 46px;align-items:center;gap:12px}
-.rng label,.row label{font-weight:500}
-.rng output,.row output{font-size:12px;font-weight:500;text-align:right;color:color-mix(in srgb,var(--fg) 70%,var(--bg))}
+/* títulos de seção */
+section{padding-block:72px 0}
+.sec-title{margin:0 0 28px;font-weight:800;font-size:clamp(40px,5.6vw,84px);line-height:.88;letter-spacing:-.05em}
+.sec-title span{display:block;color:var(--gray)}
 
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:none;margin:0;cursor:pointer}
-input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--fg);opacity:.85;border-radius:2px}
-input[type=range]::-moz-range-track{height:2px;background:var(--fg);border-radius:2px}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--fg);margin-top:-7px;border:3px solid var(--bg)}
-input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--fg);border:3px solid var(--bg)}
+/* passos */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;margin:0;padding:0}
+.step{--bg:var(--sheet);--t:var(--gray);--fg:var(--ink);background:var(--bg);color:var(--fg);border-radius:28px;padding:22px 24px 26px;display:grid;
+  grid-template-rows:auto auto 1fr auto;gap:14px;min-height:420px;overflow:hidden;position:relative}
+.s1{--bg:var(--yellow);--t:var(--yellow-t)}
+.s2{--bg:var(--blue);--t:var(--blue-t)}
+.s3{--bg:var(--ink);--t:#76777B;--fg:#fff}
+.step .num{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:color-mix(in srgb,var(--t) 24%,transparent)}
+.s3 .num{background:var(--lime);color:var(--ink)}
+.step h3{margin:0;font-weight:800;font-size:clamp(28px,2.6vw,38px);line-height:.92;letter-spacing:-.04em}
+.step h3 span{display:block;color:var(--t)}
+.s3 h3{color:var(--lime)}
+.step .art{align-self:center;justify-self:center;width:min(100%,220px);height:auto}
+.step p{margin:0;font-size:15.5px;line-height:1.45;max-width:36ch;color:color-mix(in srgb,var(--fg) 72%,var(--bg))}
 
-select{height:32px;border:1.5px solid var(--fg);background:var(--field);border-radius:16px;padding:0 30px 0 12px;font-weight:500;cursor:pointer;
-  -webkit-appearance:none;appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 11px center;background-size:10px 6px}
+/* galeria */
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;margin:0;padding:0}
+.gallery figure{margin:0;display:grid;gap:10px}
+.gallery .frame{border-radius:24px;overflow:hidden;line-height:0}
+.gallery .frame svg{width:100%;height:auto;display:block}
+.gallery figcaption{display:flex;justify-content:space-between;gap:12px;font-weight:700;font-size:15px;letter-spacing:-.01em;padding:0 4px}
+.gallery figcaption span{color:var(--soft);font-weight:500}
 
-input[type=checkbox]{-webkit-appearance:none;appearance:none;width:18px;height:18px;margin:0;border:1.5px solid var(--fg);border-radius:5px;background:var(--field);cursor:pointer;flex:none;display:grid;place-items:center}
-input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E") center/11px no-repeat}
-.b-black input[type=checkbox]:checked{background:var(--lime) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E") center/11px no-repeat;border-color:var(--lime)}
-.tg{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;font-weight:500}
+/* recursos */
+.features{list-style:none;margin:0;padding:0;border-radius:32px;overflow:hidden}
+.feat{--bg:var(--sheet);--t:var(--gray);--fg:var(--ink);background:var(--bg);color:var(--fg);display:grid;grid-template-columns:minmax(0,7fr) 1px minmax(0,4fr) auto;
+  gap:24px;align-items:center;padding:22px 28px;min-height:132px}
+.feat .rule{align-self:stretch;background:color-mix(in srgb,var(--fg) 18%,transparent)}
+.f1{--bg:var(--yellow);--t:var(--yellow-t)}
+.f2{--bg:var(--khaki);--t:var(--khaki-t)}
+.f3{--bg:var(--pink);--t:var(--pink-t)}
+.f4{--bg:var(--blue);--t:var(--blue-t)}
+.f5{--bg:var(--sage);--t:var(--sage-t)}
+.f6{--bg:var(--olive);--t:var(--olive-t);--fg:#fff}
+.feat h3{margin:0;font-weight:800;font-size:clamp(30px,4vw,58px);line-height:.9;letter-spacing:-.045em}
+.feat h3 span{color:var(--t)}
+.feat p{margin:0;font-size:15px;line-height:1.4;font-weight:500;max-width:34ch}
+.feat svg{width:56px;height:56px;flex:none}
 
-.btn{height:40px;border:0;background:var(--ink);color:#fff;border-radius:20px;padding:0 18px;cursor:pointer;font-weight:700;font-size:14px;letter-spacing:-.01em}
-.btn:hover{background:#262626}
-.btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--fg)}
-.btn.ghost:hover{background:var(--field)}
-.top .btn{height:36px;background:var(--sheet);color:var(--ink)}
-.top .btn:hover{background:#fff}
-#resetBtn.arm{background:var(--warn);color:#fff}
-.b-black .btn{background:var(--lime);color:var(--ink)}
-.b-black .btn:hover{background:#F0FF8A}
-.b-black .btn.ghost{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}
-.b-black .btn.ghost:hover{background:rgba(255,255,255,.08)}
-.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btns .wide{grid-column:1/-1}
+/* fechamento */
+.closing{margin-top:72px;background:var(--ink);color:#fff;border-radius:36px;padding:56px 48px 48px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:end}
+.closing h2{margin:0;font-weight:800;font-size:clamp(48px,7.6vw,124px);line-height:.84;letter-spacing:-.055em;color:var(--lime)}
+.closing h2 span{display:block;color:#6F7074}
+footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:28px 36px;font-size:14px;font-weight:500;color:var(--soft)}
+footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
 
-.file{display:grid;gap:2px}
-.file strong{font-weight:700;font-size:17px;letter-spacing:-.02em;overflow-wrap:anywhere}
-.file small{font-size:12.5px;color:var(--t);font-weight:500}
-.warn{color:var(--warn);font-size:12.5px;line-height:1.4;margin:0;font-weight:500}
-
-.chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.chip{border:0;border-radius:16px;padding:0;overflow:hidden;cursor:pointer;background:var(--field);text-align:left;display:grid}
-.chip i{display:grid;place-items:center;height:56px;position:relative}
-.chip i b{width:28px;height:28px;border-radius:50%;display:block}
-.chip i b+b{position:absolute;width:44px;height:2px;border-radius:0;transform:rotate(-28deg)}
-.chip span{display:block;padding:7px 10px 8px;font-size:13px;font-weight:700;letter-spacing:-.01em}
-.chip[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink)}
-.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.sw{display:grid;gap:5px;justify-items:center;font-size:11.5px;font-weight:500;color:var(--t)}
-.sw input{width:100%;height:30px;border:1.5px solid var(--fg);border-radius:15px;padding:0;background:none;cursor:pointer;overflow:hidden}
-.sw input::-webkit-color-swatch-wrapper{padding:0}
-.sw input::-webkit-color-swatch{border:0;border-radius:15px}
-.sw input::-moz-color-swatch{border:0;border-radius:15px}
-
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:20px;background:var(--field)}
-.seg button{height:32px;border:0;border-radius:16px;background:none;cursor:pointer;font-weight:700;font-size:13px;color:var(--fg);opacity:.62}
-.seg button[aria-pressed="true"]{background:var(--ink);color:#fff;opacity:1}
-
-.els{display:grid;border-top:1.5px solid var(--fg)}
-.el{border-bottom:1px solid var(--line)}
-.el-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:11px 0}
-.el-head .nm{font-weight:700;font-size:15px;letter-spacing:-.015em;min-width:0;cursor:pointer}
-.el-head .cnt{font-size:12px;font-weight:500;color:var(--t)}
-.el-head .exp{width:28px;height:28px;border:0;border-radius:50%;background:var(--field);cursor:pointer;color:var(--fg);display:grid;place-items:center}
-.el-head .exp:hover{background:rgba(255,255,255,.75)}
-.el-head .exp svg{width:11px;height:11px;transition:transform .18s}
-.el-head .exp[aria-expanded="true"] svg{transform:rotate(180deg)}
-.el.off .nm,.el.off .cnt{opacity:.45}
-.el-body{display:grid;gap:8px;padding:0 0 14px 28px}
-.el-body .rng{grid-template-columns:78px minmax(0,1fr) 44px}
-.el-body .rng label,.el-body .row label,.el-body .tg{font-size:13px}
-.linkbtn{border:0;background:none;color:var(--fg);cursor:pointer;font-size:13px;font-weight:700;padding:4px 0;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
-
-.row-stack{display:grid;gap:8px;justify-content:stretch}
-.pick{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:3px;padding:4px;border-radius:18px;background:var(--field)}
-.pick button{border:0;background:none;border-radius:14px;cursor:pointer;display:grid;justify-items:center;align-content:center;gap:3px;
-  min-height:32px;padding:5px 2px;font-weight:700;font-size:12.5px;color:var(--fg);letter-spacing:-.01em}
-.pick button:hover{background:rgba(255,255,255,.45)}
-.pick button[aria-pressed="true"]{background:var(--ink);color:#fff}
-.pick-ratio button{min-height:50px;font-size:11.5px}
-.pick-ratio svg{display:block}
-.pos{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center}
-.pos-side{display:grid;gap:8px;min-width:0}
-.pos-side .rng{grid-template-columns:14px minmax(0,1fr) 50px}
-.anchor{display:grid;grid-template-columns:repeat(3,22px);gap:5px;padding:7px;border-radius:14px;background:var(--field)}
-.anchor button{width:22px;height:22px;border:0;border-radius:50%;background:none;cursor:pointer;display:grid;place-items:center;padding:0}
-.anchor button::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--fg);opacity:.35}
-.anchor button:hover::after{opacity:.8}
-.anchor button[aria-pressed="true"]{background:var(--ink)}
-.anchor button[aria-pressed="true"]::after{background:#fff;opacity:1}
-
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;
-  padding:12px 20px;border-radius:24px;font-size:14px;font-weight:500;z-index:6}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:center;padding:20px;z-index:5}
-.modal>div{background:var(--sheet);border-radius:24px;max-width:min(900px,100%);max-height:100%;overflow:auto;padding:20px;display:grid;gap:12px}
-.modal strong{font-weight:800;font-size:22px;letter-spacing:-.03em}
-.modal .note{color:#55565A;margin:0}
-.modal img{max-width:100%;height:auto;display:block;border-radius:6px}
-.modal textarea{width:100%;min-height:240px;font:12px/1.4 ui-monospace,Menlo,monospace;background:#fff;color:var(--ink);border:0;border-radius:12px;padding:10px}
-.modal .btn{justify-self:start}
-
-@media (max-width:1180px){
-  .app{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;grid-template-areas:"top top" "work work" "left right";height:auto;row-gap:14px}
-  .stage{flex:none;min-height:0}
-  aside{overflow:visible}
+@media (max-width:1060px){
+  .hero-row{grid-template-columns:minmax(0,1fr)}
+  .hero-copy{order:2}
+  .steps{grid-template-columns:minmax(0,1fr)}
+  .step{min-height:0;grid-template-columns:minmax(0,1fr) 140px;grid-template-rows:auto auto auto}
+  .step .num{grid-column:1/-1}
+  .step .art{grid-column:2;grid-row:2/4;width:140px}
+  .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .feat{grid-template-columns:minmax(0,1fr) auto;gap:10px 18px}
+  .feat .rule{display:none}
+  .feat p{grid-column:1;grid-row:2}
+  .feat svg{grid-column:2;grid-row:1/3}
 }
-@media (max-width:760px){
-  .app{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "work" "left" "right";row-gap:8px;
-    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-  .stage{border-radius:24px;padding:18px 14px 14px}
-  .hstats{margin-left:0;width:100%;order:3}
-  .readout{text-align:left}
-  aside{padding-bottom:0}
-  .side-r{padding-bottom:24px}
+@media (max-width:640px){
+  .nav-links{display:none}
+  .nav .pill{margin-left:auto;height:40px;padding:0 16px;font-size:14px}
+  .demo{padding:14px 14px 12px;border-radius:24px}
+  .step{grid-template-columns:minmax(0,1fr)}
+  .step .art{grid-column:1;grid-row:auto;width:120px;justify-self:start}
+  .gallery{grid-template-columns:minmax(0,1fr)}
+  .feat{padding:20px}
+  .feat svg{width:40px;height:40px}
+  .closing{grid-template-columns:minmax(0,1fr);padding:36px 24px 28px;border-radius:28px}
+  section{padding-block:56px 0}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .demo.play *{animation:none!important}
+  .replay{display:none}
+}
 </style>
 </head>
 <body>
 
-<div class="app">
-  <header class="top">
-    <h1 class="mark" aria-label="GridGrid">Grid<span aria-hidden="true"><i class="c1">G</i><i class="c2">r</i><i class="c3">i</i><i class="c4">d</i></span></h1>
-    <div class="hstats" id="hstats" aria-live="polite"></div>
-    <button class="btn" id="resetBtn">Resetar</button>
+<div class="wrap">
+  <nav class="nav" aria-label="Principal">
+    <a class="logo" href="./" aria-label="GridGrid">Grid<span aria-hidden="true"><i class="c1">G</i><i class="c2">r</i><i class="c3">i</i><i class="c4">d</i></span></a>
+    <div class="nav-links">
+      <a href="#como">Como funciona</a>
+      <a href="#exemplos">Exemplos</a>
+      <a href="#recursos">Recursos</a>
+    </div>
+    <a class="pill" href="app/index.html">Abrir o GridGrid</a>
+  </nav>
+
+  <header class="hero">
+    <h1 class="headline">Suba o SVG.<span>Receba o grid.</span></h1>
+    <div class="hero-row">
+      <div class="hero-copy">
+        <p class="lede">O GridGrid lê os pontos do vetor e desenha as guias, as diagonais, os círculos de construção, os nós e as alças do seu logo. Você ajusta cada camada e exporta.</p>
+        <div class="cta-row">
+          <a class="pill" href="app/index.html">Abrir o GridGrid</a>
+          <a class="pill light" href="#exemplos">Ver exemplos</a>
+        </div>
+        <ul class="facts">
+          <li>Preço <span>Gratuito</span></li>
+          <li>Onde roda <span>No navegador</span></li>
+          <li>Seu arquivo <span>Não sai do computador</span></li>
+          <li>Exporta <span>SVG em camadas e PNG</span></li>
+        </ul>
+      </div>
+      <figure class="demo play" id="demo" style="margin:0">
+        <svg class="demo-svg" role="img" aria-label="Grid de construção sendo desenhado sobre um logo de exemplo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1067"><g class="g-fundo"><rect width="1600" height="1067" fill="#E4E5E7"></rect></g><g fill-opacity="1" class="g-forma"><path d="M192 827.85L192 248.8L346.41 248.8L346.41 326.01C404.32 268.1 481.52 239.15 578.03 239.15C713.14 239.15 809.65 326.01 809.65 480.42L809.65 827.85L655.24 827.85L655.24 499.72C655.24 412.87 606.98 374.26 539.43 374.26C442.92 374.26 346.41 432.17 346.41 538.33L346.41 827.85Z" fill="#C8C9CC" fill-rule="nonzero"></path><path d="M867.56 827.85L983.37 248.8L1137.78 248.8L1021.97 827.85Z" fill="#C8C9CC" fill-rule="nonzero"></path><path d="M1408 712.04C1408 776 1356.15 827.85 1292.19 827.85C1228.23 827.85 1176.38 776 1176.38 712.04C1176.38 648.08 1228.23 596.23 1292.19 596.23C1356.15 596.23 1408 648.08 1408 712.04Z" fill="#C8C9CC" fill-rule="nonzero"></path></g><g fill="none" stroke="#000000" stroke-opacity="0.32" stroke-width="2" class="g-circulos"><circle cx="1292.19" cy="712.04" r="115.81" style="--i:1" pathLength="1"></circle><circle cx="563.19" cy="551.84" r="313.04" style="--i:2" pathLength="1"></circle><circle cx="590.11" cy="459.37" r="220.55" style="--i:3" pathLength="1"></circle><circle cx="522.1" cy="549.45" r="176.04" style="--i:4" pathLength="1"></circle><circle cx="546.92" cy="483.52" r="109.52" style="--i:5" pathLength="1"></circle></g><g stroke="#000000" stroke-opacity="0.32" stroke-width="2" class="g-guias"><line x1="0" y1="827.85" x2="1600" y2="827.85" style="--i:1" pathLength="1"></line><line x1="0" y1="239.15" x2="1600" y2="239.15" style="--i:2" pathLength="1"></line><line x1="0" y1="248.8" x2="1600" y2="248.8" style="--i:3" pathLength="1"></line><line x1="0" y1="712.04" x2="1600" y2="712.04" style="--i:4" pathLength="1"></line><line x1="0" y1="326.01" x2="1600" y2="326.01" style="--i:5" pathLength="1"></line><line x1="0" y1="374.26" x2="1600" y2="374.26" style="--i:6" pathLength="1"></line><line x1="0" y1="480.42" x2="1600" y2="480.42" style="--i:7" pathLength="1"></line><line x1="0" y1="499.72" x2="1600" y2="499.72" style="--i:8" pathLength="1"></line><line x1="0" y1="538.33" x2="1600" y2="538.33" style="--i:9" pathLength="1"></line><line x1="0" y1="596.23" x2="1600" y2="596.23" style="--i:10" pathLength="1"></line><line x1="192" y1="0" x2="192" y2="1067" style="--i:11" pathLength="1"></line><line x1="1408" y1="0" x2="1408" y2="1067" style="--i:12" pathLength="1"></line><line x1="346.41" y1="0" x2="346.41" y2="1067" style="--i:13" pathLength="1"></line><line x1="655.24" y1="0" x2="655.24" y2="1067" style="--i:14" pathLength="1"></line><line x1="809.65" y1="0" x2="809.65" y2="1067" style="--i:15" pathLength="1"></line><line x1="1292.19" y1="0" x2="1292.19" y2="1067" style="--i:16" pathLength="1"></line><line x1="539.43" y1="0" x2="539.43" y2="1067" style="--i:17" pathLength="1"></line><line x1="578.03" y1="0" x2="578.03" y2="1067" style="--i:18" pathLength="1"></line><line x1="867.56" y1="0" x2="867.56" y2="1067" style="--i:19" pathLength="1"></line><line x1="983.37" y1="0" x2="983.37" y2="1067" style="--i:20" pathLength="1"></line><line x1="1021.97" y1="0" x2="1021.97" y2="1067" style="--i:21" pathLength="1"></line><line x1="1137.78" y1="0" x2="1137.78" y2="1067" style="--i:22" pathLength="1"></line><line x1="1176.38" y1="0" x2="1176.38" y2="1067" style="--i:23" pathLength="1"></line></g><g stroke="#000000" stroke-opacity="0.32" stroke-width="2" class="g-diagonais"><line x1="1033.13" y1="0" x2="819.73" y2="1067" style="--i:1" pathLength="1"></line><line x1="1187.54" y1="0" x2="974.14" y2="1067" style="--i:2" pathLength="1"></line></g><g fill="none" stroke="#000000" stroke-opacity="1" stroke-width="2" stroke-linejoin="round" class="g-contorno"><path d="M192 827.85L192 248.8L346.41 248.8L346.41 326.01C404.32 268.1 481.52 239.15 578.03 239.15C713.14 239.15 809.65 326.01 809.65 480.42L809.65 827.85L655.24 827.85L655.24 499.72C655.24 412.87 606.98 374.26 539.43 374.26C442.92 374.26 346.41 432.17 346.41 538.33L346.41 827.85Z" style="--i:1" pathLength="1"></path><path d="M867.56 827.85L983.37 248.8L1137.78 248.8L1021.97 827.85Z" style="--i:2" pathLength="1"></path><path d="M1408 712.04C1408 776 1356.15 827.85 1292.19 827.85C1228.23 827.85 1176.38 776 1176.38 712.04C1176.38 648.08 1228.23 596.23 1292.19 596.23C1356.15 596.23 1408 648.08 1408 712.04Z" style="--i:3" pathLength="1"></path></g><g opacity="0.6" class="g-alcas"><line x1="809.65" y1="480.42" x2="809.65" y2="326.01" stroke="#000000" stroke-width="1.6" style="--i:1" pathLength="1"></line><circle cx="809.65" cy="326.01" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:2" pathLength="1"></circle><line x1="578.03" y1="239.15" x2="713.14" y2="239.15" stroke="#000000" stroke-width="1.6" style="--i:3" pathLength="1"></line><circle cx="713.14" cy="239.15" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:4" pathLength="1"></circle><line x1="346.41" y1="538.33" x2="346.41" y2="432.17" stroke="#000000" stroke-width="1.6" style="--i:5" pathLength="1"></line><circle cx="346.41" cy="432.17" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:6" pathLength="1"></circle><line x1="578.03" y1="239.15" x2="481.52" y2="239.15" stroke="#000000" stroke-width="1.6" style="--i:7" pathLength="1"></line><circle cx="481.52" cy="239.15" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:8" pathLength="1"></circle><line x1="539.43" y1="374.26" x2="442.92" y2="374.26" stroke="#000000" stroke-width="1.6" style="--i:9" pathLength="1"></line><circle cx="442.92" cy="374.26" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:10" pathLength="1"></circle><line x1="655.24" y1="499.72" x2="655.24" y2="412.87" stroke="#000000" stroke-width="1.6" style="--i:11" pathLength="1"></line><circle cx="655.24" cy="412.87" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:12" pathLength="1"></circle><line x1="346.41" y1="326.01" x2="404.32" y2="268.1" stroke="#000000" stroke-width="1.6" style="--i:13" pathLength="1"></line><circle cx="404.32" cy="268.1" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:14" pathLength="1"></circle><line x1="539.43" y1="374.26" x2="606.98" y2="374.26" stroke="#000000" stroke-width="1.6" style="--i:15" pathLength="1"></line><circle cx="606.98" cy="374.26" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:16" pathLength="1"></circle><line x1="1408" y1="712.04" x2="1408" y2="776" stroke="#000000" stroke-width="1.6" style="--i:17" pathLength="1"></line><circle cx="1408" cy="776" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:18" pathLength="1"></circle><line x1="1292.19" y1="827.85" x2="1356.15" y2="827.85" stroke="#000000" stroke-width="1.6" style="--i:19" pathLength="1"></line><circle cx="1356.15" cy="827.85" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:20" pathLength="1"></circle><line x1="1292.19" y1="827.85" x2="1228.23" y2="827.85" stroke="#000000" stroke-width="1.6" style="--i:21" pathLength="1"></line><circle cx="1228.23" cy="827.85" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:22" pathLength="1"></circle><line x1="1176.38" y1="712.04" x2="1176.38" y2="776" stroke="#000000" stroke-width="1.6" style="--i:23" pathLength="1"></line><circle cx="1176.38" cy="776" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:24" pathLength="1"></circle><line x1="1176.38" y1="712.04" x2="1176.38" y2="648.08" stroke="#000000" stroke-width="1.6" style="--i:25" pathLength="1"></line><circle cx="1176.38" cy="648.08" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:26" pathLength="1"></circle><line x1="1292.19" y1="596.23" x2="1228.23" y2="596.23" stroke="#000000" stroke-width="1.6" style="--i:27" pathLength="1"></line><circle cx="1228.23" cy="596.23" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:28" pathLength="1"></circle><line x1="1292.19" y1="596.23" x2="1356.15" y2="596.23" stroke="#000000" stroke-width="1.6" style="--i:29" pathLength="1"></line><circle cx="1356.15" cy="596.23" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:30" pathLength="1"></circle><line x1="1408" y1="712.04" x2="1408" y2="648.08" stroke="#000000" stroke-width="1.6" style="--i:31" pathLength="1"></line><circle cx="1408" cy="648.08" r="4.8" fill="#E4E5E7" stroke="#000000" stroke-width="1.76" style="--i:32" pathLength="1"></circle></g><g opacity="1" class="g-nos"><circle cx="346.41" cy="827.85" r="8" fill="#000000" style="--i:1" pathLength="1"></circle><circle cx="192" cy="827.85" r="8" fill="#000000" style="--i:2" pathLength="1"></circle><circle cx="809.65" cy="827.85" r="8" fill="#000000" style="--i:3" pathLength="1"></circle><circle cx="655.24" cy="827.85" r="8" fill="#000000" style="--i:4" pathLength="1"></circle><circle cx="1292.19" cy="827.85" r="8" fill="#000000" style="--i:5" pathLength="1"></circle><circle cx="346.41" cy="248.8" r="8" fill="#000000" style="--i:6" pathLength="1"></circle><circle cx="867.56" cy="827.85" r="8" fill="#000000" style="--i:7" pathLength="1"></circle><circle cx="1021.97" cy="827.85" r="8" fill="#000000" style="--i:8" pathLength="1"></circle><circle cx="192" cy="248.8" r="8" fill="#000000" style="--i:9" pathLength="1"></circle><circle cx="346.41" cy="326.01" r="8" fill="#000000" style="--i:10" pathLength="1"></circle><circle cx="346.41" cy="538.33" r="8" fill="#000000" style="--i:11" pathLength="1"></circle><circle cx="983.37" cy="248.8" r="8" fill="#000000" style="--i:12" pathLength="1"></circle><circle cx="1137.78" cy="248.8" r="8" fill="#000000" style="--i:13" pathLength="1"></circle><circle cx="809.65" cy="480.42" r="8" fill="#000000" style="--i:14" pathLength="1"></circle><circle cx="655.24" cy="499.72" r="8" fill="#000000" style="--i:15" pathLength="1"></circle><circle cx="1408" cy="712.04" r="8" fill="#000000" style="--i:16" pathLength="1"></circle><circle cx="1176.38" cy="712.04" r="8" fill="#000000" style="--i:17" pathLength="1"></circle><circle cx="1292.19" cy="596.23" r="8" fill="#000000" style="--i:18" pathLength="1"></circle><circle cx="578.03" cy="239.15" r="8" fill="#000000" style="--i:19" pathLength="1"></circle><circle cx="539.43" cy="374.26" r="8" fill="#000000" style="--i:20" pathLength="1"></circle></g><g fill="#000000" fill-opacity="1" font-family="Inter Tight, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="48" font-weight="500" class="g-rotulos"><text x="873.69" y="527.97" text-anchor="middle" dominant-baseline="middle" style="--i:1">11,3°</text><text x="1028.1" y="527.97" text-anchor="middle" dominant-baseline="middle" style="--i:2">11,3°</text></g></svg>
+        <figcaption class="demo-bar">
+          <span class="st">Nós<sup>20</sup></span><span class="st">Guias<sup>23</sup></span><span class="st">Diagonais<sup>2</sup></span><span class="st">Círculos<sup>5</sup></span>
+          <button class="replay" id="replay" type="button">Desenhar de novo</button>
+        </figcaption>
+      </figure>
+    </div>
   </header>
 
-  <div class="work">
-    <div class="toolbar" role="toolbar" aria-label="Ferramentas">
-      <button class="tool" data-mode="select" aria-pressed="true">Selecionar<kbd>Esc</kbd></button>
-      <button class="tool" data-mode="h" aria-pressed="false">Horizontal<kbd>H</kbd></button>
-      <button class="tool" data-mode="v" aria-pressed="false">Vertical<kbd>V</kbd></button>
-      <button class="tool" data-mode="d" aria-pressed="false">Diagonal<kbd>D</kbd></button>
-      <button class="tool" data-mode="move" aria-pressed="false">Mover logo<kbd>M</kbd></button>
-      <span class="sep"></span>
-      <button class="tool" id="hideSel" disabled>Ocultar<kbd>Del</kbd></button>
-      <button class="tool" id="restore">Restaurar</button>
-      <span class="readout" id="readout">Clique numa guia para selecionar. Arraste guias retas para mover.</span>
-    </div>
-    <div class="stage m-select" id="stage">
-      <div id="canvasHost"></div>
-      <div class="hint" id="hint"></div>
-      <div class="drop" id="drop" hidden><strong>Solte<span>o SVG aqui</span></strong></div>
-    </div>
+  <section id="como" aria-labelledby="como-t">
+    <h2 class="sec-title" id="como-t">Três passos<span>do arquivo ao grid</span></h2>
+    <ol class="steps">
+      <li class="step s1">
+        <span class="num">1</span>
+        <h3>Suba<span>o SVG</span></h3>
+        <svg class="art" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="#000" fill-opacity=".1"/><circle cx="100" cy="100" r="36" fill="var(--yellow)"/><rect x="92" y="14" width="16" height="86" fill="#000"/></svg>
+        <p>Arraste o arquivo, escolha no computador ou cole o código. O texto precisa estar convertido em contorno.</p>
+      </li>
+      <li class="step s2">
+        <span class="num">2</span>
+        <h3>Ajuste<span>as camadas</span></h3>
+        <svg class="art" viewBox="0 0 200 200" aria-hidden="true"><path d="M14 100A86 86 0 0 1 186 100Z" fill="#000" fill-opacity=".12"/><path d="M186 100A86 86 0 0 1 14 100Z" fill="#000"/><line x1="14" y1="100" x2="186" y2="100" stroke="var(--blue)" stroke-width="6"/></svg>
+        <p>Escolha o nível de detalhe e defina quantidade, opacidade e espessura de cada elemento. O quadro aceita formato, escala e posição.</p>
+      </li>
+      <li class="step s3">
+        <span class="num">3</span>
+        <h3>Exporte<span>em camadas</span></h3>
+        <svg class="art" viewBox="0 0 200 200" aria-hidden="true"><rect x="22" y="22" width="110" height="110" fill="#fff" fill-opacity=".14"/><rect x="45" y="45" width="110" height="110" fill="#fff" fill-opacity=".28"/><rect x="68" y="68" width="110" height="110" fill="var(--lime)"/></svg>
+        <p>Baixe um SVG com grupos nomeados para editar no Figma ou um PNG em 2× ou 4×, com fundo ou transparente.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="exemplos" aria-labelledby="ex-t">
+    <h2 class="sec-title" id="ex-t">Exemplos<span>seis marcas, seis estilos</span></h2>
+    <ul class="gallery">
+      <li><figure><div class="frame"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1600"><g class="g-fundo"><rect width="1600" height="1600" fill="#FFE94A"></rect></g><g fill-opacity="1" class="g-forma"><path d="M256 1344L256 800C256 499.56 499.56 256 800 256C1100.44 256 1344 499.56 1344 800L1344 1344L1033.14 1344L1033.14 800C1033.14 671.24 928.76 566.86 800 566.86C671.24 566.86 566.86 671.24 566.86 800L566.86 1344Z" fill="#EBD22B" fill-rule="nonzero"></path><path d="M683.43 1149.71L916.57 1149.71L916.57 1344L683.43 1344Z" fill="#EBD22B" fill-rule="nonzero"></path></g><g fill="none" stroke="#000000" stroke-opacity="0.45" stroke-width="3.2" class="g-circulos"><circle cx="800" cy="800" r="544"></circle><circle cx="800" cy="800" r="233.14"></circle></g><g stroke="#000000" stroke-opacity="0.45" stroke-width="3.2" class="g-guias"><line x1="0" y1="1344" x2="1600" y2="1344"></line><line x1="0" y1="256" x2="1600" y2="256"></line><line x1="0" y1="800" x2="1600" y2="800"></line><line x1="0" y1="1149.71" x2="1600" y2="1149.71"></line><line x1="0" y1="566.86" x2="1600" y2="566.86"></line><line x1="256" y1="0" x2="256" y2="1600"></line><line x1="1344" y1="0" x2="1344" y2="1600"></line><line x1="566.86" y1="0" x2="566.86" y2="1600"></line><line x1="683.43" y1="0" x2="683.43" y2="1600"></line><line x1="800" y1="0" x2="800" y2="1600"></line><line x1="916.57" y1="0" x2="916.57" y2="1600"></line><line x1="1033.14" y1="0" x2="1033.14" y2="1600"></line></g><g fill="none" stroke="#000000" stroke-opacity="1" stroke-width="3.2" stroke-linejoin="round" class="g-contorno"><path d="M256 1344L256 800C256 499.56 499.56 256 800 256C1100.44 256 1344 499.56 1344 800L1344 1344L1033.14 1344L1033.14 800C1033.14 671.24 928.76 566.86 800 566.86C671.24 566.86 566.86 671.24 566.86 800L566.86 1344Z"></path><path d="M683.43 1149.71L916.57 1149.71L916.57 1344L683.43 1344Z"></path></g><g opacity="0.6" class="g-alcas"><line x1="800" y1="256" x2="499.56" y2="256" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="499.56" cy="256" r="7.8" fill="#FFE94A" stroke="#000000" stroke-width="2.82"></circle><line x1="1344" y1="800" x2="1344" y2="499.56" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1344" cy="499.56" r="7.8" fill="#FFE94A" stroke="#000000" stroke-width="2.82"></circle><line x1="256" y1="800" x2="256" y2="499.56" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="256" cy="499.56" r="7.8" fill="#FFE94A" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="256" x2="1100.44" y2="256" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1100.44" cy="256" r="7.8" fill="#FFE94A" stroke="#000000" stroke-width="2.82"></circle><line x1="1033.14" y1="800" x2="1033.14" y2="671.24" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1033.14" cy="671.24" r="7.8" fill="#FFE94A" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="566.86" x2="928.76" y2="566.86" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="928.76" cy="566.86" r="7.8" fill="#FFE94A" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="566.86" x2="671.24" y2="566.86" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="671.24" cy="566.86" r="7.8" fill="#FFE94A" stroke="#000000" stroke-width="2.82"></circle><line x1="566.86" y1="800" x2="566.86" y2="671.24" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="566.86" cy="671.24" r="7.8" fill="#FFE94A" stroke="#000000" stroke-width="2.82"></circle></g><g opacity="1" class="g-nos"><circle cx="256" cy="1344" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="1344" cy="1344" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="1033.14" cy="1344" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="566.86" cy="1344" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="916.57" cy="1344" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="683.43" cy="1344" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="256" cy="800" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="1344" cy="800" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="1033.14" cy="800" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="566.86" cy="800" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="683.43" cy="1149.71" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="916.57" cy="1149.71" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="800" cy="256" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle><circle cx="800" cy="566.86" r="13" fill="#FFE94A" stroke="#000000" stroke-width="3.25"></circle></g></svg></div><figcaption>Arco<span>estilo Amarelo, nós vazados</span></figcaption></figure></li>
+      <li><figure><div class="frame"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1600"><g class="g-fundo"><rect width="1600" height="1600" fill="#000000"></rect></g><g fill-opacity="1" class="g-forma"><path d="M1340 800C1340 1098.23 1098.23 1340 800 1340C501.77 1340 260 1098.23 260 800C260 501.77 501.77 260 800 260C1098.23 260 1340 501.77 1340 800ZM854 224L998 224L746 1376L602 1376Z" fill="#262626" fill-rule="evenodd"></path></g><g fill="none" stroke="#ffffff" stroke-opacity="0.42" stroke-width="3.2" class="g-circulos"><circle cx="800" cy="800" r="540"></circle></g><g stroke="#ffffff" stroke-opacity="0.42" stroke-width="3.2" class="g-guias"><line x1="0" y1="224" x2="1600" y2="224"></line><line x1="0" y1="1376" x2="1600" y2="1376"></line><line x1="0" y1="800" x2="1600" y2="800"></line><line x1="0" y1="260" x2="1600" y2="260"></line><line x1="0" y1="1340" x2="1600" y2="1340"></line><line x1="260" y1="0" x2="260" y2="1600"></line><line x1="1340" y1="0" x2="1340" y2="1600"></line><line x1="800" y1="0" x2="800" y2="1600"></line><line x1="602" y1="0" x2="602" y2="1600"></line><line x1="746" y1="0" x2="746" y2="1600"></line><line x1="854" y1="0" x2="854" y2="1600"></line><line x1="998" y1="0" x2="998" y2="1600"></line></g><g stroke="#ffffff" stroke-opacity="0.42" stroke-width="3.2" class="g-diagonais"><line x1="1047" y1="0" x2="697" y2="1600"></line><line x1="903" y1="0" x2="553" y2="1600"></line></g><g fill="none" stroke="#ffffff" stroke-opacity="1" stroke-width="3.2" stroke-linejoin="round" class="g-contorno"><path d="M1340 800C1340 1098.23 1098.23 1340 800 1340C501.77 1340 260 1098.23 260 800C260 501.77 501.77 260 800 260C1098.23 260 1340 501.77 1340 800ZM854 224L998 224L746 1376L602 1376Z"></path></g><g opacity="0.6" class="g-alcas"><line x1="1340" y1="800" x2="1340" y2="1098.23" stroke="#ffffff" stroke-width="2.5600000000000005"></line><circle cx="1340" cy="1098.23" r="7.8" fill="#000000" stroke="#ffffff" stroke-width="2.82"></circle><line x1="800" y1="1340" x2="1098.23" y2="1340" stroke="#ffffff" stroke-width="2.5600000000000005"></line><circle cx="1098.23" cy="1340" r="7.8" fill="#000000" stroke="#ffffff" stroke-width="2.82"></circle><line x1="260" y1="800" x2="260" y2="501.77" stroke="#ffffff" stroke-width="2.5600000000000005"></line><circle cx="260" cy="501.77" r="7.8" fill="#000000" stroke="#ffffff" stroke-width="2.82"></circle><line x1="800" y1="260" x2="501.77" y2="260" stroke="#ffffff" stroke-width="2.5600000000000005"></line><circle cx="501.77" cy="260" r="7.8" fill="#000000" stroke="#ffffff" stroke-width="2.82"></circle><line x1="1340" y1="800" x2="1340" y2="501.77" stroke="#ffffff" stroke-width="2.5600000000000005"></line><circle cx="1340" cy="501.77" r="7.8" fill="#000000" stroke="#ffffff" stroke-width="2.82"></circle><line x1="800" y1="1340" x2="501.77" y2="1340" stroke="#ffffff" stroke-width="2.5600000000000005"></line><circle cx="501.77" cy="1340" r="7.8" fill="#000000" stroke="#ffffff" stroke-width="2.82"></circle><line x1="260" y1="800" x2="260" y2="1098.23" stroke="#ffffff" stroke-width="2.5600000000000005"></line><circle cx="260" cy="1098.23" r="7.8" fill="#000000" stroke="#ffffff" stroke-width="2.82"></circle><line x1="800" y1="260" x2="1098.23" y2="260" stroke="#ffffff" stroke-width="2.5600000000000005"></line><circle cx="1098.23" cy="260" r="7.8" fill="#000000" stroke="#ffffff" stroke-width="2.82"></circle></g><g opacity="1" class="g-nos"><circle cx="1340" cy="800" r="13" fill="#ffffff"></circle><circle cx="800" cy="1340" r="13" fill="#ffffff"></circle><circle cx="260" cy="800" r="13" fill="#ffffff"></circle><circle cx="800" cy="260" r="13" fill="#ffffff"></circle><circle cx="854" cy="224" r="13" fill="#ffffff"></circle><circle cx="998" cy="224" r="13" fill="#ffffff"></circle><circle cx="746" cy="1376" r="13" fill="#ffffff"></circle><circle cx="602" cy="1376" r="13" fill="#ffffff"></circle></g></svg></div><figcaption>Corte<span>estilo Noturno</span></figcaption></figure></li>
+      <li><figure><div class="frame"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1600"><g class="g-fundo"><rect width="1600" height="1600" fill="#B97AF6"></rect></g><g fill-opacity="1" class="g-forma"><path d="M256 328.53L1017.6 328.53L1017.6 589.65L256 589.65Z" fill="#E7C3FC" fill-rule="nonzero"></path><path d="M473.6 669.44L1235.2 669.44L1235.2 930.56L473.6 930.56Z" fill="#E7C3FC" fill-rule="nonzero"></path><path d="M691.2 1010.35L1344 1010.35L1344 1271.47L691.2 1271.47Z" fill="#E7C3FC" fill-rule="nonzero"></path></g><g stroke="#ffffff" stroke-opacity="0.6" stroke-width="3.2" class="g-guias"><line x1="0" y1="328.53" x2="1600" y2="328.53"></line><line x1="0" y1="1271.47" x2="1600" y2="1271.47"></line><line x1="0" y1="589.65" x2="1600" y2="589.65"></line><line x1="0" y1="669.44" x2="1600" y2="669.44"></line><line x1="0" y1="930.56" x2="1600" y2="930.56"></line><line x1="0" y1="1010.35" x2="1600" y2="1010.35"></line><line x1="256" y1="0" x2="256" y2="1600"></line><line x1="1344" y1="0" x2="1344" y2="1600"></line><line x1="473.6" y1="0" x2="473.6" y2="1600"></line><line x1="691.2" y1="0" x2="691.2" y2="1600"></line><line x1="1017.6" y1="0" x2="1017.6" y2="1600"></line><line x1="1235.2" y1="0" x2="1235.2" y2="1600"></line></g><g fill="none" stroke="#ffffff" stroke-opacity="1" stroke-width="3.2" stroke-linejoin="round" class="g-contorno"><path d="M256 328.53L1017.6 328.53L1017.6 589.65L256 589.65Z"></path><path d="M473.6 669.44L1235.2 669.44L1235.2 930.56L473.6 930.56Z"></path><path d="M691.2 1010.35L1344 1010.35L1344 1271.47L691.2 1271.47Z"></path></g><g opacity="1" class="g-nos"><rect x="244.95" y="317.48" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="1006.55" y="317.48" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="1006.55" y="578.6" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="244.95" y="578.6" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="462.55" y="658.39" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="1224.15" y="658.39" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="1224.15" y="919.51" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="462.55" y="919.51" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="680.15" y="999.3" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="1332.95" y="999.3" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="1332.95" y="1260.42" width="22.1" height="22.1" fill="#ffffff"></rect><rect x="680.15" y="1260.42" width="22.1" height="22.1" fill="#ffffff"></rect></g></svg></div><figcaption>Degraus<span>estilo Lilás, nós quadrados</span></figcaption></figure></li>
+      <li><figure><div class="frame"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1600"><g class="g-fundo"><rect width="1600" height="1600" fill="#E4E5E7"></rect></g><g fill-opacity="1" class="g-forma"><path d="M288 288L800 288L800 800L288 800Z" fill="#C8C9CC" fill-rule="nonzero"></path><path d="M800 288L1312 288L1312 800C1029.23 800 800 570.77 800 288Z" fill="#C8C9CC" fill-rule="nonzero"></path><path d="M288 800C570.77 800 800 1029.23 800 1312L288 1312Z" fill="#C8C9CC" fill-rule="nonzero"></path><path d="M800 800L1312 800L1312 1312L800 1312Z" fill="#C8C9CC" fill-rule="nonzero"></path></g><g fill="none" stroke="#000000" stroke-opacity="0.32" stroke-width="3.2" class="g-circulos"><circle cx="1312" cy="288" r="512"></circle><circle cx="288" cy="1312" r="512"></circle></g><g stroke="#000000" stroke-opacity="0.32" stroke-width="3.2" class="g-guias"><line x1="0" y1="288" x2="1600" y2="288"></line><line x1="0" y1="1312" x2="1600" y2="1312"></line><line x1="0" y1="800" x2="1600" y2="800"></line><line x1="288" y1="0" x2="288" y2="1600"></line><line x1="1312" y1="0" x2="1312" y2="1600"></line><line x1="800" y1="0" x2="800" y2="1600"></line></g><g fill="none" stroke="#000000" stroke-opacity="1" stroke-width="3.2" stroke-linejoin="round" class="g-contorno"><path d="M288 288L800 288L800 800L288 800Z"></path><path d="M800 288L1312 288L1312 800C1029.23 800 800 570.77 800 288Z"></path><path d="M288 800C570.77 800 800 1029.23 800 1312L288 1312Z"></path><path d="M800 800L1312 800L1312 1312L800 1312Z"></path></g><g opacity="0.6" class="g-alcas"><line x1="288" y1="800" x2="570.77" y2="800" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="570.77" cy="800" r="7.8" fill="#E4E5E7" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="1312" x2="800" y2="1029.23" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="800" cy="1029.23" r="7.8" fill="#E4E5E7" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="288" x2="800" y2="570.77" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="800" cy="570.77" r="7.8" fill="#E4E5E7" stroke="#000000" stroke-width="2.82"></circle><line x1="1312" y1="800" x2="1029.23" y2="800" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1029.23" cy="800" r="7.8" fill="#E4E5E7" stroke="#000000" stroke-width="2.82"></circle></g><g opacity="1" class="g-nos"><circle cx="288" cy="288" r="13" fill="#000000"></circle><circle cx="800" cy="288" r="13" fill="#000000"></circle><circle cx="800" cy="800" r="13" fill="#000000"></circle><circle cx="288" cy="800" r="13" fill="#000000"></circle><circle cx="1312" cy="288" r="13" fill="#000000"></circle><circle cx="1312" cy="800" r="13" fill="#000000"></circle><circle cx="800" cy="1312" r="13" fill="#000000"></circle><circle cx="288" cy="1312" r="13" fill="#000000"></circle><circle cx="1312" cy="1312" r="13" fill="#000000"></circle></g></svg></div><figcaption>Quarto<span>estilo Papel</span></figcaption></figure></li>
+      <li><figure><div class="frame"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1600"><g class="g-fundo"><rect width="1600" height="1600" fill="#FF3300"></rect></g><g fill-opacity="1" class="g-forma"><path d="M224 625.45L503.27 625.45L695.27 974.55L1096.73 311.27L1376 311.27L800 1288.73L590.55 1288.73Z" fill="#E62600" fill-rule="nonzero"></path></g><g stroke="#ffffff" stroke-opacity="0.85" stroke-width="3.2" class="g-guias"><line x1="0" y1="311.27" x2="1600" y2="311.27"></line><line x1="0" y1="1288.73" x2="1600" y2="1288.73"></line><line x1="0" y1="625.45" x2="1600" y2="625.45"></line><line x1="0" y1="974.55" x2="1600" y2="974.55"></line><line x1="224" y1="0" x2="224" y2="1600"></line><line x1="1376" y1="0" x2="1376" y2="1600"></line><line x1="503.27" y1="0" x2="503.27" y2="1600"></line><line x1="590.55" y1="0" x2="590.55" y2="1600"></line><line x1="695.27" y1="0" x2="695.27" y2="1600"></line><line x1="800" y1="0" x2="800" y2="1600"></line><line x1="1096.73" y1="0" x2="1096.73" y2="1600"></line></g><g stroke="#ffffff" stroke-opacity="0.85" stroke-width="3.2" class="g-diagonais"><line x1="1559.43" y1="0" x2="616.57" y2="1600"></line><line x1="1285.13" y1="0" x2="316.71" y2="1600"></line><line x1="0" y1="220.12" x2="762.56" y2="1600"></line><line x1="159.27" y1="0" x2="1039.27" y2="1600"></line></g><g fill="none" stroke="#ffffff" stroke-opacity="1" stroke-width="3.2" stroke-linejoin="round" class="g-contorno"><path d="M224 625.45L503.27 625.45L695.27 974.55L1096.73 311.27L1376 311.27L800 1288.73L590.55 1288.73Z"></path></g><g opacity="1" class="g-nos"><rect x="212.95" y="614.4" width="22.1" height="22.1" fill="#FF3300" stroke="#ffffff" stroke-width="2.86"></rect><rect x="492.22" y="614.4" width="22.1" height="22.1" fill="#FF3300" stroke="#ffffff" stroke-width="2.86"></rect><rect x="1085.68" y="300.22" width="22.1" height="22.1" fill="#FF3300" stroke="#ffffff" stroke-width="2.86"></rect><rect x="1364.95" y="300.22" width="22.1" height="22.1" fill="#FF3300" stroke="#ffffff" stroke-width="2.86"></rect><rect x="788.95" y="1277.68" width="22.1" height="22.1" fill="#FF3300" stroke="#ffffff" stroke-width="2.86"></rect><rect x="579.5" y="1277.68" width="22.1" height="22.1" fill="#FF3300" stroke="#ffffff" stroke-width="2.86"></rect><rect x="684.22" y="963.5" width="22.1" height="22.1" fill="#FF3300" stroke="#ffffff" stroke-width="2.86"></rect></g><g fill="#ffffff" fill-opacity="1" font-family="Inter Tight, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="74" font-weight="500" class="g-rotulos"><text x="1017.87" y="758.67" text-anchor="middle" dominant-baseline="middle">30,5°</text><text x="826.36" y="600.76" text-anchor="middle" dominant-baseline="middle">31,2°</text><text x="336.03" y="996.46" text-anchor="middle" dominant-baseline="middle">28,9°</text><text x="527.95" y="839.23" text-anchor="middle" dominant-baseline="middle">28,8°</text></g></svg></div><figcaption>Seta<span>estilo Brasa, com ângulos</span></figcaption></figure></li>
+      <li><figure><div class="frame"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1600"><g class="g-fundo"><rect width="1600" height="1600" fill="#8EA6E4"></rect></g><g fill-opacity="1" class="g-forma"><path d="M1376 800C1376 1118.12 1118.12 1376 800 1376C481.88 1376 224 1118.12 224 800C224 481.88 481.88 224 800 224C1118.12 224 1376 481.88 1376 800ZM1107.2 800C1107.2 630.34 969.66 492.8 800 492.8C630.34 492.8 492.8 630.34 492.8 800C492.8 969.66 630.34 1107.2 800 1107.2C969.66 1107.2 1107.2 969.66 1107.2 800Z" fill="#A9BCEC" fill-rule="evenodd"></path><path d="M945.92 800C945.92 880.59 880.59 945.92 800 945.92C719.41 945.92 654.08 880.59 654.08 800C654.08 719.41 719.41 654.08 800 654.08C880.59 654.08 945.92 719.41 945.92 800Z" fill="#A9BCEC" fill-rule="nonzero"></path></g><g fill="none" stroke="#000000" stroke-opacity="0.4" stroke-width="3.2" class="g-circulos"><circle cx="800" cy="800" r="576"></circle><circle cx="800" cy="800" r="307.2"></circle><circle cx="800" cy="800" r="145.92"></circle></g><g stroke="#000000" stroke-opacity="0.4" stroke-width="3.2" class="g-guias"><line x1="0" y1="224" x2="1600" y2="224"></line><line x1="0" y1="1376" x2="1600" y2="1376"></line><line x1="0" y1="800" x2="1600" y2="800"></line><line x1="0" y1="492.8" x2="1600" y2="492.8"></line><line x1="0" y1="654.08" x2="1600" y2="654.08"></line><line x1="0" y1="945.92" x2="1600" y2="945.92"></line><line x1="0" y1="1107.2" x2="1600" y2="1107.2"></line><line x1="224" y1="0" x2="224" y2="1600"></line><line x1="1376" y1="0" x2="1376" y2="1600"></line><line x1="800" y1="0" x2="800" y2="1600"></line><line x1="492.8" y1="0" x2="492.8" y2="1600"></line><line x1="654.08" y1="0" x2="654.08" y2="1600"></line><line x1="945.92" y1="0" x2="945.92" y2="1600"></line><line x1="1107.2" y1="0" x2="1107.2" y2="1600"></line></g><g fill="none" stroke="#000000" stroke-opacity="1" stroke-width="3.2" stroke-linejoin="round" class="g-contorno"><path d="M1376 800C1376 1118.12 1118.12 1376 800 1376C481.88 1376 224 1118.12 224 800C224 481.88 481.88 224 800 224C1118.12 224 1376 481.88 1376 800ZM1107.2 800C1107.2 630.34 969.66 492.8 800 492.8C630.34 492.8 492.8 630.34 492.8 800C492.8 969.66 630.34 1107.2 800 1107.2C969.66 1107.2 1107.2 969.66 1107.2 800Z"></path><path d="M945.92 800C945.92 880.59 880.59 945.92 800 945.92C719.41 945.92 654.08 880.59 654.08 800C654.08 719.41 719.41 654.08 800 654.08C880.59 654.08 945.92 719.41 945.92 800Z"></path></g><g opacity="0.6" class="g-alcas"><line x1="1376" y1="800" x2="1376" y2="1118.12" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1376" cy="1118.12" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="1376" x2="1118.12" y2="1376" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1118.12" cy="1376" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="224" y1="800" x2="224" y2="481.88" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="224" cy="481.88" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="224" x2="481.88" y2="224" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="481.88" cy="224" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="1376" y1="800" x2="1376" y2="481.88" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1376" cy="481.88" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="1376" x2="481.88" y2="1376" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="481.88" cy="1376" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="224" y1="800" x2="224" y2="1118.12" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="224" cy="1118.12" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="224" x2="1118.12" y2="224" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1118.12" cy="224" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="1107.2" y1="800" x2="1107.2" y2="630.34" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1107.2" cy="630.34" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="492.8" x2="969.66" y2="492.8" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="969.66" cy="492.8" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="492.8" x2="630.34" y2="492.8" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="630.34" cy="492.8" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="492.8" y1="800" x2="492.8" y2="630.34" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="492.8" cy="630.34" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="492.8" y1="800" x2="492.8" y2="969.66" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="492.8" cy="969.66" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="1107.2" x2="630.34" y2="1107.2" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="630.34" cy="1107.2" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="1107.2" x2="969.66" y2="1107.2" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="969.66" cy="1107.2" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="1107.2" y1="800" x2="1107.2" y2="969.66" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="1107.2" cy="969.66" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="945.92" y1="800" x2="945.92" y2="880.59" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="945.92" cy="880.59" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="945.92" x2="880.59" y2="945.92" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="880.59" cy="945.92" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="945.92" x2="719.41" y2="945.92" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="719.41" cy="945.92" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="654.08" y1="800" x2="654.08" y2="880.59" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="654.08" cy="880.59" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="654.08" y1="800" x2="654.08" y2="719.41" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="654.08" cy="719.41" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="654.08" x2="719.41" y2="654.08" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="719.41" cy="654.08" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="800" y1="654.08" x2="880.59" y2="654.08" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="880.59" cy="654.08" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle><line x1="945.92" y1="800" x2="945.92" y2="719.41" stroke="#000000" stroke-width="2.5600000000000005"></line><circle cx="945.92" cy="719.41" r="7.8" fill="#8EA6E4" stroke="#000000" stroke-width="2.82"></circle></g><g opacity="1" class="g-nos"><rect x="1364.95" y="788.95" width="22.1" height="22.1" fill="#000000"></rect><rect x="788.95" y="1364.95" width="22.1" height="22.1" fill="#000000"></rect><rect x="212.95" y="788.95" width="22.1" height="22.1" fill="#000000"></rect><rect x="788.95" y="212.95" width="22.1" height="22.1" fill="#000000"></rect><rect x="1096.15" y="788.95" width="22.1" height="22.1" fill="#000000"></rect><rect x="788.95" y="481.75" width="22.1" height="22.1" fill="#000000"></rect><rect x="481.75" y="788.95" width="22.1" height="22.1" fill="#000000"></rect><rect x="788.95" y="1096.15" width="22.1" height="22.1" fill="#000000"></rect><rect x="934.87" y="788.95" width="22.1" height="22.1" fill="#000000"></rect><rect x="788.95" y="934.87" width="22.1" height="22.1" fill="#000000"></rect><rect x="643.03" y="788.95" width="22.1" height="22.1" fill="#000000"></rect><rect x="788.95" y="643.03" width="22.1" height="22.1" fill="#000000"></rect></g></svg></div><figcaption>Anel<span>cores próprias, com alças</span></figcaption></figure></li>
+    </ul>
+  </section>
+
+  <section id="recursos" aria-labelledby="rec-t">
+    <h2 class="sec-title" id="rec-t">Recursos<span>o que vem no grid</span></h2>
+    <ul class="features">
+      <li class="feat f1"><h3>Guias e <span>diagonais</span></h3><i class="rule"></i><p>Linhas onde os pontos se alinham e diagonais com o ângulo marcado em graus.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 18H52M4 38H52M18 4V52M38 4V52"/><path d="M8 52L48 4"/></svg></li>
+      <li class="feat f2"><h3>Círculos de <span>construção</span></h3><i class="rule"></i><p>Desenhados só nas curvas que são arcos de círculo de verdade.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="22" cy="28" r="18"/><circle cx="38" cy="28" r="12"/></svg></li>
+      <li class="feat f3"><h3>Nós e alças <span>Bézier</span></h3><i class="rule"></i><p>Os pontos de ancoragem e as alças do vetor, como aparecem no editor.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 46C14 14 42 14 50 46"/><path d="M6 46L18 12M50 46L38 12"/><circle cx="18" cy="12" r="4"/><circle cx="38" cy="12" r="4"/><rect x="2" y="42" width="8" height="8" fill="currentColor"/><rect x="46" y="42" width="8" height="8" fill="currentColor"/></svg></li>
+      <li class="feat f4"><h3>Controle por <span>camada</span></h3><i class="rule"></i><p>Quantidade, opacidade, espessura e tamanho ajustáveis em cada elemento.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 14H52M4 28H52M4 42H52"/><circle cx="38" cy="14" r="5" fill="currentColor"/><circle cx="16" cy="28" r="5" fill="currentColor"/><circle cx="30" cy="42" r="5" fill="currentColor"/></svg></li>
+      <li class="feat f5"><h3>Quadro e <span>posição</span></h3><i class="rule"></i><p>Formatos de 1:1 a 16:9, margem, escala e alinhamento em nove pontos.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="4" y="12" width="48" height="32"/><rect x="10" y="26" width="14" height="12" fill="currentColor"/></svg></li>
+      <li class="feat f6"><h3>Exportação <span>em camadas</span></h3><i class="rule"></i><p>SVG com grupos nomeados, pronto para o Figma, ou PNG em 2× e 4×.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M28 4V34M16 22L28 34L40 22"/><path d="M6 40V52H50V40"/></svg></li>
+    </ul>
+  </section>
+
+  <div class="closing">
+    <h2>Abra o seu SVG<span>e veja o grid.</span></h2>
+    <a class="pill lime" href="app/index.html">Abrir o GridGrid</a>
   </div>
 
-  <aside class="side-l" aria-label="Logo, detecção e elementos">
-    <section class="band b-yellow">
-      <div class="sec-h"><span class="num">1</span><h2>Logo<span>arquivo SVG</span></h2></div>
-      <div class="file">
-        <strong id="fname">Exemplo de demonstração</strong>
-        <small id="fmeta"></small>
-      </div>
-      <p class="warn" id="warn" hidden></p>
-      <div class="btns"><button class="btn wide" id="pick">Subir SVG</button></div>
-      <input type="file" id="fileIn" accept=".svg,image/svg+xml" hidden>
-      <p class="note">Arraste o arquivo para o palco ou cole o código SVG com Ctrl/Cmd+V. Textos precisam estar convertidos em contorno.</p>
-    </section>
-
-    <section class="band b-blue">
-      <div class="sec-h"><span class="num">2</span><h2>Detecção<span>pontos e guias</span></h2></div>
-      <div class="seg" role="group" aria-label="Nível de detalhe" id="levels">
-        <button data-l="simplificado">Simplificado</button>
-        <button data-l="padrao">Padrão</button>
-        <button data-l="complexo">Complexo</button>
-      </div>
-      <p class="note" id="levelNote"></p>
-      <div class="rng"><label for="r_tol">Agrupar</label><input type="range" id="r_tol" min="0" max="3" step="0.05"><output id="o_tol"></output></div>
-      <div class="row"><label for="s_min">Mínimo de pontos por guia</label>
-        <select id="s_min"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-      <label class="tg"><input type="checkbox" id="t_ext">Incluir extremos das curvas</label>
-      <label class="tg"><input type="checkbox" id="t_hext">Guias nos extremos das alças</label>
-    </section>
-
-    <section class="band b-pink">
-      <div class="sec-h"><span class="num">3</span><h2>Elementos<span>camadas do grid</span></h2><button class="linkbtn" id="expandAll">Abrir todos</button></div>
-      <p class="note">A quantidade mantém primeiro os itens mais relevantes: guias com mais pontos alinhados, nós em mais alinhamentos, diagonais e alças mais longas, círculos maiores.</p>
-      <div class="els" id="elements"></div>
-    </section>
-
-  </aside>
-
-  <aside class="side-r" aria-label="Estilo, quadro e exportação">
-    <section class="band b-khaki">
-      <div class="sec-h"><span class="num">4</span><h2>Estilo<span>cores do grid</span></h2></div>
-      <div class="chips" id="presets"></div>
-      <div class="swatches">
-        <label class="sw"><input type="color" id="c_bg">fundo</label>
-        <label class="sw"><input type="color" id="c_fill">forma</label>
-        <label class="sw"><input type="color" id="c_line">linhas</label>
-        <label class="sw"><input type="color" id="c_node">nós</label>
-        <label class="sw"><input type="color" id="c_label">rótulos</label>
-      </div>
-    </section>
-
-    <section class="band b-sage">
-      <div class="sec-h"><span class="num">5</span><h2>Quadro<span>formato e posição</span></h2></div>
-      <div class="row"><label for="s_ratio">Proporção</label>
-        <select id="s_ratio"><option value="fit">Ajustado ao logo</option><option value="1">1:1</option><option value="0.8">4:5</option><option value="0.6667">2:3</option><option value="1.5">3:2</option><option value="1.7778">16:9</option></select></div>
-      <div class="rng"><label for="r_pad">Margem</label><input type="range" id="r_pad" min="0" max="0.45" step="0.01"><output id="o_pad"></output></div>
-      <div class="rng"><label for="r_sc">Escala</label><input type="range" id="r_sc" min="0.3" max="3" step="0.05"><output id="o_sc"></output></div>
-      <div class="pos">
-        <div class="anchor" role="group" aria-label="Alinhar logo no quadro" id="anchors"></div>
-        <div class="pos-side">
-          <div class="rng"><label for="r_px" title="Posição horizontal">X</label><input type="range" id="r_px" min="-1" max="1" step="0.005"><output id="o_px"></output></div>
-          <div class="rng"><label for="r_py" title="Posição vertical">Y</label><input type="range" id="r_py" min="-1" max="1" step="0.005"><output id="o_py"></output></div>
-        </div>
-      </div>
-      <p class="note">A ferramenta Mover logo (M) arrasta no palco. Com ela ativa, as setas movem 0,5% e Shift + setas movem 5%. O logo encaixa no centro ao passar por ele.</p>
-    </section>
-
-    <section class="band b-black">
-      <div class="sec-h"><span class="num">6</span><h2>Exportar<span>SVG e PNG</span></h2></div>
-      <label class="tg"><input type="checkbox" id="t_transp">Fundo transparente</label>
-      <div class="btns">
-        <button class="btn" id="exSvg">SVG em camadas</button>
-        <button class="btn ghost" id="copySvg">Copiar SVG</button>
-        <button class="btn ghost" id="exPng2">PNG 2×</button>
-        <button class="btn ghost" id="exPng4">PNG 4×</button>
-      </div>
-      <p class="note">O SVG sai com grupos nomeados: fundo, forma, guias, diagonais, círculos, alças, nós e rótulos. Copiar e colar no Figma gera vetores editáveis.</p>
-    </section>
-  </aside>
+  <footer>
+    <span><strong>GridGrid</strong>, 2026</span>
+    <span>Funciona no navegador. Nenhum arquivo é enviado para servidor.</span>
+  </footer>
 </div>
-<div id="toastHost"></div>
-
 
 <script>
 (function(){
-"use strict";
-const NS="http://www.w3.org/2000/svg";
-const $=id=>document.getElementById(id);
-const LABEL_FONT="Helvetica Now Display, Helvetica Neue, Helvetica, Arial, sans-serif";
-
-/* ---------- sample logo (original) ---------- */
-const SAMPLE=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420">
-<path d="M0 400V100H80V140C110 110 150 95 200 95C270 95 320 140 320 220V400H240V230C240 185 215 165 180 165C130 165 80 195 80 250V400Z"/>
-<polygon points="350,400 410,100 490,100 430,400"/>
-<circle cx="570" cy="340" r="60"/>
-</svg>`;
-
-/* ---------- presets ---------- */
-const PRESETS={
-  papel:{name:"Papel",bg:"#E4E5E7",fill:"#C8C9CC",line:"#000000",node:"#000000",label:"#000000",dash:false,op:0.32,lw:1.25,nodeShape:"circle",ns:4.5,outline:true},
-  amarelo:{name:"Amarelo",bg:"#FFE94A",fill:"#EBD22B",line:"#000000",node:"#000000",label:"#000000",dash:false,op:0.45,lw:1.25,nodeShape:"ring",ns:5.5,outline:true},
-  lilas:{name:"Lilás",bg:"#B97AF6",fill:"#E7C3FC",line:"#ffffff",node:"#ffffff",label:"#ffffff",dash:false,op:0.6,lw:1.25,nodeShape:"square",ns:5,outline:true},
-  noturno:{name:"Noturno",bg:"#000000",fill:"#262626",line:"#ffffff",node:"#ffffff",label:"#57E3B5",dash:true,op:0.42,lw:1.25,nodeShape:"circle",ns:5,outline:true},
-  brasa:{name:"Brasa",bg:"#FF3300",fill:"#E62600",line:"#ffffff",node:"#ffffff",label:"#ffffff",dash:false,op:0.9,lw:1.5,nodeShape:"hollow",ns:7,outline:true},
-  grafite:{name:"Grafite",bg:"#17161B",fill:"#56565B",line:"#ffffff",node:"#ffffff",label:"#ffffff",dash:false,op:0.45,lw:1.5,nodeShape:"square",ns:5.5,outline:true}
-};
-/* per-element settings: q = quantidade %, op = opacidade, w = espessura, dash, size */
-function presetEls(p){return{
-  fill:{op:1},
-  outline:{op:1,w:p.lw},
-  guides:{q:100,op:p.op,w:p.lw,dash:p.dash},
-  diag:{q:100,op:p.op,w:p.lw,dash:p.dash},
-  angles:{op:1,size:2.2},
-  circles:{q:100,op:p.op,w:p.lw,dash:p.dash},
-  handles:{q:100,op:0.6,w:p.lw*0.8,size:p.ns*0.6},
-  nodes:{q:100,op:1,size:p.ns,shape:p.nodeShape}
-}}
-const DEFAULTS={preset:"papel",bg:PRESETS.papel.bg,fill:PRESETS.papel.fill,line:PRESETS.papel.line,node:PRESETS.papel.node,label:PRESETS.papel.label,
-  el:presetEls(PRESETS.papel),
-  show:{fill:true,outline:true,guides:true,diag:true,angles:true,circles:true,nodes:true,handles:true},
-  tol:0.4,minHits:1,ext:true,hext:false,ratio:"fit",pad:0.12,scale:1,offX:0,offY:0,anchor:[0,0],level:"padrao",transparent:false};
-const ELS=[
-  {k:"guides",name:"Guias H/V",q:1,op:1,w:1,dash:1},
-  {k:"nodes",name:"Nós",q:1,op:1,size:[2,16,0.5],shape:1},
-  {k:"diag",name:"Diagonais",q:1,op:1,w:1,dash:1},
-  {k:"angles",name:"Ângulos",op:1,size:[1,5,0.1,"%"]},
-  {k:"circles",name:"Círculos",q:1,op:1,w:1,dash:1},
-  {k:"handles",name:"Alças Bézier",q:1,op:1,w:1,size:[1,10,0.25]},
-  {k:"outline",name:"Contorno",op:1,w:1},
-  {k:"fill",name:"Preenchimento",op:1}
-];
-const LEVELS={
-  simplificado:{label:"Só os alinhamentos que se repetem. Sem alças, sem círculos, sem extremos de curva.",
-    tol:1,minHits:2,ext:false,hext:false,show:{handles:false,circles:false}},
-  padrao:{label:"Guias em todos os nós e extremos de curva, com alças e círculos.",
-    tol:0.4,minHits:1,ext:true,hext:false,show:{handles:true,circles:true}},
-  complexo:{label:"Tudo do padrão, mais guias nas pontas das alças Bézier e agrupamento mais fino.",
-    tol:0.15,minHits:1,ext:true,hext:true,show:{handles:true,circles:true}}
-};
-function applyLevel(l){const L=LEVELS[l];S.level=l;S.tol=L.tol;S.minHits=L.minHits;S.ext=L.ext;S.hext=L.hext;Object.assign(S.show,L.show)}
-
-let S=load()||structuredClone(DEFAULTS);
-function load(){try{const r=localStorage.getItem("malha:settings");if(!r)return null;const o=JSON.parse(r);const d=structuredClone(DEFAULTS);
-  const el={};for(const k in d.el)el[k]={...d.el[k],...((o.el||{})[k]||{})};
-  return {...d,...o,el,show:{...d.show,...(o.show||{})}}}catch(e){return null}}
-function save(){try{localStorage.setItem("malha:settings",JSON.stringify(S))}catch(e){}}
-
-/* ---------- geometry helpers ---------- */
-const I=[1,0,0,1,0,0];
-function mul(A,B){return[A[0]*B[0]+A[2]*B[1],A[1]*B[0]+A[3]*B[1],A[0]*B[2]+A[2]*B[3],A[1]*B[2]+A[3]*B[3],A[0]*B[4]+A[2]*B[5]+A[4],A[1]*B[4]+A[3]*B[5]+A[5]]}
-function ap(M,p){return[M[0]*p[0]+M[2]*p[1]+M[4],M[1]*p[0]+M[3]*p[1]+M[5]]}
-function parseTransform(str){
-  let M=I.slice();if(!str)return M;
-  const re=/(matrix|translate|scale|rotate|skewX|skewY)\s*\(([^)]*)\)/g;let m;
-  while((m=re.exec(str))){
-    const a=(m[2].match(/[-+]?(?:\d*\.\d+|\d+\.?\d*)(?:[eE][-+]?\d+)?/g)||[]).map(Number);let T=I.slice();
-    switch(m[1]){
-      case"matrix":if(a.length===6)T=a;break;
-      case"translate":T=[1,0,0,1,a[0]||0,a[1]||0];break;
-      case"scale":T=[a[0]??1,0,0,a[1]??a[0]??1,0,0];break;
-      case"rotate":{const r=(a[0]||0)*Math.PI/180,c=Math.cos(r),s=Math.sin(r);T=[c,s,-s,c,0,0];
-        if(a.length>=3)T=mul(mul([1,0,0,1,a[1],a[2]],T),[1,0,0,1,-a[1],-a[2]]);break}
-      case"skewX":T=[1,0,Math.tan((a[0]||0)*Math.PI/180),1,0,0];break;
-      case"skewY":T=[1,Math.tan((a[0]||0)*Math.PI/180),0,1,0,0];break;
-    }
-    M=mul(M,T);
-  }
-  return M;
-}
-function arcToCubics(x1,y1,rx,ry,phiDeg,fa,fs,x2,y2){
-  if(rx===0||ry===0)return null;
-  const phi=phiDeg*Math.PI/180,cp=Math.cos(phi),sp=Math.sin(phi);
-  const dx=(x1-x2)/2,dy=(y1-y2)/2,x1p=cp*dx+sp*dy,y1p=-sp*dx+cp*dy;
-  rx=Math.abs(rx);ry=Math.abs(ry);
-  const lam=x1p*x1p/(rx*rx)+y1p*y1p/(ry*ry);if(lam>1){const k=Math.sqrt(lam);rx*=k;ry*=k}
-  const num=rx*rx*ry*ry-rx*rx*y1p*y1p-ry*ry*x1p*x1p,den=rx*rx*y1p*y1p+ry*ry*x1p*x1p;
-  const co=(fa===fs?-1:1)*Math.sqrt(Math.max(0,num/den));
-  const cxp=co*rx*y1p/ry,cyp=-co*ry*x1p/rx;
-  const cx=cp*cxp-sp*cyp+(x1+x2)/2,cy=sp*cxp+cp*cyp+(y1+y2)/2;
-  const ang=(ux,uy,vx,vy)=>Math.atan2(ux*vy-uy*vx,ux*vx+uy*vy);
-  const t1=ang(1,0,(x1p-cxp)/rx,(y1p-cyp)/ry);
-  let dt=ang((x1p-cxp)/rx,(y1p-cyp)/ry,(-x1p-cxp)/rx,(-y1p-cyp)/ry);
-  if(!fs&&dt>0)dt-=2*Math.PI;if(fs&&dt<0)dt+=2*Math.PI;
-  const n=Math.max(1,Math.ceil(Math.abs(dt)/(Math.PI/2)-1e-9)),d=dt/n,t=4/3*Math.tan(d/4);
-  const map=(ux,uy)=>[cx+rx*cp*ux-ry*sp*uy,cy+rx*sp*ux+ry*cp*uy];const out=[];
-  for(let k=0;k<n;k++){const a1=t1+k*d,a2=a1+d,c1=Math.cos(a1),s1=Math.sin(a1),c2=Math.cos(a2),s2=Math.sin(a2);
-    out.push([map(c1-t*s1,s1+t*c1),map(c2+t*s2,s2-t*c2),map(c2,s2)])}
-  return out;
-}
-function parsePath(d){
-  const cmds=[];let i=0;const s=d||"";const re=/[-+]?(?:\d*\.\d+|\d+\.?\d*)(?:[eE][-+]?\d+)?/y;
-  const skip=()=>{while(i<s.length&&/[\s,]/.test(s[i]))i++};
-  const num=()=>{skip();re.lastIndex=i;const m=re.exec(s);if(!m)throw new Error("num");i=re.lastIndex;return +m[0]};
-  const flag=()=>{skip();const c=s[i];if(c==="0"||c==="1"){i++;return +c}throw new Error("flag")};
-  const more=()=>{skip();return i<s.length&&/[-+.\d]/.test(s[i])};
-  let cx=0,cy=0,sx=0,sy=0,cmd=null,lc=null,lq=null;
-  try{
-    while(true){
-      skip();if(i>=s.length)break;
-      if(/[a-zA-Z]/.test(s[i])){cmd=s[i++]}else if(!cmd)break;
-      const rel=cmd===cmd.toLowerCase(),C=cmd.toUpperCase();
-      const P=(x,y)=>rel?[cx+x,cy+y]:[x,y];
-      if(C==="Z"){cmds.push({t:"Z"});cx=sx;cy=sy;lc=lq=null;cmd=null;continue}
-      do{
-        let nlc=null,nlq=null;
-        if(C==="M"){const p=P(num(),num());cmds.push({t:"M",p});cx=sx=p[0];cy=sy=p[1];cmd=rel?"l":"L";
-          if(!more()){lc=lq=null;break}else{continue}}
-        else if(C==="L"){const p=P(num(),num());cmds.push({t:"L",p});[cx,cy]=p}
-        else if(C==="H"){const x=num();const p=[rel?cx+x:x,cy];cmds.push({t:"L",p});cx=p[0]}
-        else if(C==="V"){const y=num();const p=[cx,rel?cy+y:y];cmds.push({t:"L",p});cy=p[1]}
-        else if(C==="C"){const c1=P(num(),num()),c2=P(num(),num()),p=P(num(),num());cmds.push({t:"C",c1,c2,p});nlc=c2;[cx,cy]=p}
-        else if(C==="S"){const c1=lc?[2*cx-lc[0],2*cy-lc[1]]:[cx,cy];const c2=P(num(),num()),p=P(num(),num());cmds.push({t:"C",c1,c2,p});nlc=c2;[cx,cy]=p}
-        else if(C==="Q"||C==="T"){
-          const q=C==="Q"?P(num(),num()):(lq?[2*cx-lq[0],2*cy-lq[1]]:[cx,cy]);const p=P(num(),num());
-          cmds.push({t:"C",c1:[cx+2/3*(q[0]-cx),cy+2/3*(q[1]-cy)],c2:[p[0]+2/3*(q[0]-p[0]),p[1]+2/3*(q[1]-p[1])],p});nlq=q;[cx,cy]=p}
-        else if(C==="A"){const rx=num(),ry=num(),ph=num(),fa=flag(),fs=flag(),p=P(num(),num());
-          const cs=arcToCubics(cx,cy,rx,ry,ph,fa,fs,p[0],p[1]);
-          if(!cs)cmds.push({t:"L",p});else cs.forEach(c=>cmds.push({t:"C",c1:c[0],c2:c[1],p:c[2]}));[cx,cy]=p}
-        else{throw new Error("cmd")}
-        lc=nlc;lq=nlq;
-      }while(more());
-    }
-  }catch(e){}
-  return cmds;
-}
-const num=(el,a,d=0)=>{const v=parseFloat(el.getAttribute(a));return isFinite(v)?v:d};
-function shapeCmds(el){
-  const tag=el.localName;const K=0.5522847498;
-  if(tag==="path")return parsePath(el.getAttribute("d"));
-  if(tag==="rect"){const x=num(el,"x"),y=num(el,"y"),w=num(el,"width"),h=num(el,"height");if(w<=0||h<=0)return[];
-    let rx=el.hasAttribute("rx")?num(el,"rx"):null,ry=el.hasAttribute("ry")?num(el,"ry"):null;
-    if(rx==null)rx=ry??0;if(ry==null)ry=rx;rx=Math.min(rx,w/2);ry=Math.min(ry,h/2);
-    if(!rx||!ry)return[{t:"M",p:[x,y]},{t:"L",p:[x+w,y]},{t:"L",p:[x+w,y+h]},{t:"L",p:[x,y+h]},{t:"Z"}];
-    const kx=rx*K,ky=ry*K;
-    return[{t:"M",p:[x+rx,y]},{t:"L",p:[x+w-rx,y]},{t:"C",c1:[x+w-rx+kx,y],c2:[x+w,y+ry-ky],p:[x+w,y+ry]},
-      {t:"L",p:[x+w,y+h-ry]},{t:"C",c1:[x+w,y+h-ry+ky],c2:[x+w-rx+kx,y+h],p:[x+w-rx,y+h]},
-      {t:"L",p:[x+rx,y+h]},{t:"C",c1:[x+rx-kx,y+h],c2:[x,y+h-ry+ky],p:[x,y+h-ry]},
-      {t:"L",p:[x,y+ry]},{t:"C",c1:[x,y+ry-ky],c2:[x+rx-kx,y],p:[x+rx,y]},{t:"Z"}]}
-  if(tag==="circle"||tag==="ellipse"){const cx=num(el,"cx"),cy=num(el,"cy");
-    const rx=tag==="circle"?num(el,"r"):num(el,"rx"),ry=tag==="circle"?rx:num(el,"ry");if(rx<=0||ry<=0)return[];
-    const kx=rx*K,ky=ry*K;
-    return[{t:"M",p:[cx+rx,cy]},{t:"C",c1:[cx+rx,cy+ky],c2:[cx+kx,cy+ry],p:[cx,cy+ry]},{t:"C",c1:[cx-kx,cy+ry],c2:[cx-rx,cy+ky],p:[cx-rx,cy]},
-      {t:"C",c1:[cx-rx,cy-ky],c2:[cx-kx,cy-ry],p:[cx,cy-ry]},{t:"C",c1:[cx+kx,cy-ry],c2:[cx+rx,cy-ky],p:[cx+rx,cy]},{t:"Z"}]}
-  if(tag==="line")return[{t:"M",p:[num(el,"x1"),num(el,"y1")]},{t:"L",p:[num(el,"x2"),num(el,"y2")]}];
-  if(tag==="polyline"||tag==="polygon"){const n=(el.getAttribute("points")||"").match(/[-+]?(?:\d*\.\d+|\d+\.?\d*)(?:[eE][-+]?\d+)?/g)||[];
-    const out=[];for(let k=0;k+1<n.length;k+=2)out.push({t:out.length?"L":"M",p:[+n[k],+n[k+1]]});if(tag==="polygon"&&out.length)out.push({t:"Z"});return out}
-  return[];
-}
-function styleOf(el,prop){
-  for(let n=el;n&&n.nodeType===1;n=n.parentNode){
-    const st=n.getAttribute("style")||"";const m=new RegExp("(?:^|;)\\s*"+prop+"\\s*:\\s*([^;]+)").exec(st);if(m)return m[1].trim();
-    if(n.hasAttribute(prop))return n.getAttribute(prop).trim();
-  }return null;
-}
-
-/* ---------- parse SVG into geometry ---------- */
-const SKIP=new Set(["defs","clipPath","mask","symbol","pattern","marker","linearGradient","radialGradient","filter","style","script","metadata","title","desc","foreignObject"]);
-function parseSVG(text){
-  const doc=new DOMParser().parseFromString(text,"image/svg+xml");
-  const root=doc.documentElement;
-  if(!root||root.localName!=="svg"||doc.getElementsByTagName("parsererror").length)throw new Error("Não foi possível ler este arquivo como SVG.");
-  const shapes=[];let hasText=false,hasUse=false;
-  const walk=(node,M)=>{
-    for(const el of node.children){
-      const tag=el.localName;if(SKIP.has(tag))continue;
-      if(tag==="text"){hasText=true;continue}
-      if(tag==="use"){hasUse=true;continue}
-      if(tag==="image")continue;
-      if(styleOf(el,"display")==="none")continue;
-      const T=mul(M,parseTransform(el.getAttribute("transform")));
-      if(["path","rect","circle","ellipse","line","polyline","polygon"].includes(tag)){
-        const raw=shapeCmds(el);if(!raw.length)continue;
-        const cmds=raw.map(c=>c.t==="Z"?c:c.t==="C"?{t:"C",c1:ap(T,c.c1),c2:ap(T,c.c2),p:ap(T,c.p)}:{t:c.t,p:ap(T,c.p)});
-        const fill=styleOf(el,"fill");
-        const filled=!["line","polyline"].includes(tag)&&fill!=="none";
-        shapes.push({cmds,filled,rule:styleOf(el,"fill-rule")==="evenodd"?"evenodd":"nonzero"});
-      }else walk(el,T);
-    }
-  };
-  walk(root,I);
-  if(!shapes.length)throw new Error(hasText?"O SVG só tem texto. Converta o texto em contorno e suba de novo.":"Não encontrei formas vetoriais neste SVG.");
-  return analyze(shapes,{hasText,hasUse});
-}
-function cubicAt(a,b,c,d,t){const u=1-t;return u*u*u*a+3*u*u*t*b+3*u*t*t*c+t*t*t*d}
-function cubicPt(s,t){return[cubicAt(s.p0[0],s.c1[0],s.c2[0],s.p3[0],t),cubicAt(s.p0[1],s.c1[1],s.c2[1],s.p3[1],t)]}
-function extremaT(a,b,c,d){
-  const A=-a+3*b-3*c+d,B=2*(a-2*b+c),C=b-a,out=[];
-  if(Math.abs(A)<1e-12){if(Math.abs(B)>1e-12)out.push(-C/B)}
-  else{const D=B*B-4*A*C;if(D>=0){const r=Math.sqrt(D);out.push((-B+r)/(2*A),(-B-r)/(2*A))}}
-  return out.filter(t=>t>0.001&&t<0.999);
-}
-function circle3(a,b,c){
-  const d=2*(a[0]*(b[1]-c[1])+b[0]*(c[1]-a[1])+c[0]*(a[1]-b[1]));if(Math.abs(d)<1e-9)return null;
-  const A=a[0]*a[0]+a[1]*a[1],B=b[0]*b[0]+b[1]*b[1],C=c[0]*c[0]+c[1]*c[1];
-  const x=(A*(b[1]-c[1])+B*(c[1]-a[1])+C*(a[1]-b[1]))/d,y=(A*(c[0]-b[0])+B*(a[0]-c[0])+C*(b[0]-a[0]))/d;
-  return{c:[x,y],r:Math.hypot(a[0]-x,a[1]-y)};
-}
-function analyze(shapes,flags){
-  const anchors=[],handles=[],extrema=[],lines=[],curves=[];
-  let minx=Infinity,miny=Infinity,maxx=-Infinity,maxy=-Infinity;
-  const grow=p=>{if(p[0]<minx)minx=p[0];if(p[0]>maxx)maxx=p[0];if(p[1]<miny)miny=p[1];if(p[1]>maxy)maxy=p[1]};
-  for(const sh of shapes){
-    let cur=null,start=null;
-    for(const c of sh.cmds){
-      if(c.t==="M"){cur=start=c.p;anchors.push(c.p);grow(c.p)}
-      else if(c.t==="L"){if(cur)lines.push([cur,c.p]);cur=c.p;anchors.push(c.p);grow(c.p)}
-      else if(c.t==="C"){
-        const s={p0:cur||c.p,c1:c.c1,c2:c.c2,p3:c.p};curves.push(s);
-        handles.push({a:s.p0,h:c.c1},{a:c.p,h:c.c2});
-        for(const t of [...extremaT(s.p0[0],s.c1[0],s.c2[0],s.p3[0]),...extremaT(s.p0[1],s.c1[1],s.c2[1],s.p3[1])]){const p=cubicPt(s,t);extrema.push(p);grow(p)}
-        cur=c.p;anchors.push(c.p);grow(c.p)}
-      else if(c.t==="Z"){if(cur&&start&&(cur[0]!==start[0]||cur[1]!==start[1]))lines.push([cur,start]);cur=start}
-    }
-  }
-  const size=Math.max(maxx-minx,maxy-miny)||1;
-  const uniq=(arr,eps)=>{const seen=new Map(),out=[];for(const p of arr){const k=Math.round(p[0]/eps)+":"+Math.round(p[1]/eps);if(!seen.has(k)){seen.set(k,1);out.push(p)}}return out};
-  const eps=size*1e-4;
-  const hs=handles.filter(h=>Math.hypot(h.h[0]-h.a[0],h.h[1]-h.a[1])>size*0.004);
-  return{shapes,anchors:uniq(anchors,eps),extrema:uniq(extrema,eps),handles:hs,lines,curves,
-    bbox:{x:minx,y:miny,w:maxx-minx||1,h:maxy-miny||1},size,flags};
-}
-
-/* ---------- auto guides ---------- */
-function cluster(vals,tol,minHits){
-  vals.sort((a,b)=>a-b);const out=[];let grp=[];
-  const flush=()=>{if(grp.length>=minHits)out.push({v:grp.reduce((a,b)=>a+b,0)/grp.length,n:grp.length});grp=[]};
-  for(const v of vals){if(grp.length&&v-grp[grp.length-1]>tol)flush();grp.push(v)}
-  if(grp.length)flush();return out;
-}
-const fmt=(v,d=1)=>{const r=Math.round(v*10**d)/10**d;return(Object.is(r,-0)?0:r).toLocaleString("pt-BR",{maximumFractionDigits:d})};
-function buildAuto(g){
-  const tol=Math.max(g.size*S.tol/100,g.size*1e-4);
-  let pts=g.anchors.slice();if(S.ext)pts=pts.concat(g.extrema);
-  if(S.hext)pts=pts.concat(g.handles.map(h=>h.h));
-  const out=[];
-  for(const c of cluster(pts.map(p=>p[1]),tol,S.minHits))out.push({key:"h:"+c.v.toFixed(2),kind:"h",v:c.v,n:c.n});
-  for(const c of cluster(pts.map(p=>p[0]),tol,S.minHits))out.push({key:"v:"+c.v.toFixed(2),kind:"v",v:c.v,n:c.n});
-  // diagonals
-  const dl=[];
-  for(const [a,b] of g.lines){
-    const dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy);if(L<g.size*0.01)continue;
-    let th=Math.atan2(dy,dx);if(th<0)th+=Math.PI;if(th>=Math.PI)th-=Math.PI;
-    const deg=th*180/Math.PI;const dev=Math.min(deg%90,90-deg%90);if(dev<0.5)continue;
-    const off=-Math.sin(th)*a[0]+Math.cos(th)*a[1];
-    const hit=dl.find(o=>Math.abs(o.th-th)<0.01&&Math.abs(o.off-off)<tol);
-    if(hit){hit.n++;hit.T+=L;if(L>hit.L){hit.L=L;hit.mid=[(a[0]+b[0])/2,(a[1]+b[1])/2]}}
-    else dl.push({th,off,p:a,L,T:L,n:1,mid:[(a[0]+b[0])/2,(a[1]+b[1])/2]});
-  }
-  for(const o of dl){const dir=[Math.cos(o.th),Math.sin(o.th)];
-    out.push({key:"d:"+o.th.toFixed(3)+":"+o.off.toFixed(1),kind:"d",p:o.p,dir,mid:o.mid,deg:angleLabel(o.th),score:o.T})}
-  // circles
-  const cs=[];
-  for(const s of g.curves){
-    const chord=Math.hypot(s.p3[0]-s.p0[0],s.p3[1]-s.p0[1]);if(chord<g.size*0.01)continue;
-    const m=cubicPt(s,0.5);
-    const dev=Math.abs((s.p3[0]-s.p0[0])*(s.p0[1]-m[1])-(s.p0[0]-m[0])*(s.p3[1]-s.p0[1]))/chord;
-    if(dev<chord*0.04)continue;
-    const c=circle3(s.p0,m,s.p3);if(!c||c.r<g.size*0.02||c.r>g.size*1.5)continue;
-    const q1=cubicPt(s,0.25),q3=cubicPt(s,0.75);
-    if(Math.abs(Math.hypot(q1[0]-c.c[0],q1[1]-c.c[1])-c.r)>c.r*0.03||Math.abs(Math.hypot(q3[0]-c.c[0],q3[1]-c.c[1])-c.r)>c.r*0.03)continue;
-    const same=cs.find(o=>Math.hypot(o.c[0]-c.c[0],o.c[1]-c.c[1])<tol&&Math.abs(o.r-c.r)<tol);
-    if(same)same.n++;else{c.n=1;cs.push(c)}
-  }
-  for(const c of cs)out.push({key:"c:"+c.c[0].toFixed(1)+":"+c.c[1].toFixed(1)+":"+c.r.toFixed(1),kind:"c",c:c.c,r:c.r,score:c.n*g.size*10+c.r});
-  // guide scores: points aligned, bbox edges first
-  const b=g.bbox,e=Math.max(tol,g.size*1e-3);
-  for(const o of out){
-    if(o.kind==="h")o.score=o.n*1000+((Math.abs(o.v-b.y)<e||Math.abs(o.v-b.y-b.h)<e)?1e7:0);
-    if(o.kind==="v")o.score=o.n*1000+((Math.abs(o.v-b.x)<e||Math.abs(o.v-b.x-b.w)<e)?1e7:0);
-  }
-  // node ranking: how many other points share its x or y
-  const xs=pts.map(p=>p[0]).sort((a,b)=>a-b),ys=pts.map(p=>p[1]).sort((a,b)=>a-b);
-  const lb=(arr,v)=>{let lo=0,hi=arr.length;while(lo<hi){const m=(lo+hi)>>1;if(arr[m]<v)lo=m+1;else hi=m}return lo};
-  const within=(arr,v)=>lb(arr,v+tol+1e-12)-lb(arr,v-tol);
-  NODE_ORDER=g.anchors.map((p,i)=>({i,s:within(xs,p[0])+within(ys,p[1])})).sort((a,b)=>b.s-a.s||a.i-b.i).map(o=>o.i);
-  HANDLE_ORDER=g.handles.map((h,i)=>({i,s:Math.hypot(h.h[0]-h.a[0],h.h[1]-h.a[1])})).sort((a,b)=>b.s-a.s).map(o=>o.i);
-  return out;
-}
-let NODE_ORDER=[],HANDLE_ORDER=[];
-const qty=(total,q)=>Math.round(total*Math.max(0,Math.min(100,q))/100);
-function visibleSets(){
-  const gs=allGuides().filter(g=>!HIDDEN.has(g.key));
-  const take=(kind,q)=>{const all=gs.filter(g=>g.kind===kind);const man=all.filter(g=>g.key.startsWith("m"));
-    const au=all.filter(g=>!g.key.startsWith("m")).sort((a,b)=>(b.score||0)-(a.score||0));
-    return{list:au.slice(0,qty(au.length,q)).concat(man),total:all.length}};
-  const E=S.el;
-  const h=take("h",E.guides.q),v=take("v",E.guides.q),d=take("d",E.diag.q),c=take("c",E.circles.q);
-  const nodes=NODE_ORDER.slice(0,qty(NODE_ORDER.length,E.nodes.q)).map(i=>G.anchors[i]);
-  const handles=HANDLE_ORDER.slice(0,qty(HANDLE_ORDER.length,E.handles.q)).map(i=>G.handles[i]);
-  return{h:h.list,v:v.list,d:d.list,c:c.list,nodes,handles,
-    counts:{guides:[h.list.length+v.list.length,h.total+v.total],diag:[d.list.length,d.total],circles:[c.list.length,c.total],
-      nodes:[nodes.length,G.anchors.length],handles:[handles.length,G.handles.length],angles:[d.list.length,d.total]}};
-}
-function angleLabel(th){const deg=th*180/Math.PI;const fromH=Math.min(deg,180-deg);const v=fromH>45?90-fromH:fromH;return fmt(v,1)+"°"}
-
-/* ---------- state ---------- */
-let G=null,AUTO=[],MANUAL=[],HIDDEN=new Set(),SEL=null,MODE="select",fileName="Exemplo de demonstração",mid=0;
-let F=null; // frame mapping
-function setLogo(text,name){
-  try{G=parseSVG(text)}catch(e){toast(e.message);return false}
-  fileName=name;MANUAL=[];HIDDEN=new Set();SEL=null;
-  try{if(text.length<400000)localStorage.setItem("malha:logo",JSON.stringify({text,name}))}catch(e){}
-  $("fname").textContent=name;
-  const w=[];if(G.flags.hasText)w.push("Há texto não convertido em contorno; ele ficou de fora.");
-  if(G.flags.hasUse)w.push("Há elementos <use> (símbolos reutilizados); eles ficaram de fora. Expanda-os antes de exportar o SVG.");
-  $("warn").hidden=!w.length;$("warn").textContent=w.join(" ");
-  regen();return true;
-}
-function regen(){AUTO=buildAuto(G);render()}
-function allGuides(){return AUTO.concat(MANUAL)}
-
-/* ---------- frame ---------- */
-function frame(){
-  const b=G.bbox;let W,H,s;
-  if(S.ratio==="fit"){const m=S.pad*Math.max(b.w,b.h);s=1600/(Math.max(b.w,b.h)+2*m);W=(b.w+2*m)*s;H=(b.h+2*m)*s;
-    const k=1600/Math.max(W,H);W*=k;H*=k;s*=k}
-  else{const r=+S.ratio;W=r>=1?1600:1600*r;H=W/r;s=Math.min(W*(1-2*S.pad)/b.w,H*(1-2*S.pad)/b.h)}
-  s*=S.scale;W=Math.round(W);H=Math.round(H);
-  return{W,H,s,ox:W/2+S.offX*W-(b.x+b.w/2)*s,oy:H/2+S.offY*H-(b.y+b.h/2)*s};
-}
-/* offset that aligns the logo to a side of the frame, respecting the margin. a = -1 | 0 | 1 */
-function alignOffset(axis,a){
-  if(!a)return 0;const f=frame(),b=G.bbox;
-  const len=axis?f.H:f.W,size=(axis?b.h:b.w)*f.s,m=S.pad*Math.min(f.W,f.H);
-  return a*((len-2*m-size)/2)/len;
-}
-const clampOff=v=>Math.max(-1,Math.min(1,Math.round(v*1000)/1000));
-const X=x=>F.ox+x*F.s,Y=y=>F.oy+y*F.s,P=p=>[X(p[0]),Y(p[1])];
-const n2=v=>Math.round(v*100)/100;
-function clipLine(p,d,W,H){
-  let t0=-Infinity,t1=Infinity;
-  const tests=[[d[0],0-p[0]],[-d[0],p[0]-W],[d[1],0-p[1]],[-d[1],p[1]-H]];
-  for(const[den,num]of tests){if(Math.abs(den)<1e-12){if(num>0)return null;continue}
-    const t=num/den;if(den>0){if(t>t0)t0=t}else{if(t<t1)t1=t}}
-  if(t0>t1)return null;return[[p[0]+d[0]*t0,p[1]+d[1]*t0],[p[0]+d[0]*t1,p[1]+d[1]*t1]];
-}
-function pathD(cmds){
-  let d="";for(const c of cmds){
-    if(c.t==="Z")d+="Z";else if(c.t==="C"){const a=P(c.c1),b=P(c.c2),p=P(c.p);d+=`C${n2(a[0])} ${n2(a[1])} ${n2(b[0])} ${n2(b[1])} ${n2(p[0])} ${n2(p[1])}`}
-    else{const p=P(c.p);d+=`${c.t}${n2(p[0])} ${n2(p[1])}`}}
-  return d;
-}
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-
-/* ---------- render ---------- */
-function buildSVG(interactive){
-  F=frame();const{W,H}=F;const E=S.el;VIS=visibleSets();
-  const sel=interactive&&SEL?SEL.key:null;const accent=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#2F4BFF";
-  const T=S.transparent;HOLLOW=T?"none":S.bg;
-  const L=[];
-  L.push(`<svg xmlns="${NS}"${interactive?' class="art"':""} viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`);
-  if(!T)L.push(`<g id="fundo"><rect width="${W}" height="${H}" fill="${S.bg}"/></g>`);
-  else if(interactive){const c=Math.round(Math.max(W,H)/64);
-    L.push(`<defs><pattern id="xadrez" width="${c*2}" height="${c*2}" patternUnits="userSpaceOnUse"><rect width="${c*2}" height="${c*2}" fill="#ffffff"/><rect width="${c}" height="${c}" fill="#e3e3e6"/><rect x="${c}" y="${c}" width="${c}" height="${c}" fill="#e3e3e6"/></pattern></defs><rect width="${W}" height="${H}" fill="url(#xadrez)"/>`)}
-  const shapes=G.shapes.map(sh=>({d:pathD(sh.cmds),sh}));
-  if(S.show.fill)L.push(`<g id="forma" fill-opacity="${E.fill.op}">`+shapes.filter(o=>o.sh.filled).map(o=>`<path d="${o.d}" fill="${S.fill}" fill-rule="${o.sh.rule}"/>`).join("")+`</g>`);
-  const lineAttrs=e=>`stroke="${S.line}" stroke-opacity="${e.op}" stroke-width="${e.w}"`+(e.dash?` stroke-dasharray="${n2(e.w*4)} ${n2(e.w*3)}"`:"");
-  const one=(k,e)=>k===sel?` stroke="${accent}" stroke-opacity="1" stroke-width="${n2(Math.max(e.w*1.8,2))}" stroke-dasharray="none"`:"";
-  if(S.show.circles&&VIS.c.length){L.push(`<g id="circulos" fill="none" ${lineAttrs(E.circles)}>`);
-    for(const g of VIS.c){const c=P(g.c);L.push(`<circle cx="${n2(c[0])}" cy="${n2(c[1])}" r="${n2(g.r*F.s)}"${one(g.key,E.circles)}/>`)}
-    L.push(`</g>`)}
-  if(S.show.guides&&(VIS.h.length||VIS.v.length)){L.push(`<g id="guias" ${lineAttrs(E.guides)}>`);
-    for(const g of VIS.h){const y=n2(Y(g.v));L.push(`<line x1="0" y1="${y}" x2="${W}" y2="${y}"${one(g.key,E.guides)}/>`)}
-    for(const g of VIS.v){const x=n2(X(g.v));L.push(`<line x1="${x}" y1="0" x2="${x}" y2="${H}"${one(g.key,E.guides)}/>`)}
-    L.push(`</g>`)}
-  const diags=VIS.d;
-  if(S.show.diag&&diags.length){L.push(`<g id="diagonais" ${lineAttrs(E.diag)}>`);
-    for(const g of diags){const seg=clipLine(P(g.p),g.dir,W,H);if(!seg)continue;
-      L.push(`<line x1="${n2(seg[0][0])}" y1="${n2(seg[0][1])}" x2="${n2(seg[1][0])}" y2="${n2(seg[1][1])}"${one(g.key,E.diag)}/>`)}
-    L.push(`</g>`)}
-  if(S.show.outline)L.push(`<g id="contorno" fill="none" stroke="${S.line}" stroke-opacity="${E.outline.op}" stroke-width="${E.outline.w}" stroke-linejoin="round">`+shapes.map(o=>`<path d="${o.d}"/>`).join("")+`</g>`);
-  if(S.show.handles&&VIS.handles.length){const eh=E.handles;L.push(`<g id="alcas" opacity="${eh.op}">`);
-    for(const h of VIS.handles){const a=P(h.a),b=P(h.h);
-      L.push(`<line x1="${n2(a[0])}" y1="${n2(a[1])}" x2="${n2(b[0])}" y2="${n2(b[1])}" stroke="${S.node}" stroke-width="${eh.w}"/>`);
-      L.push(`<circle cx="${n2(b[0])}" cy="${n2(b[1])}" r="${n2(eh.size)}" fill="${HOLLOW}" stroke="${S.node}" stroke-width="${n2(eh.w*1.1)}"/>`)}
-    L.push(`</g>`)}
-  if(S.show.nodes&&VIS.nodes.length){L.push(`<g id="nos" opacity="${E.nodes.op}">`);
-    for(const p0 of VIS.nodes)L.push(nodeEl(P(p0)));
-    L.push(`</g>`)}
-  if(S.show.angles&&S.show.diag&&diags.length){
-    const fs=Math.round(Math.max(W,H)*E.angles.size/100);
-    L.push(`<g id="rotulos" fill="${S.label}" fill-opacity="${E.angles.op}" font-family="${LABEL_FONT}" font-size="${fs}" font-weight="500">`);
-    for(const g of diags){const m=P(g.mid);const nx=-g.dir[1],ny=g.dir[0];const off=fs*1.1;
-      let tx=m[0]+nx*off,ty=m[1]+ny*off;if(tx<fs||tx>W-fs*2.5){tx=m[0]-nx*off;ty=m[1]-ny*off}
-      L.push(`<text x="${n2(tx)}" y="${n2(ty)}" text-anchor="middle" dominant-baseline="middle">${esc(g.deg)}</text>`)}
-    L.push(`</g>`)}
-  if(interactive){
-    const up=upp(),hw=n2(Math.max(10*up,4));
-    L.push(`<g id="hits" fill="none" stroke="transparent" stroke-width="${hw}" style="pointer-events:stroke">`);
-    for(const g of [...VIS.h,...VIS.v,...VIS.d,...VIS.c]){
-      if(g.kind==="h"&&S.show.guides)L.push(`<line data-k="${esc(g.key)}" x1="0" y1="${n2(Y(g.v))}" x2="${W}" y2="${n2(Y(g.v))}" style="cursor:ns-resize"/>`);
-      else if(g.kind==="v"&&S.show.guides)L.push(`<line data-k="${esc(g.key)}" x1="${n2(X(g.v))}" y1="0" x2="${n2(X(g.v))}" y2="${H}" style="cursor:ew-resize"/>`);
-      else if(g.kind==="d"&&S.show.diag){const seg=clipLine(P(g.p),g.dir,W,H);if(seg)L.push(`<line data-k="${esc(g.key)}" x1="${n2(seg[0][0])}" y1="${n2(seg[0][1])}" x2="${n2(seg[1][0])}" y2="${n2(seg[1][1])}" style="cursor:pointer"/>`)}
-      else if(g.kind==="c"&&S.show.circles){const c=P(g.c);L.push(`<circle data-k="${esc(g.key)}" cx="${n2(c[0])}" cy="${n2(c[1])}" r="${n2(g.r*F.s)}" style="cursor:pointer"/>`)}
-    }
-    L.push(`</g><g id="ghost" style="pointer-events:none"></g>`);
-  }
-  L.push(`</svg>`);
-  return L.join("");
-}
-function nodeEl(p){
-  const x=n2(p[0]),y=n2(p[1]),ns=S.el.nodes.size,shape=S.el.nodes.shape;
-  if(shape==="circle")return`<circle cx="${x}" cy="${y}" r="${n2(ns)}" fill="${S.node}"/>`;
-  if(shape==="ring")return`<circle cx="${x}" cy="${y}" r="${n2(ns)}" fill="${HOLLOW}" stroke="${S.node}" stroke-width="${n2(Math.max(1,ns*0.25))}"/>`;
-  const s=ns*1.7;
-  if(shape==="square")return`<rect x="${n2(p[0]-s/2)}" y="${n2(p[1]-s/2)}" width="${n2(s)}" height="${n2(s)}" fill="${S.node}"/>`;
-  return`<rect x="${n2(p[0]-s/2)}" y="${n2(p[1]-s/2)}" width="${n2(s)}" height="${n2(s)}" fill="${HOLLOW}" stroke="${S.node}" stroke-width="${n2(Math.max(1,ns*0.22))}"/>`;
-}
-let svgEl=null,lastUpp=1,HOLLOW="none",VIS=null;
-function upp(){const host=$("canvasHost");const el=host.querySelector("svg.art");if(el&&el.clientWidth)lastUpp=F.W/el.clientWidth;return lastUpp}
-function render(){
-  if(G&&S.anchor){S.offX=clampOff(alignOffset(0,S.anchor[0]));S.offY=clampOff(alignOffset(1,S.anchor[1]))}
-  $("canvasHost").innerHTML=buildSVG(true);svgEl=$("canvasHost").querySelector("svg.art");
-  const st=$("stage"),cs=getComputedStyle(st);
-  const avW=st.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
-  const avH=matchMedia("(max-width:1180px)").matches?avW*1.25:st.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-40;
-  let dispW=Math.min(avW,640);
-  if(avW>0&&avH>0){const k=Math.min(avW/F.W,avH/F.H);dispW=Math.floor(F.W*k);svgEl.style.width=dispW+"px";svgEl.style.height=Math.floor(F.H*k)+"px"}
-  $("canvasHost").insertAdjacentHTML("beforeend",rulerSVG(dispW));
-  const C=VIS.counts,on=k=>S.show[k]?C[k][0]:0;
-  $("hstats").innerHTML=`<span class="st">Nós<sup>${on("nodes")}</sup></span><span class="st">Guias<sup>${on("guides")}</sup></span><span class="st">Diagonais<sup>${on("diag")}</sup></span><span class="st">Círculos<sup>${on("circles")}</sup></span><span class="st dim">${F.W} × ${F.H}<sup>px</sup></span>`;
-  for(const el of ELS){const o=document.querySelector(`[data-cnt="${el.k}"]`);if(!o)continue;
-    const c=C[el.k];o.textContent=c?`${c[0]} de ${c[1]}`:"";
-    o.closest(".el").classList.toggle("off",!S.show[el.k])}
-  $("fmeta").textContent=`${G.shapes.length} ${G.shapes.length===1?"forma":"formas"}, caixa de ${fmt(G.bbox.w)} × ${fmt(G.bbox.h)} unidades`;
-  syncPos();updateReadout();save();
-}
-/* régua: escala do quadro em px, com a extensão do logo marcada */
-function rulerSVG(w){
-  if(!F||!w)return"";const W=F.W,k=w/W,h=30,b=G.bbox;
-  const x0=Math.max(0,X(b.x))*k,x1=Math.min(W,X(b.x+b.w))*k;
-  let t=`<svg class="ruler" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true">`;
-  if(x1>x0)t+=`<rect x="${n2(x0)}" y="0" width="${n2(x1-x0)}" height="10" fill="#000" fill-opacity=".10"/>`;
-  const step=W>=1200?50:25,major=step*4,label=major*2;
-  for(let u=0;u<=W+0.1;u+=step){const x=n2(u*k);const M=u%major===0;
-    t+=`<line x1="${x}" y1="0" x2="${x}" y2="${M?10:5}" stroke="#000" stroke-opacity="${M?.55:.28}" stroke-width="1"/>`;
-    if(u%label===0)t+=`<text x="${x}" y="24" font-size="10" font-weight="500" fill="#7A7B7F" font-family="${LABEL_FONT}" text-anchor="${u===0?"start":u>=W-1?"end":"middle"}">${u}</text>`}
-  for(const x of [x0,x1])if(x>0&&x<w)t+=`<line x1="${n2(x)}" y1="0" x2="${n2(x)}" y2="14" stroke="#000" stroke-width="2"/>`;
-  return t+`</svg>`;
-}
-let rq=0;function renderSoon(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;render()})}
-window.addEventListener("resize",renderSoon);
-
-/* ---------- selection & interaction ---------- */
-function findGuide(k){return allGuides().find(g=>g.key===k)}
-function updateReadout(){
-  const r=$("readout");$("hideSel").disabled=!SEL;
-  if(MODE==="h")return r.textContent="Clique para posicionar a guia horizontal. Ela encaixa nos pontos.";
-  if(MODE==="v")return r.textContent="Clique para posicionar a guia vertical. Ela encaixa nos pontos.";
-  if(MODE==="move")return r.textContent=`Arraste para mover o logo · X ${fmt(S.offX*100,1)}% · Y ${fmt(S.offY*100,1)}%`;
-  if(MODE==="d")return r.textContent=dA?"Clique no segundo ponto da diagonal.":"Clique no primeiro ponto da diagonal.";
-  if(!SEL){r.textContent="Clique numa guia para selecionar. Arraste guias retas para mover.";return}
-  const g=findGuide(SEL.key);if(!g){SEL=null;return updateReadout()}
-  const src=g.key.startsWith("m")?"manual":"automática";
-  if(g.kind==="h")r.textContent=`Horizontal ${src} · y ${fmt(g.v,2)}`+(g.n?` · ${g.n} pontos`:"");
-  else if(g.kind==="v")r.textContent=`Vertical ${src} · x ${fmt(g.v,2)}`+(g.n?` · ${g.n} pontos`:"");
-  else if(g.kind==="d")r.textContent=`Diagonal ${src} · ${g.deg} do eixo mais próximo`;
-  else r.textContent=`Círculo · raio ${fmt(g.r,2)} · centro ${fmt(g.c[0])}, ${fmt(g.c[1])}`;
-}
-function setMode(m){MODE=m;dA=null;document.querySelectorAll(".tool[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===m));
-  $("stage").className="stage m-"+m;clearGhost();updateReadout()}
-document.querySelectorAll(".tool[data-mode]").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
-function hideSel(){if(!SEL)return;const k=SEL.key;
-  if(k.startsWith("m"))MANUAL=MANUAL.filter(g=>g.key!==k);else HIDDEN.add(k);SEL=null;render()}
-$("hideSel").addEventListener("click",hideSel);
-$("restore").addEventListener("click",()=>{const n=HIDDEN.size;HIDDEN.clear();render();toast(n?`${n} guia${n>1?"s":""} restaurada${n>1?"s":""}`:"Nenhuma guia oculta")});
-document.addEventListener("keydown",e=>{
-  if(/input|select|textarea/i.test(e.target.tagName))return;
-  if(e.key==="Escape"){setMode("select");if(SEL){SEL=null;render()}}
-  else if((e.key==="Delete"||e.key==="Backspace")&&SEL){e.preventDefault();hideSel()}
-  else if(MODE==="move"&&e.key.startsWith("Arrow")){e.preventDefault();const st=e.shiftKey?0.05:0.005;
-    if(e.key==="ArrowLeft")S.offX-=st;if(e.key==="ArrowRight")S.offX+=st;if(e.key==="ArrowUp")S.offY-=st;if(e.key==="ArrowDown")S.offY+=st;
-    S.anchor=null;S.offX=clampOff(S.offX);S.offY=clampOff(S.offY);syncPos();renderSoon()}
-  else if(!e.metaKey&&!e.ctrlKey&&!e.altKey){const k=e.key.toLowerCase();if(k==="h"||k==="v"||k==="d")setMode(k);else if(k==="m")setMode("move")}
-});
-
-function evtPt(e){const pt=svgEl.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svgEl.getScreenCTM().inverse());return[q.x,q.y]}
-const toLogo=p=>[(p[0]-F.ox)/F.s,(p[1]-F.oy)/F.s];
-function snapPts(){let a=G.anchors.concat(G.extrema);if(S.show.handles)a=a.concat(G.handles.map(h=>h.h));return a}
-function snapAxis(fp,axis){ // returns frame coord
-  const thr=10*upp();let best=null,bd=thr;
-  for(const q of snapPts()){const v=axis===1?Y(q[1]):X(q[0]);const d=Math.abs(v-fp[axis]);if(d<bd){bd=d;best=v}}
-  return best==null?{v:fp[axis],snap:false}:{v:best,snap:true};
-}
-function snapPoint(fp){const thr=12*upp();let best=null,bd=thr;
-  for(const q of snapPts()){const p=P(q);const d=Math.hypot(p[0]-fp[0],p[1]-fp[1]);if(d<bd){bd=d;best=p}}
-  return best?{p:best,snap:true}:{p:fp,snap:false}}
-const GW=()=>Math.max(1.5,S.el.guides.w),GR=()=>Math.max(8,S.el.nodes.size*1.4)*Math.max(1,upp());
-function clearGhost(){const g=svgEl&&svgEl.querySelector("#ghost");if(g)g.innerHTML=""}
-function ghost(html){const g=svgEl.querySelector("#ghost");if(g)g.innerHTML=html}
-const accentC=()=>getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#2F4BFF";
-
-let drag=null,dA=null,pan=null;
-const host=$("canvasHost");
-host.addEventListener("pointerdown",e=>{
-  if(!svgEl||e.button>0)return;const fp=evtPt(e);const lw=n2(GW()*1.8);
-  if(MODE==="move"){pan={start:fp,x:S.offX,y:S.offY,W:F.W,H:F.H};host.setPointerCapture(e.pointerId);$("stage").classList.add("grabbing");return}
-  if(MODE==="select"){
-    const t=e.target.closest("[data-k]");
-    if(!t){if(SEL){SEL=null;render()}return}
-    const k=t.getAttribute("data-k");SEL={key:k};const g=findGuide(k);
-    if(g&&(g.kind==="h"||g.kind==="v")){drag={g,axis:g.kind==="h"?1:0,moved:false,start:fp};host.setPointerCapture(e.pointerId)}
-    render();return;
-  }
-  if(MODE==="h"||MODE==="v"){const axis=MODE==="h"?1:0;const s=snapAxis(fp,axis);
-    const v=axis===1?(s.v-F.oy)/F.s:(s.v-F.ox)/F.s;const key="m"+(++mid);
-    MANUAL.push({key,kind:MODE,v});SEL={key};render();return}
-  if(MODE==="d"){const s=snapPoint(fp);
-    if(!dA){dA=s.p;updateReadout();ghost(`<circle cx="${n2(dA[0])}" cy="${n2(dA[1])}" r="${n2(GR())}" fill="none" stroke="${accentC()}" stroke-width="${lw}"/>`);return}
-    const b=s.p;const dx=b[0]-dA[0],dy=b[1]-dA[1],L=Math.hypot(dx,dy);if(L<2){return}
-    const a=toLogo(dA),bb=toLogo(b);let th=Math.atan2(dy,dx);if(th<0)th+=Math.PI;
-    const key="m"+(++mid);MANUAL.push({key,kind:"d",p:a,dir:[dx/L,dy/L],mid:[(a[0]+bb[0])/2,(a[1]+bb[1])/2],deg:angleLabel(th)});
-    dA=null;SEL={key};render();return}
-});
-host.addEventListener("pointermove",e=>{
-  if(!svgEl)return;const fp=evtPt(e);const ac=accentC(),lw=n2(GW()*1.4),W=F.W,H=F.H;
-  if(pan){const snap=0.012;
-    let x=pan.x+(fp[0]-pan.start[0])/pan.W,y=pan.y+(fp[1]-pan.start[1])/pan.H;
-    if(Math.abs(x)<snap)x=0;if(Math.abs(y)<snap)y=0;
-    S.anchor=null;S.offX=clampOff(x);S.offY=clampOff(y);syncPos();renderSoon();return}
-  if(drag){const s=snapAxis(fp,drag.axis);const g=drag.g;
-    if(!drag.moved){if(Math.abs(fp[drag.axis]-drag.start[drag.axis])<2*upp())return;drag.moved=true;
-      if(!g.key.startsWith("m")){HIDDEN.add(g.key);const key="m"+(++mid);const ng={key,kind:g.kind,v:g.v};MANUAL.push(ng);drag.g=ng;SEL={key}}}
-    drag.g.v=drag.axis===1?(s.v-F.oy)/F.s:(s.v-F.ox)/F.s;renderSoon();return}
-  if(MODE==="h"){const s=snapAxis(fp,1);ghost(`<line x1="0" y1="${n2(s.v)}" x2="${W}" y2="${n2(s.v)}" stroke="${ac}" stroke-width="${lw}"${s.snap?"":` stroke-dasharray="${n2(lw*4)} ${n2(lw*3)}"`}/>`)}
-  else if(MODE==="v"){const s=snapAxis(fp,0);ghost(`<line x1="${n2(s.v)}" y1="0" x2="${n2(s.v)}" y2="${H}" stroke="${ac}" stroke-width="${lw}"${s.snap?"":` stroke-dasharray="${n2(lw*4)} ${n2(lw*3)}"`}/>`)}
-  else if(MODE==="d"){const s=snapPoint(fp);let h=`<circle cx="${n2(s.p[0])}" cy="${n2(s.p[1])}" r="${n2(GR())}" fill="none" stroke="${ac}" stroke-width="${lw}"/>`;
-    if(dA){h+=`<circle cx="${n2(dA[0])}" cy="${n2(dA[1])}" r="${n2(GR())}" fill="none" stroke="${ac}" stroke-width="${lw}"/>`;
-      const dx=s.p[0]-dA[0],dy=s.p[1]-dA[1],L=Math.hypot(dx,dy);
-      if(L>1){const seg=clipLine(dA,[dx/L,dy/L],W,H);if(seg)h+=`<line x1="${n2(seg[0][0])}" y1="${n2(seg[0][1])}" x2="${n2(seg[1][0])}" y2="${n2(seg[1][1])}" stroke="${ac}" stroke-width="${lw}"/>`}}
-    ghost(h)}
-});
-const endDrag=()=>{if(pan){pan=null;$("stage").classList.remove("grabbing");render()}if(drag){drag=null;render()}};
-host.addEventListener("pointerup",endDrag);host.addEventListener("pointercancel",endDrag);
-host.addEventListener("pointerleave",()=>{if(!drag)clearGhost()});
-
-/* ---------- controls ---------- */
-function custom(){S.level=null;markLevel()}
-const presetsEl=$("presets");
-for(const[id,p]of Object.entries(PRESETS)){
-  const b=document.createElement("button");b.className="chip";b.dataset.p=id;
-  b.innerHTML=`<i style="background:${p.bg}"><b style="background:${p.fill}"></b><b style="background:${p.line};opacity:${Math.max(.5,p.op)}"></b></i><span>${p.name}</span>`;
-  b.addEventListener("click",()=>{
-    Object.assign(S,{bg:p.bg,fill:p.fill,line:p.line,node:p.node,label:p.label});
-    const pe=presetEls(p);for(const k in pe){const keepQ=S.el[k].q;S.el[k]={...S.el[k],...pe[k]};if(keepQ!=null)S.el[k].q=keepQ}
-    S.preset=id;S.show.outline=p.outline;syncUI();render()});
-  presetsEl.appendChild(b);
-}
-/* element blocks */
-const OPEN=new Set(["guides","nodes"]);
-const chev=`<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>`;
-function rangeRow(id,label,min,max,step){return`<div class="rng"><label for="${id}">${label}</label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}"><output id="o${id}"></output></div>`}
-const elHost=$("elements");
-for(const el of ELS){
-  const k=el.k;let body="";
-  if(el.q)body+=rangeRow(`e_${k}_q`,"Quantidade",0,100,1);
-  if(el.op)body+=rangeRow(`e_${k}_op`,"Opacidade",0.05,1,0.05);
-  if(el.w)body+=rangeRow(`e_${k}_w`,"Espessura",0.25,6,0.25);
-  if(el.size)body+=rangeRow(`e_${k}_size`,k==="angles"?"Corpo":"Tamanho",el.size[0],el.size[1],el.size[2]);
-  if(el.shape)body+=`<div class="row"><label for="e_${k}_shape">Forma</label><select id="e_${k}_shape"><option value="circle">Círculo</option><option value="ring">Círculo vazado</option><option value="square">Quadrado</option><option value="hollow">Quadrado vazado</option></select></div>`;
-  if(el.dash)body+=`<label class="tg"><input type="checkbox" id="e_${k}_dash">Tracejado</label>`;
-  const d=document.createElement("div");d.className="el";
-  d.innerHTML=`<div class="el-head"><input type="checkbox" id="t_${k}" aria-label="Mostrar ${el.name}"><label class="nm" for="t_${k}">${el.name}</label><output class="cnt" data-cnt="${k}"></output>
-    <button class="exp" aria-expanded="${OPEN.has(k)}" aria-controls="b_${k}" aria-label="Ajustar ${el.name}">${chev}</button></div>
-    <div class="el-body" id="b_${k}"${OPEN.has(k)?"":" hidden"}>${body}</div>`;
-  elHost.appendChild(d);
-  d.querySelector(".exp").addEventListener("click",e=>{const b=e.currentTarget,open=b.getAttribute("aria-expanded")!=="true";
-    b.setAttribute("aria-expanded",open);$("b_"+k).hidden=!open});
-  $("t_"+k).addEventListener("change",e=>{S.show[k]=e.target.checked;if(k==="handles"||k==="circles")custom();render()});
-  for(const f of ["q","op","w","size"]){const inp=$(`e_${k}_${f}`);if(!inp)continue;
-    inp.addEventListener("input",()=>{S.el[k][f]=+inp.value;fmtEl(k,f);if(f!=="q"){S.preset=null;markPreset()}renderSoon()})}
-  if(el.shape)$(`e_${k}_shape`).addEventListener("change",e=>{S.el[k].shape=e.target.value;render()});
-  if(el.dash)$(`e_${k}_dash`).addEventListener("change",e=>{S.el[k].dash=e.target.checked;render()});
-}
-/* menus de seleção viram botões no visual do site; o <select> continua como fonte do valor */
-const PICKS=[];
-const SHAPE_ICON={circle:'<circle cx="9" cy="9" r="6" fill="currentColor"/>',ring:'<circle cx="9" cy="9" r="5.2" fill="none" stroke="currentColor" stroke-width="1.8"/>',
-  square:'<rect x="3.5" y="3.5" width="11" height="11" fill="currentColor"/>',hollow:'<rect x="4.4" y="4.4" width="9.2" height="9.2" fill="none" stroke="currentColor" stroke-width="1.8"/>'};
-function ratioIcon(v){
-  if(v==="fit")return'<svg width="22" height="18" viewBox="0 0 22 18" aria-hidden="true"><rect x="2" y="2" width="18" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2"/></svg>';
-  const r=+v,box=16;let w=r>=1?box:box*r,h=r>=1?box/r:box;
-  return`<svg width="22" height="18" viewBox="0 0 22 18" aria-hidden="true"><rect x="${n2(11-w/2)}" y="${n2(9-h/2)}" width="${n2(w)}" height="${n2(h)}" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>`;
-}
-function makePick(sel,kind){
-  const opts=[...sel.options];const wrap=document.createElement("div");wrap.className="pick pick-"+kind;wrap.style.setProperty("--n",opts.length);
-  wrap.setAttribute("role","group");const lab=document.querySelector(`label[for="${sel.id}"]`);if(lab)wrap.setAttribute("aria-label",lab.textContent);
-  for(const o of opts){const b=document.createElement("button");b.type="button";b.dataset.v=o.value;b.title=o.textContent;
-    if(kind==="ratio")b.innerHTML=ratioIcon(o.value)+`<span>${o.value==="fit"?"Auto":esc(o.textContent)}</span>`;
-    else if(kind==="shape"){b.innerHTML=`<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">${SHAPE_ICON[o.value]||""}</svg>`;b.setAttribute("aria-label",o.textContent)}
-    else b.textContent=o.textContent;
-    b.addEventListener("click",()=>{if(sel.value===o.value)return;sel.value=o.value;sel.dispatchEvent(new Event("change",{bubbles:true}));refreshPicks()});
-    wrap.appendChild(b)}
-  sel.hidden=true;sel.insertAdjacentElement("afterend",wrap);
-  const row=sel.closest(".row");if(row)row.classList.add("row-stack");
-  PICKS.push({sel,wrap});
-}
-function refreshPicks(){for(const{sel,wrap}of PICKS)for(const b of wrap.children)b.setAttribute("aria-pressed",b.dataset.v===sel.value)}
-makePick($("s_ratio"),"ratio");makePick($("s_min"),"num");
-document.querySelectorAll('select[id$="_shape"]').forEach(sl=>makePick(sl,"shape"));
-function fmtEl(k,f){const o=$(`oe_${k}_${f}`);if(!o)return;const v=S.el[k][f];
-  o.textContent=f==="q"||f==="op"?Math.round(f==="op"?v*100:v)+"%":k==="angles"&&f==="size"?fmt(v,1)+"%":fmt(v,2)}
-$("expandAll").addEventListener("click",()=>{const btns=[...elHost.querySelectorAll(".exp")];const open=btns.some(b=>b.getAttribute("aria-expanded")!=="true");
-  btns.forEach(b=>{b.setAttribute("aria-expanded",open);$(b.getAttribute("aria-controls")).hidden=!open});
-  $("expandAll").textContent=open?"Fechar todos":"Abrir todos"});
-const colorMap={c_bg:"bg",c_fill:"fill",c_line:"line",c_node:"node",c_label:"label"};
-for(const[id,k]of Object.entries(colorMap))$(id).addEventListener("input",e=>{S[k]=e.target.value;S.preset=null;markPreset();renderSoon()});
-$("t_ext").addEventListener("change",e=>{S.ext=e.target.checked;custom();regen()});
-$("t_hext").addEventListener("change",e=>{S.hext=e.target.checked;custom();regen()});
-$("s_min").addEventListener("change",e=>{S.minHits=+e.target.value;custom();regen()});
-$("t_transp").addEventListener("change",e=>{S.transparent=e.target.checked;render()});
-document.querySelectorAll("#levels button").forEach(b=>b.addEventListener("click",()=>{applyLevel(b.dataset.l);syncUI();regen()}));
-function markLevel(){document.querySelectorAll("#levels button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===S.level));
-  $("levelNote").textContent=S.level?LEVELS[S.level].label:"Ajuste personalizado. Escolha um nível para voltar a uma predefinição."}
-let resetT;
-$("resetBtn").addEventListener("click",()=>{const b=$("resetBtn");
-  if(!b.classList.contains("arm")){b.classList.add("arm");b.textContent="Confirmar reset";clearTimeout(resetT);
-    resetT=setTimeout(()=>{b.classList.remove("arm");b.textContent="Resetar"},3500);return}
-  clearTimeout(resetT);b.classList.remove("arm");b.textContent="Resetar";
-  S=structuredClone(DEFAULTS);MANUAL=[];HIDDEN=new Set();SEL=null;setMode("select");syncUI();regen();
-  toast("Ajustes, guias manuais e guias ocultas resetados. O logo continua carregado.")});
-$("s_ratio").addEventListener("change",e=>{S.ratio=e.target.value;render()});
-const ranges={r_tol:["tol",v=>fmt(v,2)+"%",true],r_pad:["pad",v=>Math.round(v*100)+"%"],r_sc:["sc",v=>Math.round(v*100)+"%"],
-  r_px:["offX",v=>fmt(v*100,1)+"%"],r_py:["offY",v=>fmt(v*100,1)+"%"]};
-/* 9-point alignment */
-const ANCH=[[-1,-1,"superior esquerdo"],[0,-1,"superior centro"],[1,-1,"superior direito"],[-1,0,"meio esquerdo"],[0,0,"centro"],[1,0,"meio direito"],[-1,1,"inferior esquerdo"],[0,1,"inferior centro"],[1,1,"inferior direito"]];
-for(const[ax,ay,lab]of ANCH){const b=document.createElement("button");b.dataset.ax=ax;b.dataset.ay=ay;b.setAttribute("aria-label","Alinhar ao "+lab);b.title="Alinhar ao "+lab;
-  b.addEventListener("click",()=>{S.anchor=[ax,ay];render()});
-  $("anchors").appendChild(b)}
-function syncPos(){
-  for(const id of ["r_px","r_py"]){const k=id==="r_px"?"offX":"offY";$(id).value=S[k];$("o"+id.slice(1)).textContent=ranges[id][1](S[k])}
-  const A=S.anchor;
-  document.querySelectorAll("#anchors button").forEach(b=>b.setAttribute("aria-pressed",!!A&&+b.dataset.ax===A[0]&&+b.dataset.ay===A[1]));
-  if(MODE==="move")updateReadout();
-}
-for(const[id,[k,f,re]]of Object.entries(ranges)){
-  const key=k==="sc"?"scale":k;
-  $(id).addEventListener("input",e=>{S[key]=+e.target.value;if(key==="offX"||key==="offY")S.anchor=null;$("o"+id.slice(1)).textContent=f(S[key]);
-    if(re){custom();clearTimeout(window.__rt);window.__rt=setTimeout(regen,60)}else renderSoon()});
-}
-function markPreset(){document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.p===S.preset))}
-function syncUI(){
-  for(const[id,k]of Object.entries(colorMap))$(id).value=S[k];
-  for(const el of ELS){const k=el.k;$("t_"+k).checked=!!S.show[k];
-    for(const f of ["q","op","w","size"]){const inp=$(`e_${k}_${f}`);if(inp){inp.value=S.el[k][f];fmtEl(k,f)}}
-    if(el.shape)$(`e_${k}_shape`).value=S.el[k].shape;
-    if(el.dash)$(`e_${k}_dash`).checked=!!S.el[k].dash}
-  $("t_ext").checked=S.ext;$("t_hext").checked=S.hext;
-  $("s_min").value=S.minHits;$("s_ratio").value=S.ratio;
-  for(const[id,[k,f]]of Object.entries(ranges)){const key=k==="sc"?"scale":k;$(id).value=S[key];$("o"+id.slice(1)).textContent=f(S[key])}
-  $("t_transp").checked=!!S.transparent;
-  markPreset();markLevel();refreshPicks();
-}
-
-/* ---------- input: file, drop, paste ---------- */
-$("pick").addEventListener("click",()=>$("fileIn").click());
-$("fileIn").addEventListener("change",async e=>{const f=e.target.files[0];if(f)readFile(f);e.target.value=""});
-async function readFile(f){
-  if(!/svg/i.test(f.type)&&!/\.svg$/i.test(f.name)){toast("Use um arquivo .svg. PNG e JPG não trazem os pontos vetoriais.");return}
-  const t=await f.text();if(setLogo(t,f.name))toast("Logo carregado")}
-const stage=$("stage");let dragDepth=0;
-stage.addEventListener("dragenter",e=>{e.preventDefault();dragDepth++;$("drop").hidden=false});
-stage.addEventListener("dragover",e=>e.preventDefault());
-stage.addEventListener("dragleave",()=>{if(--dragDepth<=0){dragDepth=0;$("drop").hidden=true}});
-stage.addEventListener("drop",e=>{e.preventDefault();dragDepth=0;$("drop").hidden=true;const f=e.dataTransfer.files[0];if(f)readFile(f)});
-document.addEventListener("paste",e=>{
-  if(/input|textarea/i.test(e.target.tagName))return;
-  const f=[...(e.clipboardData?.files||[])].find(f=>/svg/.test(f.type));if(f){e.preventDefault();return readFile(f)}
-  const t=e.clipboardData?.getData("text/plain")||"";
-  if(/<svg[\s>]/i.test(t)){e.preventDefault();if(setLogo(t,"SVG colado"))toast("Logo carregado")}
-});
-
-/* ---------- export ---------- */
-function exportSVG(){return`<?xml version="1.0" encoding="UTF-8"?>\n`+buildSVG(false)}
-const baseName=()=>(fileName.replace(/\.svg$/i,"").replace(/[^\w\-]+/g,"-").replace(/^-|-$/g,"")||"logo")+"-grid";
-let dl;const dlReady=(async()=>{try{dl=await window.claude?.use?.("downloads")}catch(e){dl=null}})();
-async function offer(filename,data,fallback){
-  await dlReady;
-  if(!dl){ // site próprio: download direto pelo navegador
-    try{const blob=data instanceof Blob?data:new Blob([data],{type:filename.endsWith(".svg")?"image/svg+xml":"application/octet-stream"});
-      const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();
-      setTimeout(()=>URL.revokeObjectURL(u),4000);toast("Download iniciado")}catch(e){fallback()}
-    return}
-  try{await dl.save({filename,data});toast("Arquivo salvo")}
-  catch(e){if(e&&e.code==="declined")return;if(e&&e.code==="rate_limited")return toast("Já há um download aguardando confirmação.");fallback()}
-}
-$("exSvg").addEventListener("click",()=>{const s=exportSVG();offer(baseName()+".svg",s,()=>showCode(s))});
-$("copySvg").addEventListener("click",()=>{const s=buildSVG(false);
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(()=>toast("SVG copiado. Cole no Figma ou no Illustrator."),()=>showCode(s))}else showCode(s)});
-$("exPng2").addEventListener("click",()=>png(2));$("exPng4").addEventListener("click",()=>png(4));
-async function png(k){
-  const s=buildSVG(false);const cw=Math.round(F.W*k),ch=Math.round(F.H*k);
-  const url=URL.createObjectURL(new Blob([s],{type:"image/svg+xml"}));
-  try{
-    const img=new Image();img.decoding="async";
-    await new Promise((r,j)=>{img.onload=r;img.onerror=j;img.src=url});
-    const cv=document.createElement("canvas");cv.width=cw;cv.height=ch;const ctx=cv.getContext("2d");
-    ctx.drawImage(img,0,0,cw,ch);
-    const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
-    if(!blob)throw new Error();
-    offer(`${baseName()}@${k}x.png`,blob,()=>showImage(cv.toDataURL("image/png")));
-  }catch(e){toast("Não consegui gerar o PNG neste navegador. Use o SVG.")}
-  finally{URL.revokeObjectURL(url)}
-}
-function modal(inner){const m=document.createElement("div");m.className="modal";m.innerHTML=`<div>${inner}<button class="btn" data-close>Fechar</button></div>`;
-  m.addEventListener("click",e=>{if(e.target===m||e.target.hasAttribute("data-close"))m.remove()});document.body.appendChild(m);return m}
-function showCode(s){const m=modal(`<strong>Código SVG</strong><p class="note">O download direto não está disponível aqui. Selecione o código, copie e salve como arquivo .svg.</p><textarea id="codeOut" readonly></textarea>`);
-  const ta=m.querySelector("textarea");ta.value=s;ta.focus();ta.select()}
-function showImage(src){modal(`<strong>PNG pronto</strong><p class="note">Clique com o botão direito (ou toque e segure) na imagem para salvar.</p><img alt="Grid exportado" src="${src}">`)}
-
-let tt;function toast(msg){const h=$("toastHost");h.innerHTML=`<div class="toast" role="status">${esc(msg)}</div>`;clearTimeout(tt);tt=setTimeout(()=>h.innerHTML="",2600)}
-
-/* ---------- boot ---------- */
-syncUI();
-let booted=false;
-try{const r=localStorage.getItem("malha:logo");if(r){const o=JSON.parse(r);booted=setLogo(o.text,o.name)}}catch(e){}
-if(!booted)setLogo(SAMPLE,"Exemplo de demonstração");
-requestAnimationFrame(render);
+  var demo=document.getElementById("demo"),btn=document.getElementById("replay");
+  if(!demo||!btn)return;
+  btn.addEventListener("click",function(){demo.classList.remove("play");void demo.offsetWidth;demo.classList.add("play")});
 })();
 </script>
-
 </body>
 </html>

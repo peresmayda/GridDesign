@@ -284,6 +284,7 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
   section{padding-block:56px 0}
 }
 @media (prefers-reduced-motion:reduce){
+  .hp-art *{animation:none!important;stroke-dashoffset:0!important;transform:none!important}
   .m *{animation:none!important}
   html{scroll-behavior:auto}
   .rv,.rv.pre{opacity:1!important;transform:none!important;transition:none!important}
@@ -294,13 +295,27 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
 /* animação como bloco Pro */
 .nav-links a .pro.sm{height:18px;padding:0 6px;border-radius:9px;font-size:10.5px;margin-left:6px;vertical-align:2px}
 .nav-acc:empty{display:none}
-.hero-pro{display:inline-flex;align-items:center;gap:8px;margin-top:18px;color:var(--ink);text-decoration:none;font-weight:500;font-size:15px;flex-wrap:wrap}
-.hero-pro b{font-weight:700;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
-.hero-pro .pro{margin:0}
-.hp-ico{width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;flex:none}
-.hp-ico circle{stroke-dasharray:1;animation:hpspin 3.2s cubic-bezier(.55,0,.15,1) infinite}
-@keyframes hpspin{0%{stroke-dashoffset:1}55%,80%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
-.hero-pro:hover b{text-decoration-color:var(--lime)}
+.nav{gap:8px}
+.nav-links{margin-right:20px}
+.nav>.pill{height:40px;padding:0 20px;border-radius:20px;font-size:15px}
+.nav .ggacc{height:40px;border-radius:20px;padding:0 18px;background:var(--sheet);font-size:15px}
+.nav .ggacc:hover{background:#fff}
+.nav .ggacc b{width:28px;height:28px}.nav .ggacc:not(.out){padding-left:6px}
+.nav .langsw{padding:5px;border-radius:20px}
+.hero-pro{display:inline-flex;width:fit-content;justify-self:start;align-self:start;align-items:center;gap:16px;margin-top:22px;padding:10px 22px 10px 10px;border-radius:24px;background:#000;color:#fff;text-decoration:none;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s;max-width:100%}
+.hero-pro:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.hp-art{width:64px;height:64px;border-radius:16px;background:var(--lime);color:rgba(0,0,0,.45);flex:none;overflow:hidden;line-height:0}
+.hp-art .hp-l,.hp-art .hp-c{stroke-dasharray:1;stroke-dashoffset:1;animation:hpdraw 4.2s cubic-bezier(.55,0,.15,1) infinite;animation-delay:calc(var(--i,0)*.12s)}
+.hp-art .hp-c{animation-delay:.55s}
+.hp-art .hp-n rect{transform-box:fill-box;transform-origin:center;transform:scale(0);animation:hppop 4.2s cubic-bezier(.3,1.6,.5,1) infinite;animation-delay:1.1s}
+@keyframes hpdraw{0%{stroke-dashoffset:1}35%,82%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
+@keyframes hppop{0%{transform:scale(0)}12%,70%{transform:scale(1)}80%,100%{transform:scale(0)}}
+.hp-txt{display:grid;gap:4px;min-width:0}
+.hp-txt strong{display:flex;align-items:center;gap:8px;font-weight:800;font-size:19px;letter-spacing:-.02em;line-height:1.1}
+.hp-txt .pro{margin:0}
+.hp-go{color:var(--lime);font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:6px}
+.hp-go:after{content:"→";transition:transform .25s}
+.hero-pro:hover .hp-go:after{transform:translateX(4px)}
 .pro-block{background:#000;color:#fff;border-radius:40px;padding:48px 40px 40px;margin-top:96px}
 .pro-block .sec-title{color:var(--lime)}
 .pro-block .sec-title span{color:#76777B}
@@ -333,7 +348,7 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
   .pro-block{padding:32px 20px 24px;border-radius:28px;margin-top:56px}
   .nav .langsw{margin-left:0}.nav-acc{margin-left:auto}
   .offer-list li{font-size:16px}
-  .hero-pro{font-size:14px;gap:6px}.hp-ico{display:none}
+  .hero-pro{gap:12px;padding-right:16px}.hp-art{width:52px;height:52px;border-radius:13px}.hp-art svg{width:52px;height:52px}.hp-txt strong{font-size:16px}.hp-go{font-size:14px}
 }
 </style>
 </head>
@@ -362,7 +377,10 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
           <a class="pill" href="app/index.html">Abrir o GridGrid</a>
           <a class="pill light" href="#exemplos">Ver exemplos</a>
         </div>
-        <a class="hero-pro" href="#animacao"><span class="hp-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.6" pathLength="1"/><path d="M10 8.5v7l5.5-3.5z" fill="currentColor"/></svg></span><span>O grid também se mexe.</span><b>Ver a animação</b><span class="pro">Pro</span></a>
+        <a class="hero-pro" href="#animacao">
+          <span class="hp-art" aria-hidden="true"><svg viewBox="0 0 64 64" width="64" height="64"><g fill="none" stroke="currentColor" stroke-width="1.2"><line class="hp-l" x1="0" y1="20" x2="64" y2="20" pathLength="1"/><line class="hp-l" x1="0" y1="44" x2="64" y2="44" pathLength="1" style="--i:1"/><line class="hp-l" x1="20" y1="0" x2="20" y2="64" pathLength="1" style="--i:2"/><line class="hp-l" x1="44" y1="0" x2="44" y2="64" pathLength="1" style="--i:3"/><line class="hp-l" x1="8" y1="58" x2="40" y2="6" pathLength="1" style="--i:4"/></g><circle class="hp-c" cx="32" cy="32" r="16" fill="none" stroke="#000" stroke-width="2.4" pathLength="1"/><g class="hp-n" fill="#000"><rect x="14" y="30" width="4" height="4"/><rect x="46" y="30" width="4" height="4"/><rect x="30" y="14" width="4" height="4"/><rect x="30" y="46" width="4" height="4"/></g></svg></span>
+          <span class="hp-txt"><strong>O grid também se mexe.<span class="pro">Pro</span></strong><span class="hp-go">Ver a animação</span></span>
+        </a>
       </div>
     </div>
     <figure class="demo play" id="demo" style="margin:0">

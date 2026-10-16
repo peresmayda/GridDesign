@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>GridGrid Animar</title>
+<script src="../i18n.js"></script>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -170,6 +171,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
       <a href="index.html"><b>1</b>Montar o grid</a>
       <span aria-current="page"><b>2</b>Animar<i class="pro" style="font-style:normal">Pro</i></span>
     </nav>
+    <div data-lang-switch></div>
   </header>
 
   <aside class="side-l" aria-label="Estilo e camadas">
@@ -207,7 +209,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
     </section>
 
     <section class="band b-sage">
-      <div class="sec-h"><span class="num">4</span><h2>Saída<span>tamanho e quadros</span></h2></div>
+      <div class="sec-h"><span class="num">4</span><h2>Formato<span>tamanho e quadros</span></h2></div>
       <div class="field"><span>Lado maior</span><div class="pick" id="size" style="--n:4"></div></div>
       <div class="field"><span>Quadros por segundo</span><div class="pick" id="fps" style="--n:3"></div></div>
       <p class="note" id="outInfo"></p>
@@ -242,6 +244,7 @@ const LABEL_FONT='"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif';
 
 /* ---------- camadas e estilos ---------- */
 // ordem de desenho, de baixo para cima
+const LN=k=>gg.t(k); // nomes das camadas no Lottie
 const LAYERS=[
   {k:"forma",name:"Forma",sw:"var(--khaki)",entr:[["fade","Surgir"],["wipe","Subir"]]},
   {k:"circulos",name:"Círculos",sw:"var(--pink)",entr:[["draw","Desenhar"],["fade","Surgir"]]},
@@ -455,7 +458,7 @@ function frame(ts){
   if(SC){render(vctx,Math.min(tNow,D),viewK,!SC.transparent);updateClock(D)}
   requestAnimationFrame(frame);
 }
-const fmtS=v=>(Math.round(v*10)/10).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+" s";
+const fmtS=v=>(Math.round(v*10)/10).toLocaleString(gg.loc,{minimumFractionDigits:1,maximumFractionDigits:1})+" s";
 function updateClock(D){$("clock").innerHTML=`${fmtS(Math.min(tNow,D))} <span>/ ${fmtS(D)}</span>`;const h=$("tlHead");if(h)h.style.left=(Math.min(tNow,D)/D*100)+"%"}
 const ICON_PLAY='<svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>',ICON_PAUSE='<svg viewBox="0 0 16 16"><rect x="3" y="2" width="3.5" height="12" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" fill="currentColor"/></svg>';
 function setPlaying(p){playing=p;$("play").innerHTML=p?ICON_PAUSE:ICON_PLAY;$("play").setAttribute("aria-label",p?"Pausar":"Reproduzir")}
@@ -501,7 +504,7 @@ function buildLayers(){
   for(const k of UI_ORDER){
     const L=LAYERS.find(l=>l.k===k),tr=A.tracks[k],n=SC.layers[k].items.length;
     const d=document.createElement("div");d.className="el"+(tr.on&&n?"":" off");
-    const fs=v=>fmtS(v),fi=v=>(Math.round(v*1000)/1000).toLocaleString("pt-BR")+" s";
+    const fs=v=>fmtS(v),fi=v=>(Math.round(v*1000)/1000).toLocaleString(gg.loc)+" s";
     let body=rng(`l_${k}_start`,loop?"Defasagem":"Início",0,loop?A.period:6,.05,tr.start,fs)+rng(`l_${k}_dur`,"Duração",.1,loop?A.period:3,.05,tr.dur,fs)+rng(`l_${k}_stag`,"Intervalo",0,loop?1:.5,.005,tr.stag,fi);
     if(!loop){body+=`<div class="field"><span>Curva</span><div class="pick" id="l_${k}_ease"></div></div>`;
       if(L.entr.length>1)body+=`<div class="field"><span>Entrada</span><div class="pick" id="l_${k}_entr"></div></div>`;
@@ -523,13 +526,13 @@ function buildLayers(){
 function layerSummary(){
   for(const k of UI_ORDER){const el=$("tm_"+k);if(!el)continue;const tr=A.tracks[k],n=SC.layers[k].items.length;
     if(!n){el.textContent="vazia";continue}if(!tr.on){el.textContent="desligada";continue}
-    if(isLoop()){el.textContent=`${n} ${n===1?"elemento":"elementos"}`;continue}
+    if(isLoop()){el.textContent=`${n} ${n===1?gg.L("elemento","element"):gg.L("elementos","elements")}`;continue}
     const a=tr.start/A.speed,b=(tr.start+tr.dur+tr.stag*(n-1))/A.speed;el.textContent=`${fmtS(a).replace(" s","")}–${fmtS(b)}`}
 }
 pick($("order"),[["lr","Da esquerda"],["center","Do centro"],["random","Aleatória"]],()=>A.order,v=>{A.order=v;orderItems()});
 pick($("size"),[[720,"720"],[1080,"1080"],[1920,"1920"],[2160,"4K"]],()=>A.size,v=>A.size=+v);
 pick($("fps"),[[24,"24"],[30,"30"],[60,"60"]],()=>A.fps,v=>A.fps=+v);
-const RG={r_speed:["speed",v=>(Math.round(v*100)/100).toLocaleString("pt-BR")+"×"],r_hold:["hold",fmtS],r_period:["period",fmtS]};
+const RG={r_speed:["speed",v=>(Math.round(v*100)/100).toLocaleString(gg.loc)+"×"],r_hold:["hold",fmtS],r_period:["period",fmtS]};
 for(const id in RG){const[k,f]=RG[id];$(id).addEventListener("input",e=>{A[k]=+e.target.value;$("o"+id.slice(1)).textContent=f(A[k]);if(k==="period")buildLayers();refresh(true)})}
 function outSize(){const k=A.size/Math.max(SC.W,SC.H);let w=Math.round(SC.W*k),h=Math.round(SC.H*k);w-=w%2;h-=h%2;return{w,h,k}}
 function refresh(soft){
@@ -538,7 +541,7 @@ function refresh(soft){
   for(const b of $("styles").children)b.setAttribute("aria-pressed",b.dataset.s===A.style);
   document.querySelectorAll(".pick").forEach(p=>p._sync&&p._sync());
   const D=totalDur();if(tNow>D)tNow=0;
-  const o=outSize();$("outInfo").textContent=`${o.w} × ${o.h} px, ${fmtS(D)}, ${Math.round(D*A.fps)} quadros.`;
+  const o=outSize();$("outInfo").textContent=`${o.w} × ${o.h} px, ${fmtS(D)}, ${Math.round(D*A.fps)} ${gg.L("quadros","frames")}.`;
   layerSummary();buildTimeline();save();
 }
 
@@ -574,7 +577,7 @@ $("exVideo").addEventListener("click",async()=>{
           if(cancelReq||err)break;render(ctx,i/fps,o.k,true);
           const vf=new VideoFrame(c,{timestamp:Math.round(i*1e6/fps),duration:Math.round(1e6/fps)});enc.encode(vf,{keyFrame:i%(fps*2)===0});vf.close();
           if(enc.encodeQueueSize>8)await new Promise(r=>setTimeout(r,4));
-          if(i%4===0){prog(i/N);$("busyText").textContent=`Gerando quadro ${i+1} de ${N}`;await tick()}
+          if(i%4===0){prog(i/N);$("busyText").textContent=gg.L(`Gerando quadro ${i+1} de ${N}`,`Rendering frame ${i+1} of ${N}`);await tick()}
         }
         await enc.flush();enc.close();if(err)throw err;
         if(cancelReq){setBusy(false);toast("Exportação cancelada");return}
@@ -606,7 +609,7 @@ $("exGif").addEventListener("click",async()=>{
     for(let i=0;i<N;i++){
       if(cancelReq)break;render(ctx,i/fps,o.k,true);const px=ctx.getImageData(0,0,o.w,o.h).data;
       gif.writeFrame(applyPalette(px,palette),o.w,o.h,{palette:i===0?palette:undefined,delay,repeat:0});
-      if(i%2===0){prog(i/N);$("busyText").textContent=`Gerando quadro ${i+1} de ${N}`;await tick()}
+      if(i%2===0){prog(i/N);$("busyText").textContent=gg.L(`Gerando quadro ${i+1} de ${N}`,`Rendering frame ${i+1} of ${N}`);await tick()}
     }
     if(cancelReq){setBusy(false);toast("Exportação cancelada");return}
     gif.finish();await offer(baseName()+".gif",new Blob([gif.bytes()],{type:"image/gif"}));
@@ -662,44 +665,44 @@ function buildLottie(){
         const st=loop?strokeL(it,1,waveKeys(L.k,it,w=>r3(it.sw*(1+w*1.6))),waveKeys(L.k,it,w=>r3(Math.min(1,it.sop*(1+w*2.2))*100))):strokeL(it);
         const parts=[lineShape(it),st];
         if(!loop&&mode==="draw")parts.push({ty:"tm",s:inOutKeys(L.k,it,50,0),e:inOutKeys(L.k,it,50,100),o:stat(0),m:1});
-        shapes.push(lottieGroup(L.name,parts,!loop&&mode==="fade"?{o:fadeO()}:null));
+        shapes.push(lottieGroup(LN(L.name),parts,!loop&&mode==="fade"?{o:fadeO()}:null));
       }else if(it.t==="handle"){
         const ln=it.line,tip=it.tip;
         const lparts=[lineShape(ln),strokeL(ln)];if(!loop&&mode==="draw")lparts.push({ty:"tm",s:stat(0),e:inOutKeys(L.k,it,0,100),o:stat(0),m:1});
         const tparts=[{ty:"el",p:stat([r3(tip.cx),r3(tip.cy)]),s:stat([r3(tip.r*2),r3(tip.r*2)])}];
         if(tip.fill&&tip.fill!=="none")tparts.push({ty:"fl",c:stat(rgb(tip.fill)),o:stat(100),r:1});if(tip.stroke&&tip.stroke!=="none")tparts.push(strokeL(tip));
         const sc=loop?waveKeys(L.k,it,w=>[r3(100*(1+w*.7)),r3(100*(1+w*.7))]):(mode==="draw"?inOutKeys(L.k,it,[0,0],[100,100]):stat([100,100]));
-        shapes.push(lottieGroup("Alça",[lottieGroup("linha",lparts),lottieGroup("ponta",tparts,{a:stat([r3(tip.cx),r3(tip.cy)]),p:stat([r3(tip.cx),r3(tip.cy)]),s:sc})],!loop&&mode==="fade"?{o:fadeO()}:null));
+        shapes.push(lottieGroup(LN("Alças"),[lottieGroup("linha",lparts),lottieGroup("ponta",tparts,{a:stat([r3(tip.cx),r3(tip.cy)]),p:stat([r3(tip.cx),r3(tip.cy)]),s:sc})],!loop&&mode==="fade"?{o:fadeO()}:null));
       }else if(it.t==="circle"&&L.k==="circulos"){
         const st=loop?strokeL(it,1,waveKeys(L.k,it,w=>r3(it.sw*(1+w*1.6))),waveKeys(L.k,it,w=>r3(Math.min(1,it.sop*(1+w*2.2))*100))):strokeL(it);
         const parts=[{ty:"el",p:stat([r3(it.cx),r3(it.cy)]),s:stat([r3(it.r*2),r3(it.r*2)])},st];
         if(!loop&&mode==="draw")parts.push({ty:"tm",s:stat(0),e:inOutKeys(L.k,it,0,100),o:stat(0),m:1});
-        shapes.push(lottieGroup(L.name,parts,!loop&&mode==="fade"?{o:fadeO()}:null));
+        shapes.push(lottieGroup(LN(L.name),parts,!loop&&mode==="fade"?{o:fadeO()}:null));
       }else if(it.t==="circle"||it.t==="rect"){
         const sh=it.t==="rect"?{ty:"rc",p:stat([r3(it.cx),r3(it.cy)]),s:stat([r3(it.w),r3(it.h)]),r:stat(0)}:{ty:"el",p:stat([r3(it.cx),r3(it.cy)]),s:stat([r3(it.r*2),r3(it.r*2)])};
         const parts=[sh];if(it.fill&&it.fill!=="none")parts.push({ty:"fl",c:stat(rgb(it.fill)),o:stat(r3(it.fop*100)),r:1});if(it.stroke&&it.stroke!=="none")parts.push(strokeL(it));
         const sc=loop?waveKeys(L.k,it,w=>[r3(100*(1+w*.7)),r3(100*(1+w*.7))]):(mode==="pop"?inOutKeys(L.k,it,[0,0],[100,100]):stat([100,100]));
-        shapes.push(lottieGroup(L.name,parts,{a:stat([r3(it.cx),r3(it.cy)]),p:stat([r3(it.cx),r3(it.cy)]),s:sc,...(!loop&&mode==="fade"?{o:fadeO()}:{})}));
+        shapes.push(lottieGroup(LN(L.name),parts,{a:stat([r3(it.cx),r3(it.cy)]),p:stat([r3(it.cx),r3(it.cy)]),s:sc,...(!loop&&mode==="fade"?{o:fadeO()}:{})}));
       }else if(it.t==="path"&&L.k==="contorno"){
         const st=loop?strokeL(it,1,waveKeys(L.k,it,w=>r3(it.sw*(1+w*1.6))),waveKeys(L.k,it,w=>r3(Math.min(1,it.sop*(1+w*2.2))*100))):strokeL(it);
         const parts=[...pathToShapes(it.d),st];if(!loop&&mode==="draw")parts.push({ty:"tm",s:stat(0),e:inOutKeys(L.k,it,0,100),o:stat(0),m:1});
-        shapes.push(lottieGroup(L.name,parts,!loop&&mode==="fade"?{o:fadeO()}:null));
+        shapes.push(lottieGroup(LN(L.name),parts,!loop&&mode==="fade"?{o:fadeO()}:null));
       }else if(it.t==="path"){ // forma
         const parts=[...pathToShapes(it.d),{ty:"fl",c:stat(rgb(it.fill)),o:stat(r3(it.fop*100)),r:it.rule==="evenodd"?2:1}];
-        if(!loop&&mode==="wipe")masked.push({it,g:lottieGroup(L.name,parts)});else shapes.push(lottieGroup(L.name,parts,!loop?{o:fadeO()}:null));
+        if(!loop&&mode==="wipe")masked.push({it,g:lottieGroup(LN(L.name),parts)});else shapes.push(lottieGroup(LN(L.name),parts,!loop?{o:fadeO()}:null));
       }
     }
     const ks={o:stat(r3(lay.opacity*100)),r:stat(0),p:stat([0,0,0]),a:stat([0,0,0]),s:stat([100,100,100])};
-    if(shapes.length)layers.push({ddd:0,ind:ind++,ty:4,nm:L.name,sr:1,ks,ao:0,shapes,ip:0,op,st:0,bm:0});
+    if(shapes.length)layers.push({ddd:0,ind:ind++,ty:4,nm:LN(L.name),sr:1,ks,ao:0,shapes,ip:0,op,st:0,bm:0});
     for(const m of masked){ // forma que sobe: uma camada com máscara retangular animada
       const b=m.it.bb,tr2=A.tracks[L.k];const rect=h=>[{i:[[0,0],[0,0],[0,0],[0,0]],o:[[0,0],[0,0],[0,0],[0,0]],c:true,v:[[r3(b.x-2),r3(b.y+b.h-h)],[r3(b.x+b.w+2),r3(b.y+b.h-h)],[r3(b.x+b.w+2),r3(b.y+b.h+2)],[r3(b.x-2),r3(b.y+b.h+2)]]}];
       const a=F(tr2.start+m.it.rank*tr2.stag),e=F(tr2.start+tr2.dur+m.it.rank*tr2.stag);
       const keys=[];if(a>0)keys.push({t:0,s:rect(0),h:1});const E=EASES[tr2.ease];
       keys.push({t:r3(Math.max(a,0.001)),s:rect(0),o:{x:[E[0]],y:[E[1]]},i:{x:[E[2]],y:[E[3]]}},{t:r3(e),s:rect(b.h+3)});
-      layers.push({ddd:0,ind:ind++,ty:4,nm:"Forma",sr:1,ks,ao:0,hasMask:true,masksProperties:[{inv:false,mode:"a",pt:{a:1,k:keys},o:stat(100),x:stat(0),nm:"subir"}],shapes:[m.g],ip:0,op,st:0,bm:0});
+      layers.push({ddd:0,ind:ind++,ty:4,nm:LN("Forma"),sr:1,ks,ao:0,hasMask:true,masksProperties:[{inv:false,mode:"a",pt:{a:1,k:keys},o:stat(100),x:stat(0),nm:"subir"}],shapes:[m.g],ip:0,op,st:0,bm:0});
     }
   }
-  if(!SC.transparent)layers.push({ddd:0,ind:ind++,ty:1,nm:"Fundo",sr:1,ks:{o:stat(100),r:stat(0),p:stat([0,0,0]),a:stat([0,0,0]),s:stat([100,100,100])},ao:0,sw:SC.W,sh:SC.H,sc:SC.bg,ip:0,op,st:0,bm:0});
+  if(!SC.transparent)layers.push({ddd:0,ind:ind++,ty:1,nm:gg.L("Fundo","Background"),sr:1,ks:{o:stat(100),r:stat(0),p:stat([0,0,0]),a:stat([0,0,0]),s:stat([100,100,100])},ao:0,sw:SC.W,sh:SC.H,sc:SC.bg,ip:0,op,st:0,bm:0});
   return{json:{v:"5.7.4",fr,ip:0,op,w:Math.round(SC.W),h:Math.round(SC.H),nm:"GridGrid "+STYLES[A.style].name,ddd:0,assets:[],layers},skipped};
 }
 window.__buildLottie=()=>buildLottie().json;
@@ -709,7 +712,7 @@ $("exLottie").addEventListener("click",async()=>{
     if(skipped.length)setTimeout(()=>toast("Os rótulos de ângulo não entram no Lottie: texto depende de fontes instaladas no app."),2700);
   }catch(e){toast("Não consegui gerar o Lottie.")}
 });
-$("exNote").textContent=(window.VideoEncoder?"O vídeo sai em MP4 (H.264), quadro a quadro. ":"Este navegador grava o vídeo em tempo real; a duração da exportação é a da animação. ")+"O GIF sai a 25 quadros por segundo, com até 256 cores.";
+$("exNote").textContent=window.VideoEncoder?gg.L("O vídeo sai em MP4 (H.264), quadro a quadro. ","The video is exported as MP4 (H.264), frame by frame. "):gg.L("Este navegador grava o vídeo em tempo real; a duração da exportação é a da animação. ","This browser records the video in real time; the export takes as long as the animation. ");$("exNote").textContent+=gg.L("O GIF sai a 25 quadros por segundo, com até 256 cores.","The GIF is exported at 25 frames per second, with up to 256 colors.");
 
 let tt;function toast(msg){$("toastHost").innerHTML=`<div class="toast" role="status">${msg.replace(/[<&]/g,c=>c==="<"?"&lt;":"&amp;")}</div>`;clearTimeout(tt);tt=setTimeout(()=>$("toastHost").innerHTML="",3200)}
 

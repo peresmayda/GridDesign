@@ -6,6 +6,7 @@
 <meta name="description" content="Gere o grid de construção de um logo a partir do SVG: guias, diagonais com ângulo, círculos, nós e alças Bézier. Exporta SVG em camadas e PNG.">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>GridGrid</title>
+<script src="../i18n.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700;800&display=swap">
@@ -279,6 +280,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
     <div class="hstats" id="hstats" aria-live="polite"></div>
     <button class="btn" id="resetBtn">Resetar</button>
     <a class="btn anim" id="animBtn" href="animar.html">Animar o grid<span class="pro">Pro</span></a>
+    <div data-lang-switch style="align-self:flex-end"></div>
   </header>
 
   <div class="work">
@@ -627,7 +629,7 @@ function cluster(vals,tol,minHits){
   for(const v of vals){if(grp.length&&v-grp[grp.length-1]>tol)flush();grp.push(v)}
   if(grp.length)flush();return out;
 }
-const fmt=(v,d=1)=>{const r=Math.round(v*10**d)/10**d;return(Object.is(r,-0)?0:r).toLocaleString("pt-BR",{maximumFractionDigits:d})};
+const fmt=(v,d=1)=>{const r=Math.round(v*10**d)/10**d;return(Object.is(r,-0)?0:r).toLocaleString(gg.loc,{maximumFractionDigits:d})};
 function buildAuto(g){
   const tol=Math.max(g.size*S.tol/100,g.size*1e-4);
   let pts=g.anchors.slice();if(S.ext)pts=pts.concat(g.extrema);
@@ -704,8 +706,8 @@ function setLogo(text,name){
   try{if(isSample)localStorage.removeItem("malha:logo");else if(text.length<400000)localStorage.setItem("malha:logo",JSON.stringify({text,name}))}catch(e){}
   $("fname").textContent=name;
   $("removeLogo").hidden=isSample;$("pick").classList.toggle("wide",isSample);
-  const w=[];if(G.flags.hasText)w.push("Há texto não convertido em contorno; ele ficou de fora.");
-  if(G.flags.hasUse)w.push("Há elementos <use> (símbolos reutilizados); eles ficaram de fora. Expanda-os antes de exportar o SVG.");
+  const w=[];if(G.flags.hasText)w.push(gg.t("Há texto não convertido em contorno; ele ficou de fora."));
+  if(G.flags.hasUse)w.push(gg.t("Há elementos <use> (símbolos reutilizados); eles ficaram de fora. Expanda-os antes de exportar o SVG."));
   $("warn").hidden=!w.length;$("warn").textContent=w.join(" ");
   regen();return true;
 }
@@ -823,9 +825,9 @@ function render(){
   const C=VIS.counts,on=k=>S.show[k]?C[k][0]:0;
   $("hstats").innerHTML=`<span class="st">Nós<sup>${on("nodes")}</sup></span><span class="st">Guias<sup>${on("guides")}</sup></span><span class="st">Diagonais<sup>${on("diag")}</sup></span><span class="st">Círculos<sup>${on("circles")}</sup></span><span class="st dim">${F.W} × ${F.H}<sup>px</sup></span>`;
   for(const el of ELS){const o=document.querySelector(`[data-cnt="${el.k}"]`);if(!o)continue;
-    const c=C[el.k];o.textContent=c?`${c[0]} de ${c[1]}`:"";
+    const c=C[el.k];o.textContent=c?`${c[0]} ${gg.L("de","of")} ${c[1]}`:"";
     o.closest(".el").classList.toggle("off",!S.show[el.k])}
-  $("fmeta").textContent=`${G.shapes.length} ${G.shapes.length===1?"forma":"formas"}, caixa de ${fmt(G.bbox.w)} × ${fmt(G.bbox.h)} unidades`;
+  $("fmeta").textContent=gg.L(`${G.shapes.length} ${G.shapes.length===1?"forma":"formas"}, caixa de ${fmt(G.bbox.w)} × ${fmt(G.bbox.h)} unidades`,`${G.shapes.length} ${G.shapes.length===1?"shape":"shapes"}, ${fmt(G.bbox.w)} × ${fmt(G.bbox.h)} unit bounding box`);
   syncPos();updateReadout();save();
 }
 /* régua: escala do quadro em px, com a extensão do logo marcada */
@@ -850,15 +852,15 @@ function updateReadout(){
   const r=$("readout");$("hideSel").disabled=!SEL;
   if(MODE==="h")return r.textContent="Clique para posicionar a guia horizontal. Ela encaixa nos pontos.";
   if(MODE==="v")return r.textContent="Clique para posicionar a guia vertical. Ela encaixa nos pontos.";
-  if(MODE==="move")return r.textContent=`Arraste para mover o logo · X ${fmt(S.offX*100,1)}% · Y ${fmt(S.offY*100,1)}%`;
+  if(MODE==="move")return r.textContent=gg.L("Arraste para mover o logo","Drag to move the logo")+` · X ${fmt(S.offX*100,1)}% · Y ${fmt(S.offY*100,1)}%`;
   if(MODE==="d")return r.textContent=dA?"Clique no segundo ponto da diagonal.":"Clique no primeiro ponto da diagonal.";
   if(!SEL){r.textContent="Clique numa guia para selecionar. Arraste guias retas para mover.";return}
   const g=findGuide(SEL.key);if(!g){SEL=null;return updateReadout()}
-  const src=g.key.startsWith("m")?"manual":"automática";
-  if(g.kind==="h")r.textContent=`Horizontal ${src} · y ${fmt(g.v,2)}`+(g.n?` · ${g.n} pontos`:"");
-  else if(g.kind==="v")r.textContent=`Vertical ${src} · x ${fmt(g.v,2)}`+(g.n?` · ${g.n} pontos`:"");
-  else if(g.kind==="d")r.textContent=`Diagonal ${src} · ${g.deg} do eixo mais próximo`;
-  else r.textContent=`Círculo · raio ${fmt(g.r,2)} · centro ${fmt(g.c[0])}, ${fmt(g.c[1])}`;
+  const src=g.key.startsWith("m")?"manual":gg.L("automática","automatic");const P_=gg.L("pontos","points");
+  if(g.kind==="h")r.textContent=gg.L(`Horizontal ${src}`,`${src[0].toUpperCase()+src.slice(1)} horizontal`)+` · y ${fmt(g.v,2)}`+(g.n?` · ${g.n} ${P_}`:"");
+  else if(g.kind==="v")r.textContent=gg.L(`Vertical ${src}`,`${src[0].toUpperCase()+src.slice(1)} vertical`)+` · x ${fmt(g.v,2)}`+(g.n?` · ${g.n} ${P_}`:"");
+  else if(g.kind==="d")r.textContent=gg.L(`Diagonal ${src} · ${g.deg} do eixo mais próximo`,`${src[0].toUpperCase()+src.slice(1)} diagonal · ${g.deg} from the nearest axis`);
+  else r.textContent=gg.L(`Círculo · raio ${fmt(g.r,2)} · centro ${fmt(g.c[0])}, ${fmt(g.c[1])}`,`Circle · radius ${fmt(g.r,2)} · center ${fmt(g.c[0])}, ${fmt(g.c[1])}`);
 }
 function setMode(m){MODE=m;dA=null;document.querySelectorAll(".tool[data-mode]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===m));
   $("stage").className="stage m-"+m;clearGhost();updateReadout()}
@@ -866,7 +868,7 @@ document.querySelectorAll(".tool[data-mode]").forEach(b=>b.addEventListener("cli
 function hideSel(){if(!SEL)return;const k=SEL.key;
   if(k.startsWith("m"))MANUAL=MANUAL.filter(g=>g.key!==k);else HIDDEN.add(k);SEL=null;render()}
 $("hideSel").addEventListener("click",hideSel);
-$("restore").addEventListener("click",()=>{const n=HIDDEN.size;HIDDEN.clear();render();toast(n?`${n} guia${n>1?"s":""} restaurada${n>1?"s":""}`:"Nenhuma guia oculta")});
+$("restore").addEventListener("click",()=>{const n=HIDDEN.size;HIDDEN.clear();render();toast(n?gg.L(`${n} guia${n>1?"s":""} restaurada${n>1?"s":""}`,`${n} guide${n>1?"s":""} restored`):"Nenhuma guia oculta")});
 document.addEventListener("keydown",e=>{
   if(/input|select|textarea/i.test(e.target.tagName))return;
   if(e.key==="Escape"){setMode("select");if(SEL){SEL=null;render()}}
@@ -1157,7 +1159,7 @@ let tt;function toast(msg){const h=$("toastHost");h.innerHTML=`<div class="toast
 /* ---------- boot ---------- */
 syncUI();
 let booted=false;
-try{const r=localStorage.getItem("malha:logo");if(r){const o=JSON.parse(r);booted=setLogo(o.text,o.name);if(booted&&o.name!==SAMPLE_NAME)toast("Último logo aberto: "+o.name)}}catch(e){}
+try{const r=localStorage.getItem("malha:logo");if(r){const o=JSON.parse(r);booted=setLogo(o.text,o.name);if(booted&&o.name!==SAMPLE_NAME)toast(gg.L("Último logo aberto: ","Last logo opened: ")+o.name)}}catch(e){}
 if(!booted)setLogo(SAMPLE,SAMPLE_NAME);
 requestAnimationFrame(render);
 })();

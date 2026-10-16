@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>GridGrid</title>
+<script src="i18n.js"></script>
 <meta name="description" content="Suba o SVG do seu logo e receba o grid de construção: guias, diagonais com ângulo, círculos, nós e alças Bézier. Gratuito, direto no navegador.">
 <meta property="og:title" content="GridGrid">
 <meta property="og:description" content="Suba o SVG. Receba o grid de construção do seu logo.">
@@ -265,7 +266,9 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
 }
 @media (max-width:640px){
   .nav-links{display:none}
-  .nav .pill{margin-left:auto;height:40px;padding:0 16px;font-size:14px}
+  .nav{gap:12px}
+  .nav>.pill{display:none}
+  .nav .langsw{margin-left:auto}
   .demo{padding:14px 14px 12px;border-radius:24px}
   .step{grid-template-columns:minmax(0,1fr)}
   .step .art{grid-column:1;grid-row:auto;width:120px;justify-self:start}
@@ -298,6 +301,7 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
       <a href="#animacao">Animação</a>
     </div>
     <a class="pill" href="app/index.html">Abrir o GridGrid</a>
+    <div data-lang-switch></div>
   </nav>
 
   <header class="hero">

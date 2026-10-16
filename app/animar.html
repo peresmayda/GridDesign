@@ -447,21 +447,39 @@ function render(ctx,t,k,withBg){
 }
 
 /* ---------- prévia ---------- */
-const view=$("view"),vctx=view.getContext("2d");let viewK=1;
+const view=$("view"),vctx=view.getContext("2d");let viewK=1,viewDpr=1,viewCssW=600;
+/* marca "feito com GridGrid" no canto da prévia, só para quem não tem o Pro (as exportações não passam por aqui) */
+const WM_COLORS=["#D4BC00","#8EA6E4","#E07FD3","#5FA37F"];
+function drawMark(ctx){
+  if(document.documentElement.classList.contains("gg-pro"))return;
+  const s=Math.max(1,Math.min(1.6,viewCssW/560)),d=viewDpr;
+  ctx.save();ctx.setTransform(d*s,0,0,d*s,0,0);ctx.globalAlpha=1;ctx.setLineDash([]);
+  const W=view.width/(d*s),H=view.height/(d*s),lead=gg.L("feito com ","made with ");
+  ctx.textBaseline="middle";
+  ctx.font=`500 10.5px ${LABEL_FONT}`;const w1=ctx.measureText(lead).width;
+  ctx.font=`800 11.5px ${LABEL_FONT}`;const parts=["Grid","G","r","i","d"],ws=parts.map(t=>ctx.measureText(t).width);
+  const tw=w1+ws.reduce((a,b)=>a+b,0)-.3*parts.length,pw=tw+16,ph=22,x=W-10-pw,y=H-10-ph;
+  ctx.fillStyle="rgba(255,255,255,.78)";ctx.beginPath();ctx.roundRect(x,y,pw,ph,11);ctx.fill();
+  let cx=x+8;const cy=y+ph/2+.5;
+  ctx.font=`500 10.5px ${LABEL_FONT}`;ctx.fillStyle="#000";ctx.fillText(lead,cx,cy);cx+=w1;
+  ctx.font=`800 11.5px ${LABEL_FONT}`;
+  parts.forEach((t,i)=>{ctx.fillStyle=i?WM_COLORS[i-1]:"#000";ctx.fillText(t,cx,cy);cx+=ws[i]-.3});
+  ctx.restore();
+}
 function fitView(){
   if(!SC)return;const st=$("stage"),cs=getComputedStyle(st);
   const aw=st.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
   let ah=st.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
   if(matchMedia("(max-width:1180px)").matches)ah=aw*1.1;
   const k=Math.max(.05,Math.min(aw/SC.W,ah/SC.H));const w=Math.floor(SC.W*k),h=Math.floor(SC.H*k);const dpr=Math.min(2,window.devicePixelRatio||1);
-  view.style.width=w+"px";view.style.height=h+"px";view.width=Math.round(w*dpr);view.height=Math.round(h*dpr);viewK=k*dpr;
+  view.style.width=w+"px";view.style.height=h+"px";view.width=Math.round(w*dpr);view.height=Math.round(h*dpr);viewK=k*dpr;viewDpr=dpr;viewCssW=w;
   view.classList.toggle("checker",SC.transparent);
 }
 let playing=true,tNow=0,last=0;
 function frame(ts){
   if(!last)last=ts;const dt=(ts-last)/1000;last=ts;
   const D=totalDur();if(playing&&!busy){tNow+=dt;if(tNow>D)tNow=isLoop()?tNow%D:0}
-  if(SC){render(vctx,Math.min(tNow,D),viewK,!SC.transparent);updateClock(D)}
+  if(SC){render(vctx,Math.min(tNow,D),viewK,!SC.transparent);drawMark(vctx);updateClock(D)}
   requestAnimationFrame(frame);
 }
 const fmtS=v=>(Math.round(v*10)/10).toLocaleString(gg.loc,{minimumFractionDigits:1,maximumFractionDigits:1})+" s";

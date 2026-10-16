@@ -7,7 +7,8 @@
   "use strict";
   var SUPABASE_URL="https://paijzdsdagjwdzhvmnto.supabase.co";
   var SUPABASE_KEY="sb_publishable_IR-h16ZR0YobwYnyrKgQrg_CnKjioQI"; // chave pública: pode ficar no site
-  var CHECKOUT_URL=""; // link de compra: entra quando a plataforma de pagamento for escolhida
+  var CHECKOUT_URL="";
+  var GOOGLE_ON=false; // liga quando o login com Google estiver configurado no Supabase // link de compra: entra quando a plataforma de pagamento for escolhida
   var L=function(pt,en){return window.gg?gg.L(pt,en):pt};
 
   var api={user:null,isPro:false,ready:false,client:null};
@@ -97,12 +98,11 @@
     var box=modal(
       '<h2>Entrar<span>sem senha</span></h2>'+
       '<p>Use a mesma conta do e-mail com que você comprou o Pro.</p>'+
-      '<button class="ggb google" type="button" data-g>'+G_ICON+'<span>Continuar com o Google</span></button>'+
-      '<div class="or">ou</div>'+
+      (GOOGLE_ON?'<button class="ggb google" type="button" data-g>'+G_ICON+'<span>Continuar com o Google</span></button><div class="or">ou</div>':'')+
       '<form novalidate><input type="email" id="ggEmail" autocomplete="email" required placeholder="seu@email.com" aria-label="E-mail">'+
       '<button class="ggb ink" type="submit">Enviar link de acesso</button><p class="msg" aria-live="polite"></p></form>');
     var msg=box.querySelector(".msg");
-    box.querySelector("[data-g]").addEventListener("click",async function(){
+    var gb=box.querySelector("[data-g]");if(gb)gb.addEventListener("click",async function(){
       if(!sb){msg.className="msg err";msg.textContent=L("Não foi possível conectar. Tente de novo em instantes.","Couldn't connect. Try again in a moment.");return}
       try{sessionStorage.setItem("gg:after",after||"")}catch(e){}
       var r=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:redirectTo()}});

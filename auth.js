@@ -147,16 +147,28 @@
     box.querySelector("[data-out]").addEventListener("click",async function(){if(sb)await sb.auth.signOut();api.user=null;api.isPro=false;try{localStorage.removeItem(PRO_CACHE)}catch(e){}box.close();emit()});
   }
 
+  /* preço, compra e lista de espera: usados pelo card do Pro e pela landing */
+  function fmtPrice(v){return (window.gg&&gg.lang==="en")?"US$\u00a0"+v:"R$\u00a0"+v}
+  api.price=function(){var en=window.gg&&gg.lang==="en";return{full:fmtPrice(en?PRICE.usd:PRICE.brl),launch:fmtPrice(en?PRICE.launchUsd:PRICE.launchBrl),isLaunch:PRICE.LAUNCH}};
+  api.checkoutUrl=function(){if(!CHECKOUT_URL)return "";var e=api.user&&api.user.email;return CHECKOUT_URL+(e?(CHECKOUT_URL.indexOf("?")<0?"?":"&")+"email="+encodeURIComponent(e):"")};
+  api.waitlisted=function(){try{return localStorage.getItem("gg:wait")}catch(e){return null}};
+  api.joinWaitlist=async function(email){
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return{ok:false,msg:L("Confira o e-mail: ele parece incompleto.","Check the email address: it looks incomplete.")};
+    if(!sb)return{ok:false,msg:L("Não foi possível conectar. Tente de novo em instantes.","Couldn't connect. Try again in a moment.")};
+    var r=await sb.from("pro_waitlist").insert({email:email,lang:(window.gg&&gg.lang==="en")?"en":"pt",page:location.pathname.slice(0,120)});
+    if(r.error&&r.error.code!=="23505")return{ok:false,msg:L("Não consegui salvar. Tente de novo em instantes.","Couldn't save it. Try again in a moment.")};
+    try{localStorage.setItem("gg:wait",email)}catch(e){}
+    return{ok:true,msg:L("Pronto. Avisamos em "+email+" quando a venda abrir.","Done. We'll email "+email+" when sales open.")};
+  };
+
   /* janela do Pro: aparece quando falta o Pro para exportar */
   function openPro(){
     return new Promise(function(resolve){
       var logged=!!api.user;
-      var buy=CHECKOUT_URL?'<a class="ggb lime" data-buy href="'+esc(CHECKOUT_URL+(logged&&api.user.email?(CHECKOUT_URL.indexOf("?")<0?"?":"&")+"email="+encodeURIComponent(api.user.email):""))+'" target="_blank" rel="noopener">Comprar o Pro</a>'
+      var buy=CHECKOUT_URL?'<a class="ggb lime" data-buy href="'+esc(api.checkoutUrl())+'" target="_blank" rel="noopener">Comprar o Pro</a>'
                          :'<button class="ggb lime" type="button" data-wait>Me avise quando abrir</button>';
-      var en=window.gg&&gg.lang==="en";
-      var fmtP=function(v){return en?"US$\u00a0"+v:"R$\u00a0"+v};
-      var full=en?PRICE.usd:PRICE.brl,launch=en?PRICE.launchUsd:PRICE.launchBrl;
-      var price='<div class="ggprice">'+(PRICE.LAUNCH?'<s>'+fmtP(full)+'</s><b>'+fmtP(launch)+'</b><em>'+L("Preço de lançamento","Launch price")+'</em>':'<b>'+fmtP(full)+'</b>')+
+      var pr=api.price();
+      var price='<div class="ggprice">'+(pr.isLaunch?'<s>'+pr.full+'</s><b>'+pr.launch+'</b><em>'+L("Preço de lançamento","Launch price")+'</em>':'<b>'+pr.full+'</b>')+
         '<small>'+L("Pagamento único. Sem assinatura, sem limite de exportações.","One-time payment. No subscription, no export limit.")+'</small></div>';
       var box=modal(
         '<span class="pro">Pro</span>'+
@@ -169,21 +181,17 @@
       var done=false;box._onclose=function(){if(!done){done=true;resolve(api.isPro)}};
       var msg=box.querySelector(".msg");
       var wb=box.querySelector("[data-wait]");if(wb){
-        var joined=null;try{joined=localStorage.getItem("gg:wait")}catch(e){}
+        var joined=api.waitlisted();
         if(joined){wb.disabled=true;wb.textContent=L("Você está na lista","You're on the list");msg.textContent=L("Avisamos em "+joined+" quando a venda abrir.","We'll email "+joined+" when sales open.")}
         else wb.addEventListener("click",function(){
           var row=wb.parentNode;var f=document.createElement("form");f.className="wait";f.noValidate=true;
           f.innerHTML='<input type="email" autocomplete="email" required placeholder="'+esc(L("seu@email.com","you@email.com"))+'" aria-label="E-mail" value="'+esc(api.user&&api.user.email||"")+'"><button class="ggb lime" type="submit">'+esc(L("Avisar","Notify me"))+'</button>';
           row.parentNode.insertBefore(f,row);wb.remove();var inp=f.querySelector("input");inp.focus();
           f.addEventListener("submit",async function(e){
-            e.preventDefault();var email=inp.value.trim();
-            if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){msg.className="msg err";msg.textContent=L("Confira o e-mail: ele parece incompleto.","Check the email address: it looks incomplete.");return}
-            if(!sb){msg.className="msg err";msg.textContent=L("Não foi possível conectar. Tente de novo em instantes.","Couldn't connect. Try again in a moment.");return}
-            var b=f.querySelector("button");b.disabled=true;msg.className="msg";msg.textContent=L("Enviando…","Sending…");
-            var r=await sb.from("pro_waitlist").insert({email:email,lang:(window.gg&&gg.lang==="en")?"en":"pt",page:location.pathname.slice(0,120)});
-            if(r.error&&r.error.code!=="23505"){b.disabled=false;msg.className="msg err";msg.textContent=L("Não consegui salvar. Tente de novo em instantes.","Couldn't save it. Try again in a moment.");return}
-            try{localStorage.setItem("gg:wait",email)}catch(e){}
-            f.remove();msg.className="msg";msg.textContent=L("Pronto. Avisamos em "+email+" quando a venda abrir.","Done. We'll email "+email+" when sales open.");
+            e.preventDefault();var b=f.querySelector("button");b.disabled=true;msg.className="msg";msg.textContent=L("Enviando…","Sending…");
+            var r=await api.joinWaitlist(inp.value.trim());
+            if(!r.ok){b.disabled=false;msg.className="msg err";msg.textContent=r.msg;return}
+            f.remove();msg.className="msg";msg.textContent=r.msg;
           });
         });
       }

@@ -38,7 +38,7 @@
     "O grid vira vídeo, GIF ou Lottie. Escolha um dos quatro estilos, ajuste o tempo de cada camada e exporte em até 4K.":"Turn the grid into video, GIF or Lottie. Pick one of four styles, time each layer and export up to 4K.",
     "Desenhar":"Draw","contorno e guias traço a traço":"outline and guides, stroke by stroke","Construir":"Build","estrutura primeiro, forma por último":"structure first, shape last",
     "Revelar":"Reveal","o grid some e fica o logo":"the grid fades, the logo stays","Loop contínuo":"Continuous loop","linhas correndo, para fundo de vídeo":"running lines, for video backgrounds",
-    "Ver a animação":"See the animation","Abra o seu SVG":"Open your SVG","e veja o grid.":"and see the grid.",
+    "Ver a animação":"See the animation","O grid também se mexe.":"The grid moves too.","Uma compra":"One purchase","e o grid ganha movimento.":"and the grid starts to move.","Testar a animação":"Try the animation","Me avise quando abrir":"Notify me when it opens","Você está na lista":"You're on the list","Preço de lançamento":"Launch price","Pagamento único. Sem assinatura, sem limite de exportações. O grid continua grátis.":"One-time payment. No subscription, no export limit. The grid stays free.","Seu Pro está ativo":"Your Pro is active","Abra o seu SVG":"Open your SVG","e veja o grid.":"and see the grid.",
     "Funciona no navegador. Nenhum arquivo é enviado para servidor.":"Runs in your browser. No file is sent to a server.",
     "Principal":"Main","Grid de construção sendo desenhado sobre um logo de exemplo":"Construction grid being drawn over a sample logo","Em resumo":"At a glance",
     "Gratuito, direto no navegador.":"Free, right in the browser.",

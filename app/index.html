@@ -208,17 +208,23 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
 
 /* selo Pro */
 .pro{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;background:var(--lime);color:var(--ink);font-weight:800;font-size:11px;letter-spacing:.01em;margin-left:8px}
-/* saída para a animação: os painéis abrem espaço para o grid */
-.app>aside,.app>.top,.toolbar,.stage{transition:transform .5s cubic-bezier(.6,0,.2,1),opacity .4s ease}
-.app.leaving .side-l{transform:translateX(-110%);opacity:0}
-.app.leaving .side-r{transform:translateX(110%);opacity:0}
-.app.leaving .toolbar{opacity:0;transform:translateY(-12px)}
-.app.leaving .stage{transform:scale(1.03)}
 /* pop-up depois da primeira exportação */
 .promo{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.42);animation:pfade .3s ease both}
 .promo-card{width:min(980px,100%);max-height:calc(100vh - 40px);overflow:auto;background:var(--ink);color:#fff;border-radius:32px;padding:14px;
   display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;animation:prise .5s cubic-bezier(.2,.8,.2,1) both}
-.promo-art{border-radius:22px;overflow:hidden;line-height:0;align-self:center}
+.promo-art{border-radius:22px;overflow:hidden;line-height:0;align-self:center;position:relative}
+/* prévia limitada: congela no meio da construção e indica que continua no Pro */
+.promo-art.frozen *{animation-play-state:paused!important}
+.promo-cut{position:absolute;left:50%;bottom:18px;transform:translate(-50%,8px);opacity:0;transition:opacity .35s ease,transform .35s ease;pointer-events:none;
+  display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 6px 0 14px;border-radius:17px;background:var(--ink);color:#fff;font:700 13px/1 var(--type);white-space:nowrap}
+.promo-cut .pro{margin:0;height:22px}
+.promo-art.frozen .promo-cut{opacity:1;transform:translate(-50%,0)}
+.promo-art.rm .p-nos,.promo-art.rm .p-alcas,.promo-art.rm .p-circulos,.promo-art.rm .p-diagonais,.promo-art.rm .p-rotulos{opacity:0}
+.promo-art.frozen svg{filter:saturate(.9);opacity:.92;transition:opacity .35s ease}
+.promo-wm{position:absolute;right:10px;bottom:10px;display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:11px;
+  background:rgba(255,255,255,.72);color:#000;font:500 10.5px/1 var(--type);letter-spacing:.01em;pointer-events:none;backdrop-filter:blur(4px)}
+.promo-wm b{font-weight:800;letter-spacing:-.03em;font-size:11.5px}
+.promo-wm b i{font-style:normal}.promo-wm .c1{color:#D4BC00}.promo-wm .c2{color:var(--blue)}.promo-wm .c3{color:#E07FD3}.promo-wm .c4{color:#5FA37F}
 .promo-art svg{width:100%;height:auto;display:block}
 .promo-copy{display:flex;flex-direction:column;gap:16px;padding:18px 16px 14px 8px;justify-content:center}
 .promo-copy .pro{margin:0;align-self:flex-start;height:24px;padding:0 10px;font-size:12px}
@@ -247,7 +253,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
 @keyframes pdraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
 @keyframes ppop{from{transform:scale(0)}to{transform:scale(1)}}
 @media (max-width:760px){.promo-card{grid-template-columns:minmax(0,1fr)}.promo-copy{padding:6px 8px 10px}}
-@media (prefers-reduced-motion:reduce){.promo,.promo-card,.promo-art *{animation:none!important}.app>aside,.app>.top,.toolbar,.stage{transition:none}}
+@media (prefers-reduced-motion:reduce){.promo,.promo-card,.promo-art *{animation:none!important}}
 @media (max-width:1180px){
   .app{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;grid-template-areas:"top top" "work work" "left right";height:auto;row-gap:14px}
   .stage{flex:none;min-height:0}
@@ -1053,9 +1059,7 @@ $("pick").addEventListener("click",()=>$("fileIn").click());
 function goAnimate(){
   try{localStorage.setItem("malha:scene",JSON.stringify({svg:buildSVG(false),bg:S.bg,transparent:!!S.transparent,name:fileName,W:F.W,H:F.H}))}
   catch(err){toast("Não consegui levar o grid para a animação. O arquivo pode ser grande demais.");return}
-  try{sessionStorage.setItem("malha:intro","1")}catch(e){}
-  if(matchMedia("(prefers-reduced-motion: reduce)").matches){location.href="animar.html";return}
-  document.querySelector(".app").classList.add("leaving");setTimeout(()=>location.href="animar.html",480);
+  location.href="animar.html";
 }
 $("animBtn").addEventListener("click",e=>{e.preventDefault();goAnimate()});
 /* pop-up da animação: aparece uma vez, logo depois da primeira exportação */
@@ -1067,7 +1071,7 @@ function maybePromo(){
 function showPromo(){
   const svg=buildSVG(false).replace(/ id="([a-z]+)"/g,' class="p-$1"');
   const box=document.createElement("div");box.className="promo";box.setAttribute("role","dialog");box.setAttribute("aria-modal","true");box.setAttribute("aria-labelledby","promoT");
-  box.innerHTML=`<div class="promo-card"><div class="promo-art play" style="background:${S.bg}">${svg}</div>
+  box.innerHTML=`<div class="promo-card"><div class="promo-art play" style="background:${S.bg}">${svg}<span class="promo-cut">Continua no<span class="pro">Pro</span></span><span class="promo-wm">feito com <b>Grid<i class="c1">G</i><i class="c2">r</i><i class="c3">i</i><i class="c4">d</i></b></span></div>
     <div class="promo-copy"><span class="pro">Pro</span><h2 id="promoT">Seu grid<span>também se mexe.</span></h2>
     <p>Transforme este grid em vídeo, GIF ou Lottie. São quatro estilos de movimento, com o tempo de cada camada ajustável e exportação em até 4K.</p>
     <div class="acts"><button class="btn go" id="promoGo">Animar este grid</button><button class="btn no" id="promoNo">Agora não</button></div></div></div>`;
@@ -1082,7 +1086,11 @@ function showPromo(){
   box.querySelector("#promoGo").addEventListener("click",()=>{close();goAnimate()});
   box.querySelector("#promoGo").focus();
   if(!matchMedia("(prefers-reduced-motion: reduce)").matches){
-    const cycle=()=>{promoTimer=setTimeout(()=>{art.classList.add("out");promoTimer=setTimeout(()=>{art.classList.remove("play","out");void art.offsetWidth;art.classList.add("play");cycle()},650)},6000)};cycle()}
+    // toca só o começo (contorno e primeiras guias), congela, mostra o aviso e recomeça
+    const cycle=()=>{promoTimer=setTimeout(()=>{art.classList.add("frozen");
+      promoTimer=setTimeout(()=>{art.classList.add("out");
+        promoTimer=setTimeout(()=>{art.classList.remove("play","out","frozen");void art.offsetWidth;art.classList.add("play");cycle()},650)},2800)},1500)};cycle()}
+  else art.classList.add("frozen","rm");
 }
 $("removeLogo").addEventListener("click",()=>{if(setLogo(SAMPLE,SAMPLE_NAME))toast("Logo removido. O exemplo voltou.")});
 $("fileIn").addEventListener("change",async e=>{const f=e.target.files[0];if(f)readFile(f);e.target.value=""});

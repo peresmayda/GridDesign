@@ -144,13 +144,6 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
 .progress i{display:block;height:100%;width:0;background:var(--lime);transition:width .1s}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:12px 20px;border-radius:24px;font-size:14px;font-weight:500;z-index:6;max-width:calc(100vw - 32px)}
 
-/* chegada vinda do gerador: o grid se redesenha sozinho e os controles entram depois */
-.side-l,.side-r,.transport,.steps{transition:transform .7s cubic-bezier(.2,.8,.2,1),opacity .5s ease}
-body.intro .side-l{transform:translateX(-110%);opacity:0}
-body.intro .side-r{transform:translateX(110%);opacity:0}
-body.intro .transport{transform:translateY(24px);opacity:0}
-body.intro .steps{opacity:0}
-.side-r{transition-delay:.08s}.transport{transition-delay:.16s}
 .pro{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;background:var(--lime);color:var(--ink);font-weight:800;font-size:11px;margin-left:8px}
 @media (max-width:1180px){
   .app{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;grid-template-areas:"top top" "work work" "left right";height:auto;row-gap:14px}
@@ -721,8 +714,6 @@ $("exNote").textContent=(window.VideoEncoder?"O vídeo sai em MP4 (H.264), quadr
 let tt;function toast(msg){$("toastHost").innerHTML=`<div class="toast" role="status">${msg.replace(/[<&]/g,c=>c==="<"?"&lt;":"&amp;")}</div>`;clearTimeout(tt);tt=setTimeout(()=>$("toastHost").innerHTML="",3200)}
 
 /* ---------- início ---------- */
-let intro=false;try{intro=sessionStorage.getItem("malha:intro")==="1";sessionStorage.removeItem("malha:intro")}catch(e){}
-if(intro&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.body.classList.add("intro");setTimeout(()=>document.body.classList.remove("intro"),2600)}
 SC=readScene();$("sampleNote").hidden=!usingSample;
 // camadas que não existem neste grid ficam desligadas
 orderItems();buildStyles();buildLayers();setPlaying(true);refresh();fitView();

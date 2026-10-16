@@ -281,7 +281,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
     <h1 class="mark"><a href="../" aria-label="GridGrid, página inicial">Grid<span aria-hidden="true"><i class="c1">G</i><i class="c2">r</i><i class="c3">i</i><i class="c4">d</i></span></a></h1>
     <div class="hstats" id="hstats" aria-live="polite"></div>
     <button class="btn" id="resetBtn">Resetar</button>
-    <a class="btn anim" id="animBtn" href="animar.html">Animar o grid<span class="pro" data-pro-tag>Pro</span></a>
+    <a class="btn anim" id="animBtn" href="/app/animar.html">Animar o grid<span class="pro" data-pro-tag>Pro</span></a>
     <div data-account style="align-self:flex-end"></div>
     <div data-lang-switch style="align-self:flex-end"></div>
   </header>
@@ -1065,7 +1065,7 @@ $("pick").addEventListener("click",()=>$("fileIn").click());
 function goAnimate(){
   try{localStorage.setItem("malha:scene",JSON.stringify({svg:buildSVG(false),bg:S.bg,transparent:!!S.transparent,name:fileName,W:F.W,H:F.H}))}
   catch(err){toast("Não consegui levar o grid para a animação. O arquivo pode ser grande demais.");return}
-  location.href="animar.html";
+  location.href="/app/animar.html";
 }
 $("animBtn").addEventListener("click",e=>{e.preventDefault();goAnimate()});
 /* pop-up da animação: aparece uma vez, logo depois da primeira exportação */

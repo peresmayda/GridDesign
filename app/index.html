@@ -205,6 +205,49 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
 .modal textarea{width:100%;min-height:240px;font:12px/1.4 ui-monospace,Menlo,monospace;background:#fff;color:var(--ink);border:0;border-radius:12px;padding:10px}
 .modal .btn{justify-self:start}
 
+
+/* selo Pro */
+.pro{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;background:var(--lime);color:var(--ink);font-weight:800;font-size:11px;letter-spacing:.01em;margin-left:8px}
+/* saída para a animação: os painéis abrem espaço para o grid */
+.app>aside,.app>.top,.toolbar,.stage{transition:transform .5s cubic-bezier(.6,0,.2,1),opacity .4s ease}
+.app.leaving .side-l{transform:translateX(-110%);opacity:0}
+.app.leaving .side-r{transform:translateX(110%);opacity:0}
+.app.leaving .toolbar{opacity:0;transform:translateY(-12px)}
+.app.leaving .stage{transform:scale(1.03)}
+/* pop-up depois da primeira exportação */
+.promo{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.42);animation:pfade .3s ease both}
+.promo-card{width:min(980px,100%);max-height:calc(100vh - 40px);overflow:auto;background:var(--ink);color:#fff;border-radius:32px;padding:14px;
+  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;animation:prise .5s cubic-bezier(.2,.8,.2,1) both}
+.promo-art{border-radius:22px;overflow:hidden;line-height:0;align-self:center}
+.promo-art svg{width:100%;height:auto;display:block}
+.promo-copy{display:flex;flex-direction:column;gap:16px;padding:18px 16px 14px 8px;justify-content:center}
+.promo-copy .pro{margin:0;align-self:flex-start;height:24px;padding:0 10px;font-size:12px}
+.promo-copy h2{margin:0;font-weight:800;font-size:clamp(30px,3.3vw,46px);line-height:.88;letter-spacing:-.05em;color:var(--lime)}
+.promo-copy h2 span{display:block;color:#76777B}
+.promo-copy p{margin:0;font-size:15px;line-height:1.45;color:#C9CACD;max-width:34ch}
+.promo-copy .acts{display:flex;gap:8px;flex-wrap:wrap}
+.promo-copy .btn{height:44px;padding:0 20px;border-radius:22px}
+.promo-copy .go{background:var(--lime);color:var(--ink)}
+.promo-copy .go:hover{background:#F0FF8A}
+.promo-copy .no{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.45)}
+@keyframes pfade{from{opacity:0}}
+@keyframes prise{from{opacity:0;transform:translateY(24px) scale(.98)}}
+.promo-art.play .p-contorno path,.promo-art.play .p-guias line,.promo-art.play .p-diagonais line,.promo-art.play .p-circulos circle,.promo-art.play .p-alcas line{stroke-dasharray:1;animation:pdraw .9s cubic-bezier(.55,0,.15,1) both}
+.promo-art.play .p-contorno path{animation-delay:calc(.15s + var(--i)*.08s)}
+.promo-art.play .p-guias line{animation-delay:calc(.55s + var(--i)*.035s)}
+.promo-art.play .p-diagonais line{animation-delay:calc(1.4s + var(--i)*.1s)}
+.promo-art.play .p-circulos circle{animation-delay:calc(1.6s + var(--i)*.09s)}
+.promo-art.play .p-alcas line{animation-delay:calc(2s + var(--i)*.02s)}
+.promo-art.play .p-alcas circle,.promo-art.play .p-nos circle,.promo-art.play .p-nos rect{transform-box:fill-box;transform-origin:center;animation:ppop .35s cubic-bezier(.3,1.6,.5,1) both}
+.promo-art.play .p-alcas circle{animation-delay:calc(2.2s + var(--i)*.02s)}
+.promo-art.play .p-nos circle,.promo-art.play .p-nos rect{animation-delay:calc(2.2s + var(--i)*.025s)}
+.promo-art.play .p-rotulos text{animation:pfade .5s ease both;animation-delay:2.8s}
+.promo-art .p-contorno,.promo-art .p-guias,.promo-art .p-diagonais,.promo-art .p-circulos,.promo-art .p-alcas,.promo-art .p-nos,.promo-art .p-rotulos{transition:opacity .6s ease}
+.promo-art.out .p-contorno,.promo-art.out .p-guias,.promo-art.out .p-diagonais,.promo-art.out .p-circulos,.promo-art.out .p-alcas,.promo-art.out .p-nos,.promo-art.out .p-rotulos{opacity:0}
+@keyframes pdraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes ppop{from{transform:scale(0)}to{transform:scale(1)}}
+@media (max-width:760px){.promo-card{grid-template-columns:minmax(0,1fr)}.promo-copy{padding:6px 8px 10px}}
+@media (prefers-reduced-motion:reduce){.promo,.promo-card,.promo-art *{animation:none!important}.app>aside,.app>.top,.toolbar,.stage{transition:none}}
 @media (max-width:1180px){
   .app{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;grid-template-areas:"top top" "work work" "left right";height:auto;row-gap:14px}
   .stage{flex:none;min-height:0}
@@ -229,7 +272,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
     <h1 class="mark"><a href="../" aria-label="GridGrid, página inicial">Grid<span aria-hidden="true"><i class="c1">G</i><i class="c2">r</i><i class="c3">i</i><i class="c4">d</i></span></a></h1>
     <div class="hstats" id="hstats" aria-live="polite"></div>
     <button class="btn" id="resetBtn">Resetar</button>
-    <a class="btn anim" id="animBtn" href="animar.html">Animar o grid</a>
+    <a class="btn anim" id="animBtn" href="animar.html">Animar o grid<span class="pro">Pro</span></a>
   </header>
 
   <div class="work">
@@ -1007,12 +1050,40 @@ function syncUI(){
 
 /* ---------- input: file, drop, paste ---------- */
 $("pick").addEventListener("click",()=>$("fileIn").click());
-$("animBtn").addEventListener("click",e=>{
-  e.preventDefault();
+function goAnimate(){
   try{localStorage.setItem("malha:scene",JSON.stringify({svg:buildSVG(false),bg:S.bg,transparent:!!S.transparent,name:fileName,W:F.W,H:F.H}))}
   catch(err){toast("Não consegui levar o grid para a animação. O arquivo pode ser grande demais.");return}
-  location.href="animar.html";
-});
+  try{sessionStorage.setItem("malha:intro","1")}catch(e){}
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){location.href="animar.html";return}
+  document.querySelector(".app").classList.add("leaving");setTimeout(()=>location.href="animar.html",480);
+}
+$("animBtn").addEventListener("click",e=>{e.preventDefault();goAnimate()});
+/* pop-up da animação: aparece uma vez, logo depois da primeira exportação */
+let promoTimer=null;
+function maybePromo(){
+  try{if(localStorage.getItem("malha:promo"))return;localStorage.setItem("malha:promo","1")}catch(e){return}
+  setTimeout(showPromo,900);
+}
+function showPromo(){
+  const svg=buildSVG(false).replace(/ id="([a-z]+)"/g,' class="p-$1"');
+  const box=document.createElement("div");box.className="promo";box.setAttribute("role","dialog");box.setAttribute("aria-modal","true");box.setAttribute("aria-labelledby","promoT");
+  box.innerHTML=`<div class="promo-card"><div class="promo-art play" style="background:${S.bg}">${svg}</div>
+    <div class="promo-copy"><span class="pro">Pro</span><h2 id="promoT">Seu grid<span>também se mexe.</span></h2>
+    <p>Transforme este grid em vídeo, GIF ou Lottie. São quatro estilos de movimento, com o tempo de cada camada ajustável e exportação em até 4K.</p>
+    <div class="acts"><button class="btn go" id="promoGo">Animar este grid</button><button class="btn no" id="promoNo">Agora não</button></div></div></div>`;
+  document.body.appendChild(box);
+  const art=box.querySelector(".promo-art");
+  ["p-guias","p-diagonais","p-circulos","p-contorno","p-alcas","p-nos","p-rotulos"].forEach(c=>{const g=art.querySelector("."+c);if(!g)return;
+    [...g.children].forEach((el,i)=>{el.style.setProperty("--i",i);if(/^(line|circle|path)$/.test(el.localName)&&c!=="p-nos")el.setAttribute("pathLength","1")})});
+  const close=()=>{clearTimeout(promoTimer);box.remove();document.removeEventListener("keydown",onKey)};
+  const onKey=e=>{if(e.key==="Escape")close()};document.addEventListener("keydown",onKey);
+  box.addEventListener("click",e=>{if(e.target===box)close()});
+  box.querySelector("#promoNo").addEventListener("click",close);
+  box.querySelector("#promoGo").addEventListener("click",()=>{close();goAnimate()});
+  box.querySelector("#promoGo").focus();
+  if(!matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const cycle=()=>{promoTimer=setTimeout(()=>{art.classList.add("out");promoTimer=setTimeout(()=>{art.classList.remove("play","out");void art.offsetWidth;art.classList.add("play");cycle()},650)},6000)};cycle()}
+}
 $("removeLogo").addEventListener("click",()=>{if(setLogo(SAMPLE,SAMPLE_NAME))toast("Logo removido. O exemplo voltou.")});
 $("fileIn").addEventListener("change",async e=>{const f=e.target.files[0];if(f)readFile(f);e.target.value=""});
 async function readFile(f){
@@ -1039,14 +1110,14 @@ async function offer(filename,data,fallback){
   if(!dl){ // site próprio: download direto pelo navegador
     try{const blob=data instanceof Blob?data:new Blob([data],{type:filename.endsWith(".svg")?"image/svg+xml":"application/octet-stream"});
       const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();
-      setTimeout(()=>URL.revokeObjectURL(u),4000);toast("Download iniciado")}catch(e){fallback()}
+      setTimeout(()=>URL.revokeObjectURL(u),4000);toast("Download iniciado");maybePromo()}catch(e){fallback()}
     return}
-  try{await dl.save({filename,data});toast("Arquivo salvo")}
+  try{await dl.save({filename,data});toast("Arquivo salvo");maybePromo()}
   catch(e){if(e&&e.code==="declined")return;if(e&&e.code==="rate_limited")return toast("Já há um download aguardando confirmação.");fallback()}
 }
 $("exSvg").addEventListener("click",()=>{const s=exportSVG();offer(baseName()+".svg",s,()=>showCode(s))});
 $("copySvg").addEventListener("click",()=>{const s=buildSVG(false);
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(()=>toast("SVG copiado. Cole no Figma ou no Illustrator."),()=>showCode(s))}else showCode(s)});
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(()=>{toast("SVG copiado. Cole no Figma ou no Illustrator.");maybePromo()},()=>showCode(s))}else showCode(s)});
 $("exPng2").addEventListener("click",()=>png(2));$("exPng4").addEventListener("click",()=>png(4));
 async function png(k){
   const s=buildSVG(false);const cw=Math.round(F.W*k),ch=Math.round(F.H*k);

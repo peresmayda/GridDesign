@@ -1019,7 +1019,7 @@ $("resetBtn").addEventListener("click",()=>{const b=$("resetBtn");
   if(!b.classList.contains("arm")){b.classList.add("arm");b.textContent="Confirmar reset";clearTimeout(resetT);
     resetT=setTimeout(()=>{b.classList.remove("arm");b.textContent="Resetar"},3500);return}
   clearTimeout(resetT);b.classList.remove("arm");b.textContent="Resetar";
-  try{localStorage.removeItem("malha:promo")}catch(e){}
+  try{localStorage.removeItem("malha:exports")}catch(e){}
   S=structuredClone(DEFAULTS);MANUAL=[];HIDDEN=new Set();SEL=null;setMode("select");syncUI();regen();
   toast("Ajustes, guias manuais e guias ocultas resetados. O logo continua carregado.")});
 $("s_ratio").addEventListener("change",e=>{S.ratio=e.target.value;render()});
@@ -1065,10 +1065,12 @@ function goAnimate(){
 $("animBtn").addEventListener("click",e=>{e.preventDefault();goAnimate()});
 /* pop-up da animação: aparece uma vez, logo depois da primeira exportação */
 let promoTimer=null;
-// abrir a ferramenta com #popup no endereço faz o pop-up aparecer de novo na próxima exportação
-if(location.hash==="#popup"){try{localStorage.removeItem("malha:promo")}catch(e){}}
+// o pop-up aparece na 3ª e na 5ª exportação; abrir com #popup no endereço faz ele aparecer na próxima
+const PROMO_AT=[3,5];
+let forcePromo=location.hash==="#popup";
 function maybePromo(){
-  try{if(localStorage.getItem("malha:promo"))return;localStorage.setItem("malha:promo","1")}catch(e){return}
+  let n=0;try{n=(parseInt(localStorage.getItem("malha:exports"),10)||0)+1;localStorage.setItem("malha:exports",String(n))}catch(e){}
+  if(!forcePromo&&!PROMO_AT.includes(n))return;forcePromo=false;
   setTimeout(showPromo,900);
 }
 function showPromo(){

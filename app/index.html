@@ -281,7 +281,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
     <h1 class="mark"><a href="../" aria-label="GridGrid, página inicial">Grid<span aria-hidden="true"><i class="c1">G</i><i class="c2">r</i><i class="c3">i</i><i class="c4">d</i></span></a></h1>
     <div class="hstats" id="hstats" aria-live="polite"></div>
     <button class="btn" id="resetBtn">Resetar</button>
-    <a class="btn anim" id="animBtn" href="animar.html">Animar o grid<span class="pro">Pro</span></a>
+    <a class="btn anim" id="animBtn" href="animar.html">Animar o grid<span class="pro" data-pro-tag>Pro</span></a>
     <div data-account style="align-self:flex-end"></div>
     <div data-lang-switch style="align-self:flex-end"></div>
   </header>
@@ -1073,7 +1073,7 @@ let promoTimer=null;
 // o pop-up aparece na 3ª e na 5ª exportação; abrir com #popup no endereço faz ele aparecer na próxima
 const PROMO_AT=[3,5];
 let forcePromo=location.hash==="#popup";
-function maybePromo(){
+function maybePromo(){if(document.documentElement.classList.contains("gg-pro"))return;
   let n=0;try{n=(parseInt(localStorage.getItem("malha:exports"),10)||0)+1;localStorage.setItem("malha:exports",String(n))}catch(e){}
   if(!forcePromo&&!PROMO_AT.includes(n))return;forcePromo=false;
   setTimeout(showPromo,900);

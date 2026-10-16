@@ -21,7 +21,9 @@
 
   /* ---------- estado ---------- */
   var PRO_CACHE="gg:pro";
-  function emit(){document.dispatchEvent(new CustomEvent("gg:auth",{detail:{user:api.user,isPro:api.isPro}}));renderAccount()}
+  function markPro(on){document.documentElement.classList.toggle("gg-pro",!!on)}
+  try{markPro(localStorage.getItem(PRO_CACHE)==="1")}catch(e){}
+  function emit(){markPro(api.isPro);document.dispatchEvent(new CustomEvent("gg:auth",{detail:{user:api.user,isPro:api.isPro}}));renderAccount()}
   async function checkPro(){
     if(!sb||!api.user){api.isPro=false;return}
     try{
@@ -65,7 +67,10 @@
   ".ggm input[type=email]{height:46px;border:1.5px solid #000;border-radius:23px;padding:0 18px;font:inherit;font-size:15px;background:#fff;color:#000;-webkit-appearance:none;appearance:none;width:100%}"+
   ".ggm input[type=email]:focus{outline:2px solid #2F55FF;outline-offset:2px}"+
   ".ggm .msg{font-size:13.5px;font-weight:500;color:#55565A;margin:0}.ggm .msg.err{color:#C2410C}"+
+  ".ggm-card.dark .msg{color:#C9CACD}.ggm-card.dark .msg.err{color:#FF9B73}"+
   ".ggm .row{display:flex;gap:8px;flex-wrap:wrap}"+
+  ".gg-pro [data-pro-tag]{display:none!important}"+
+  ".ggm .wait{display:flex;gap:8px;flex-wrap:wrap}.ggm .wait input{flex:1 1 220px;border-color:#fff}.ggm .wait .ggb{flex:none}"+
   ".ggprice{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding-top:14px;border-top:1px solid rgba(255,255,255,.16)}"+
   ".ggprice b{font-weight:800;font-size:44px;line-height:1;letter-spacing:-.04em;color:#fff}"+
   ".ggprice s{font-weight:600;font-size:18px;color:#76777B}"+
@@ -147,7 +152,7 @@
     return new Promise(function(resolve){
       var logged=!!api.user;
       var buy=CHECKOUT_URL?'<a class="ggb lime" data-buy href="'+esc(CHECKOUT_URL+(logged&&api.user.email?(CHECKOUT_URL.indexOf("?")<0?"?":"&")+"email="+encodeURIComponent(api.user.email):""))+'" target="_blank" rel="noopener">Comprar o Pro</a>'
-                         :'<button class="ggb lime" type="button" disabled>Venda abre em breve</button>';
+                         :'<button class="ggb lime" type="button" data-wait>Me avise quando abrir</button>';
       var en=window.gg&&gg.lang==="en";
       var fmtP=function(v){return en?"US$\u00a0"+v:"R$\u00a0"+v};
       var full=en?PRICE.usd:PRICE.brl,launch=en?PRICE.launchUsd:PRICE.launchBrl;
@@ -163,6 +168,25 @@
         '<p class="msg" aria-live="polite"></p>',true);
       var done=false;box._onclose=function(){if(!done){done=true;resolve(api.isPro)}};
       var msg=box.querySelector(".msg");
+      var wb=box.querySelector("[data-wait]");if(wb){
+        var joined=null;try{joined=localStorage.getItem("gg:wait")}catch(e){}
+        if(joined){wb.disabled=true;wb.textContent=L("Você está na lista","You're on the list");msg.textContent=L("Avisamos em "+joined+" quando a venda abrir.","We'll email "+joined+" when sales open.")}
+        else wb.addEventListener("click",function(){
+          var row=wb.parentNode;var f=document.createElement("form");f.className="wait";f.noValidate=true;
+          f.innerHTML='<input type="email" autocomplete="email" required placeholder="'+esc(L("seu@email.com","you@email.com"))+'" aria-label="E-mail" value="'+esc(api.user&&api.user.email||"")+'"><button class="ggb lime" type="submit">'+esc(L("Avisar","Notify me"))+'</button>';
+          row.parentNode.insertBefore(f,row);wb.remove();var inp=f.querySelector("input");inp.focus();
+          f.addEventListener("submit",async function(e){
+            e.preventDefault();var email=inp.value.trim();
+            if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){msg.className="msg err";msg.textContent=L("Confira o e-mail: ele parece incompleto.","Check the email address: it looks incomplete.");return}
+            if(!sb){msg.className="msg err";msg.textContent=L("Não foi possível conectar. Tente de novo em instantes.","Couldn't connect. Try again in a moment.");return}
+            var b=f.querySelector("button");b.disabled=true;msg.className="msg";msg.textContent=L("Enviando…","Sending…");
+            var r=await sb.from("pro_waitlist").insert({email:email,lang:(window.gg&&gg.lang==="en")?"en":"pt",page:location.pathname.slice(0,120)});
+            if(r.error&&r.error.code!=="23505"){b.disabled=false;msg.className="msg err";msg.textContent=L("Não consegui salvar. Tente de novo em instantes.","Couldn't save it. Try again in a moment.");return}
+            try{localStorage.setItem("gg:wait",email)}catch(e){}
+            f.remove();msg.className="msg";msg.textContent=L("Pronto. Avisamos em "+email+" quando a venda abrir.","Done. We'll email "+email+" when sales open.");
+          });
+        });
+      }
       var ins=box.querySelector("[data-in]");if(ins)ins.addEventListener("click",function(){done=true;box.close();openSignIn("pro");resolve(false)});
       var chk=box.querySelector("[data-check]");if(chk)chk.addEventListener("click",async function(){
         msg.textContent=L("Conferindo…","Checking…");await checkPro();emit();

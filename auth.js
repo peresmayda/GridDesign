@@ -7,8 +7,11 @@
   "use strict";
   var SUPABASE_URL="https://paijzdsdagjwdzhvmnto.supabase.co";
   var SUPABASE_KEY="sb_publishable_IR-h16ZR0YobwYnyrKgQrg_CnKjioQI"; // chave pública: pode ficar no site
-  var CHECKOUT_URL="";
-  var GOOGLE_ON=false; // liga quando o login com Google estiver configurado no Supabase // link de compra: entra quando a plataforma de pagamento for escolhida
+  var CHECKOUT_URL=""; // link de compra: entra quando a plataforma de pagamento for escolhida
+  var GOOGLE_ON=false; // liga quando o login com Google estiver configurado no Supabase
+  /* preço: pagamento único. LAUNCH=true mostra o preço de lançamento com o cheio riscado.
+     Em português aparece em reais; em inglês, em dólares. */
+  var PRICE={brl:97,usd:24,launchBrl:67,launchUsd:17,LAUNCH:true};
   var L=function(pt,en){return window.gg?gg.L(pt,en):pt};
 
   var api={user:null,isPro:false,ready:false,client:null};
@@ -63,6 +66,11 @@
   ".ggm input[type=email]:focus{outline:2px solid #2F55FF;outline-offset:2px}"+
   ".ggm .msg{font-size:13.5px;font-weight:500;color:#55565A;margin:0}.ggm .msg.err{color:#C2410C}"+
   ".ggm .row{display:flex;gap:8px;flex-wrap:wrap}"+
+  ".ggprice{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding-top:14px;border-top:1px solid rgba(255,255,255,.16)}"+
+  ".ggprice b{font-weight:800;font-size:44px;line-height:1;letter-spacing:-.04em;color:#fff}"+
+  ".ggprice s{font-weight:600;font-size:18px;color:#76777B}"+
+  ".ggprice em{font-style:normal;align-self:center;height:22px;display:inline-flex;align-items:center;padding:0 9px;border-radius:11px;box-shadow:inset 0 0 0 1.5px #E3FF3A;color:#E3FF3A;font-weight:700;font-size:12px}"+
+  ".ggprice small{flex-basis:100%;font-size:13.5px;color:#9FA0A4}"+
   ".ggm .x{justify-self:end;margin:-8px -8px 0 0;width:36px;height:36px;border-radius:50%;border:0;background:rgba(127,127,127,.15);color:inherit;cursor:pointer;font-size:18px;line-height:1}"+
   ".ggm .pro{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:11px;background:#E3FF3A;color:#000;font-weight:800;font-size:12px;justify-self:start}"+
   ".ggacc{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 6px;border:0;border-radius:18px;background:#EFEFED;color:#000;font:inherit;font-weight:700;font-size:14px;cursor:pointer;flex:none;max-width:240px}"+
@@ -140,11 +148,17 @@
       var logged=!!api.user;
       var buy=CHECKOUT_URL?'<a class="ggb lime" data-buy href="'+esc(CHECKOUT_URL+(logged&&api.user.email?(CHECKOUT_URL.indexOf("?")<0?"?":"&")+"email="+encodeURIComponent(api.user.email):""))+'" target="_blank" rel="noopener">Comprar o Pro</a>'
                          :'<button class="ggb lime" type="button" disabled>Venda abre em breve</button>';
+      var en=window.gg&&gg.lang==="en";
+      var fmtP=function(v){return en?"US$\u00a0"+v:"R$\u00a0"+v};
+      var full=en?PRICE.usd:PRICE.brl,launch=en?PRICE.launchUsd:PRICE.launchBrl;
+      var price='<div class="ggprice">'+(PRICE.LAUNCH?'<s>'+fmtP(full)+'</s><b>'+fmtP(launch)+'</b><em>'+L("Preço de lançamento","Launch price")+'</em>':'<b>'+fmtP(full)+'</b>')+
+        '<small>'+L("Pagamento único. Sem assinatura, sem limite de exportações.","One-time payment. No subscription, no export limit.")+'</small></div>';
       var box=modal(
         '<span class="pro">Pro</span>'+
         '<h2>Leve a animação<span>para o seu projeto.</span></h2>'+
         '<p>O grid é grátis. Com o Pro, você exporta a animação em vídeo, GIF e Lottie.</p>'+
         '<ul><li><i></i>Vídeo MP4 e GIF em até 4K</li><li><i></i>Lottie para apps e After Effects</li><li><i></i>Os quatro estilos, com ajuste de tempo por camada</li></ul>'+
+        price+
         '<div class="row">'+buy+(logged?'<button class="ggb line" type="button" data-check>Já comprei</button>':'<button class="ggb line" type="button" data-in>Já comprei, entrar</button>')+'</div>'+
         '<p class="msg" aria-live="polite"></p>',true);
       var done=false;box._onclose=function(){if(!done){done=true;resolve(api.isPro)}};

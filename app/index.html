@@ -7,6 +7,8 @@
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>GridGrid</title>
 <script src="../i18n.js"></script>
+<script src="../vendor/supabase.js"></script>
+<script src="../auth.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700;800&display=swap">
@@ -280,6 +282,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
     <div class="hstats" id="hstats" aria-live="polite"></div>
     <button class="btn" id="resetBtn">Resetar</button>
     <a class="btn anim" id="animBtn" href="animar.html">Animar o grid<span class="pro">Pro</span></a>
+    <div data-account style="align-self:flex-end"></div>
     <div data-lang-switch style="align-self:flex-end"></div>
   </header>
 

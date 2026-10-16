@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>GridGrid Animar</title>
 <script src="../i18n.js"></script>
+<script src="../vendor/supabase.js"></script>
+<script src="../auth.js"></script>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -171,6 +173,7 @@ input[type=checkbox]:checked{background:var(--fg) url("data:image/svg+xml,%3Csvg
       <a href="index.html"><b>1</b>Montar o grid</a>
       <span aria-current="page"><b>2</b>Animar<i class="pro" style="font-style:normal">Pro</i></span>
     </nav>
+    <div data-account></div>
     <div data-lang-switch></div>
   </header>
 
@@ -547,6 +550,8 @@ function refresh(soft){
 
 /* ---------- exportação ---------- */
 let busy=false,cancelReq=false;
+/* exportar é Pro: sem Pro, abre a janela de compra */
+const proOK=async()=>{if(!window.ggAuth){toast(gg.L("Não foi possível verificar o Pro. Recarregue a página.","Couldn't check Pro. Reload the page."));return false}return ggAuth.requirePro()};
 function setBusy(on,text){busy=on;$("busy").hidden=!on;["exVideo","exGif","exLottie"].forEach(id=>$(id).disabled=on);if(text)$("busyText").textContent=text;if(!on)$("bar").style.width="0"}
 const prog=p=>$("bar").style.width=(p*100).toFixed(1)+"%";
 $("cancel").addEventListener("click",()=>cancelReq=true);
@@ -563,6 +568,7 @@ async function offer(filename,data){
 function makeCanvas(){const o=outSize();const c=document.createElement("canvas");c.width=o.w;c.height=o.h;return{c,ctx:c.getContext("2d",{willReadFrequently:true}),o}}
 
 $("exVideo").addEventListener("click",async()=>{
+  if(!(await proOK()))return;
   const D=totalDur(),fps=A.fps,N=Math.max(1,Math.round(D*fps));const{c,ctx,o}=makeCanvas();
   cancelReq=false;setBusy(true,"Preparando o vídeo…");setPlaying(false);await document.fonts.ready;
   try{
@@ -598,6 +604,7 @@ $("exVideo").addEventListener("click",async()=>{
 });
 
 $("exGif").addEventListener("click",async()=>{
+  if(!(await proOK()))return;
   const D=totalDur(),fps=25,N=Math.max(1,Math.round(D*fps));const{c,ctx,o}=makeCanvas();
   cancelReq=false;setBusy(true,"Preparando o GIF…");setPlaying(false);await document.fonts.ready;
   try{
@@ -707,6 +714,7 @@ function buildLottie(){
 }
 window.__buildLottie=()=>buildLottie().json;
 $("exLottie").addEventListener("click",async()=>{
+  if(!(await proOK()))return;
   try{const{json,skipped}=buildLottie();const txt=JSON.stringify(json);
     await offer(baseName()+".json",new Blob([txt],{type:"application/json"}));
     if(skipped.length)setTimeout(()=>toast("Os rótulos de ângulo não entram no Lottie: texto depende de fontes instaladas no app."),2700);

@@ -99,6 +99,18 @@
     "Clique com o botão direito (ou toque e segure) na imagem para salvar.":"Right-click (or tap and hold) the image to save it.",
     "SVG colado":"Pasted SVG",
 
+
+    /* conta e Pro */
+    "Entrar":"Sign in","sem senha":"no password","Use a mesma conta do e-mail com que você comprou o Pro.":"Use the same email you bought Pro with.",
+    "Continuar com o Google":"Continue with Google","ou":"or","Enviar link de acesso":"Send sign-in link","seu@email.com":"you@email.com","E-mail":"Email",
+    "Sua conta":"Your account","Seu Pro está ativo. Exportação de vídeo, GIF e Lottie liberada.":"Your Pro is active. Video, GIF and Lottie export unlocked.",
+    "Sua conta ainda não tem o Pro. O grid continua grátis; o Pro libera a exportação da animação.":"Your account doesn't have Pro yet. The grid stays free; Pro unlocks animation export.",
+    "Ver o Pro":"See Pro","Sair":"Sign out","Conta":"Account",
+    "Leve a animação":"Take the animation","para o seu projeto.":"into your project.",
+    "O grid é grátis. Com o Pro, você exporta a animação em vídeo, GIF e Lottie.":"The grid is free. With Pro, you export the animation as video, GIF and Lottie.",
+    "Vídeo MP4 e GIF em até 4K":"MP4 video and GIF up to 4K","Lottie para apps e After Effects":"Lottie for apps and After Effects",
+    "Os quatro estilos, com ajuste de tempo por camada":"All four styles, with per-layer timing",
+    "Comprar o Pro":"Buy Pro","Venda abre em breve":"Sales open soon","Já comprei":"I already bought it","Já comprei, entrar":"I already bought it, sign in",
     /* animação */
     "GridGrid Animar":"GridGrid Animate","Etapas":"Steps","Montar o grid":"Build the grid","Animar":"Animate","Estilo e camadas":"Style and layers","Tempo e exportação":"Timing and export",
     "do movimento":"of the motion","Camadas":"Layers","tempo de cada uma":"timing for each",

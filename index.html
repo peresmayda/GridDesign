@@ -360,8 +360,8 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
     <div class="nav-links">
       <a href="#como">Como funciona</a>
       <a href="#exemplos">Exemplos</a>
-      <a href="#animacao">Animação<span class="pro sm">Pro</span></a>
       <a href="#recursos">Recursos</a>
+      <a href="#animacao">Animação<span class="pro sm">Pro</span></a>
     </div>
     <a class="pill" href="app/index.html">Abrir o GridGrid</a>
     <div class="nav-acc" data-account></div>
@@ -438,6 +438,23 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
     </ul>
   </section>
 
+  <section id="recursos" aria-labelledby="rec-t">
+    <h2 class="sec-title" id="rec-t">Recursos<span>o que vem no grid</span></h2>
+    <ul class="features">
+      <li class="feat f1"><h3>Guias e <span>diagonais</span></h3><i class="rule"></i><p>Linhas onde os pontos se alinham e diagonais com o ângulo marcado em graus.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 18H52M4 38H52M18 4V52M38 4V52"/><path d="M8 52L48 4"/></svg></li>
+      <li class="feat f2"><h3>Círculos de <span>construção</span></h3><i class="rule"></i><p>Desenhados só nas curvas que são arcos de círculo de verdade.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="22" cy="28" r="18"/><circle cx="38" cy="28" r="12"/></svg></li>
+      <li class="feat f3"><h3>Nós e alças <span>Bézier</span></h3><i class="rule"></i><p>Os pontos de ancoragem e as alças do vetor, como aparecem no editor.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 46C14 14 42 14 50 46"/><path d="M6 46L18 12M50 46L38 12"/><circle cx="18" cy="12" r="4"/><circle cx="38" cy="12" r="4"/><rect x="2" y="42" width="8" height="8" fill="currentColor"/><rect x="46" y="42" width="8" height="8" fill="currentColor"/></svg></li>
+      <li class="feat f4"><h3>Controle por <span>camada</span></h3><i class="rule"></i><p>Quantidade, opacidade, espessura e tamanho ajustáveis em cada elemento.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 14H52M4 28H52M4 42H52"/><circle cx="38" cy="14" r="5" fill="currentColor"/><circle cx="16" cy="28" r="5" fill="currentColor"/><circle cx="30" cy="42" r="5" fill="currentColor"/></svg></li>
+      <li class="feat f5"><h3>Quadro e <span>posição</span></h3><i class="rule"></i><p>Formatos de 1:1 a 16:9, margem, escala e alinhamento em nove pontos.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="4" y="12" width="48" height="32"/><rect x="10" y="26" width="14" height="12" fill="currentColor"/></svg></li>
+      <li class="feat f6"><h3>Exportação <span>em camadas</span></h3><i class="rule"></i><p>SVG com grupos nomeados, pronto para o Figma, ou PNG em 2× e 4×.</p>
+        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M28 4V34M16 22L28 34L40 22"/><path d="M6 40V52H50V40"/></svg></li>
+    </ul>
+  </section>
   <section id="animacao" class="pro-block" aria-labelledby="anim-t">
     <div class="motion-head">
       <div><span class="pro">Pro</span><h2 class="sec-title" id="anim-t">Em movimento<span>o grid animado</span></h2></div>
@@ -457,23 +474,7 @@ footer strong{color:var(--ink);font-weight:800;letter-spacing:-.03em}
       </div>
     </div>
   </section>
-  <section id="recursos" aria-labelledby="rec-t">
-    <h2 class="sec-title" id="rec-t">Recursos<span>o que vem no grid</span></h2>
-    <ul class="features">
-      <li class="feat f1"><h3>Guias e <span>diagonais</span></h3><i class="rule"></i><p>Linhas onde os pontos se alinham e diagonais com o ângulo marcado em graus.</p>
-        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 18H52M4 38H52M18 4V52M38 4V52"/><path d="M8 52L48 4"/></svg></li>
-      <li class="feat f2"><h3>Círculos de <span>construção</span></h3><i class="rule"></i><p>Desenhados só nas curvas que são arcos de círculo de verdade.</p>
-        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="22" cy="28" r="18"/><circle cx="38" cy="28" r="12"/></svg></li>
-      <li class="feat f3"><h3>Nós e alças <span>Bézier</span></h3><i class="rule"></i><p>Os pontos de ancoragem e as alças do vetor, como aparecem no editor.</p>
-        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 46C14 14 42 14 50 46"/><path d="M6 46L18 12M50 46L38 12"/><circle cx="18" cy="12" r="4"/><circle cx="38" cy="12" r="4"/><rect x="2" y="42" width="8" height="8" fill="currentColor"/><rect x="46" y="42" width="8" height="8" fill="currentColor"/></svg></li>
-      <li class="feat f4"><h3>Controle por <span>camada</span></h3><i class="rule"></i><p>Quantidade, opacidade, espessura e tamanho ajustáveis em cada elemento.</p>
-        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 14H52M4 28H52M4 42H52"/><circle cx="38" cy="14" r="5" fill="currentColor"/><circle cx="16" cy="28" r="5" fill="currentColor"/><circle cx="30" cy="42" r="5" fill="currentColor"/></svg></li>
-      <li class="feat f5"><h3>Quadro e <span>posição</span></h3><i class="rule"></i><p>Formatos de 1:1 a 16:9, margem, escala e alinhamento em nove pontos.</p>
-        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="4" y="12" width="48" height="32"/><rect x="10" y="26" width="14" height="12" fill="currentColor"/></svg></li>
-      <li class="feat f6"><h3>Exportação <span>em camadas</span></h3><i class="rule"></i><p>SVG com grupos nomeados, pronto para o Figma, ou PNG em 2× e 4×.</p>
-        <svg viewBox="0 0 56 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M28 4V34M16 22L28 34L40 22"/><path d="M6 40V52H50V40"/></svg></li>
-    </ul>
-  </section>
+  
 
   
 

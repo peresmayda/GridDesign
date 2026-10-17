@@ -27,7 +27,7 @@ HTML/CSS/JS estático, sem build. `vercel.json` usa `cleanUrls`.
 - Preço: pagamento único R$ 97 / US$ 24; lançamento R$ 67 / US$ 17 (`PRICE.LAUNCH=true` em `auth.js`).
 - Supabase: projeto `gridgrid`, ref `paijzdsdagjwdzhvmnto` (sa-east-1). Chave publicável no `auth.js` (pode ser pública). Nunca colocar a service role key no site.
 - Tabelas: `pro_access` (email, status active/refunded/revoked, source, order_id; RLS: cada usuário lê só o próprio registro) e `pro_waitlist` (só insert pelo site, sem leitura).
-- E-mail de teste com Pro: peres.mayda@gmail.com (source `teste`).
+- O e-mail pessoal da Mayda tem Pro de teste em `pro_access` (source `teste`).
 
 ## Pendências (em ordem)
 

@@ -1,6 +1,6 @@
 # Gera termos.html e privacidade.html (PT + EN) para o GridGrid.
 import sys, pathlib
-OUT = pathlib.Path(sys.argv[1])
+OUT = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else pathlib.Path(__file__).resolve().parent.parent
 UPDATED_PT = "16 de outubro de 2026"
 UPDATED_EN = "October 16, 2026"
 MAIL = "stu.noar@gmail.com"

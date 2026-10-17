@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Política de privacidade · GridGrid</title>
+<script src="i18n.js"></script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700;800&display=swap">
+<style>
+:root{--paper:#E4E5E7;--sheet:#EFEFED;--ink:#000;--gray:#9FA0A4;--soft:#55565A;--lime:#E3FF3A;--yellow:#FFE94A;--blue:#8EA6E4;--pink:#F7B8EF;--sage:#A9CCB8;
+  --type:"Inter Tight","Helvetica Neue",Helvetica,Arial,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--type);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid #2F55FF;outline-offset:3px}
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.nav{display:flex;align-items:center;gap:12px;padding-block:22px}
+.logo{font-weight:800;font-size:26px;letter-spacing:-.05em;text-decoration:none;margin-right:auto}
+.logo i{font-style:normal}.c1{color:var(--yellow)}.c2{color:var(--blue)}.c3{color:var(--pink)}.c4{color:var(--sage)}
+.pill{display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:20px;background:var(--ink);color:#fff;text-decoration:none;font-weight:700;font-size:15px}
+.pill:hover{background:#262626}
+.doc{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,46rem);gap:56px;padding:40px 0 96px;justify-content:center}
+.toc{position:sticky;top:24px;align-self:start;display:grid;gap:4px;font-size:14.5px}
+.toc b{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-bottom:6px}
+.toc a{text-decoration:none;padding:4px 0;color:var(--soft);font-weight:500}
+.toc a:hover{color:var(--ink)}
+.toc .other{margin-top:16px;padding-top:16px;border-top:1px solid rgba(0,0,0,.12);color:var(--ink);font-weight:700}
+h1{margin:0 0 8px;font-weight:800;font-size:clamp(40px,6vw,72px);line-height:.92;letter-spacing:-.05em}
+h1 span{display:block;color:var(--gray)}
+.meta{color:var(--soft);font-size:15px;margin:16px 0 0}
+.lead{font-size:19px;line-height:1.5;margin:28px 0 0;font-weight:500}
+.box{margin:28px 0 0;padding:20px 22px;border-radius:20px;background:var(--sheet);font-size:15.5px}
+.box p{margin:0}.box p+p{margin-top:8px}
+h2{margin:48px 0 12px;font-weight:800;font-size:26px;line-height:1.1;letter-spacing:-.03em;scroll-margin-top:24px}
+h2 .n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px;margin-right:10px;vertical-align:4px;letter-spacing:0}
+#arrependimento h2 .n,h2#arrependimento .n,h2#withdrawal .n{background:var(--lime);color:var(--ink)}
+p,li{text-wrap:pretty}
+p{margin:0 0 12px}
+ul{margin:0 0 12px;padding-left:20px}li{margin:0 0 8px}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:12px 10px;border-top:1px solid rgba(0,0,0,.12)}
+th{font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--soft);font-weight:700;border-top:0}
+td:first-child{font-weight:700}
+.hl{background:var(--lime);border-radius:20px;padding:20px 22px;margin:8px 0 16px}
+.hl p:last-child,.hl ul:last-child{margin-bottom:0}
+mark.ph{background:var(--yellow);padding:0 4px;border-radius:4px}
+.note{font-size:14px;color:var(--soft)}
+footer{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;padding:28px 0 40px;border-top:1px solid rgba(0,0,0,.12);font-size:14px;color:var(--soft)}
+footer nav{display:flex;gap:18px;flex-wrap:wrap}
+footer a{text-decoration:none;font-weight:600;color:var(--ink)}
+footer a:hover{text-decoration:underline}
+[hidden]{display:none!important}
+@media (max-width:900px){.doc{grid-template-columns:minmax(0,1fr);gap:24px;padding-top:16px}.toc{position:static;display:none}}
+@media (max-width:640px){.nav .pill{display:none}table,thead,tbody,tr,th,td{display:block}thead{display:none}td{border-top:0;padding:2px 0}tr{border-top:1px solid rgba(0,0,0,.12);padding:12px 0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav" aria-label="Principal">
+    <a class="logo" href="/" aria-label="GridGrid">Grid<span aria-hidden="true"><i class="c1">G</i><i class="c2">r</i><i class="c3">i</i><i class="c4">d</i></span></a>
+    <a class="pill" href="/app/index.html">Abrir o GridGrid</a>
+    <div data-lang-switch></div>
+  </nav>
+  <div class="doc">
+    <aside class="toc" data-l="pt"><b>Nesta página</b><a href="#controlador">Quem cuida dos seus dados</a><a href="#nao">O que não coletamos</a><a href="#dados">Dados que tratamos</a><a href="#navegador">O que fica no seu navegador</a><a href="#compartilhamento">Com quem compartilhamos</a><a href="#internacional">Transferência internacional</a><a href="#prazo">Por quanto tempo guardamos</a><a href="#direitos">Seus direitos</a><a href="#seguranca">Segurança</a><a href="#alteracoes">Alterações nesta política</a><a class="other" href="/termos">Termos de uso e venda</a></aside>
+    <aside class="toc" data-l="en" hidden><b>On this page</b><a href="#controller">Who handles your data</a><a href="#not">What we don’t collect</a><a href="#data">Data we process</a><a href="#browser">What stays in your browser</a><a href="#sharing">Who we share with</a><a href="#international">International transfers</a><a href="#retention">How long we keep data</a><a href="#rights">Your rights</a><a href="#security">Security</a><a href="#updates">Changes to this policy</a><a class="other" href="/termos">Terms of use and sale</a></aside>
+    <main>
+      <article data-l="pt" lang="pt-BR"><h1>Política<span>de privacidade</span></h1><p class="meta">Última atualização: 16 de outubro de 2026</p><p class="lead">Quais dados o GridGrid trata, por quê, por quanto tempo e como você exerce os seus direitos, conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018).</p><div class="box"><p><strong>Resumo:</strong> os seus logos não saem do seu computador. Guardamos o seu e-mail para o login, a compra e a lista de espera, se você se inscrever. Não vendemos dados.</p></div><h2 id="controlador"><span class="n">1</span>Quem cuida dos seus dados</h2>
+<p>O controlador dos dados é <strong>Studio Noar</strong>, MEI, CNPJ <mark class="ph">[CNPJ]</mark>, com endereço em <mark class="ph">[ENDEREÇO]</mark>.</p>
+<p>Para qualquer assunto sobre dados pessoais, escreva para <a href="mailto:stu.noar@gmail.com">stu.noar@gmail.com</a>. Como agente de tratamento de pequeno porte, não somos obrigados a indicar um encarregado (Resolução CD/ANPD nº 2/2022). Este e-mail é o nosso canal de atendimento.</p><h2 id="nao"><span class="n">2</span>O que não coletamos</h2>
+<ul><li><strong>Seus arquivos SVG:</strong> são processados no seu navegador e não chegam aos nossos servidores.</li>
+<li><strong>Dados de cartão:</strong> ficam com a plataforma de pagamento.</li>
+<li><strong>Rastreamento:</strong> não usamos cookies de publicidade nem ferramentas de rastreamento de terceiros.</li></ul><h2 id="dados"><span class="n">3</span>Dados que tratamos</h2>
+<table><thead><tr><th>Dado</th><th>Para quê</th><th>Base legal (LGPD)</th></tr></thead><tbody>
+<tr><td>E-mail, identificador da conta e sessão de login</td><td>Dar acesso à sua conta e ao Pro</td><td>Execução de contrato (art. 7º, V)</td></tr>
+<tr><td>Nome, e-mail e foto do perfil Google, se você entrar com o Google</td><td>Criar e identificar a sua conta</td><td>Execução de contrato (art. 7º, V)</td></tr>
+<tr><td>Registro de compra: e-mail, situação do acesso, número do pedido e datas</td><td>Liberar o Pro, atender reembolsos e cumprir obrigações fiscais e de consumo</td><td>Execução de contrato e obrigação legal (art. 7º, II e V)</td></tr>
+<tr><td>Lista de espera: e-mail, idioma e página de inscrição</td><td>Avisar quando a venda do Pro abrir</td><td>Consentimento (art. 7º, I)</td></tr>
+<tr><td>Registros de acesso: endereço IP, navegador, data e hora</td><td>Segurança e funcionamento do site</td><td>Obrigação legal (Marco Civil da Internet, art. 15) e legítimo interesse (art. 7º, IX)</td></tr>
+</tbody></table><h2 id="navegador"><span class="n">4</span>O que fica no seu navegador</h2>
+<p>O site guarda no armazenamento local do seu navegador: as configurações do gerador, o último logo aberto, a cena da animação, a contagem de exportações (usada no aviso do Pro), o idioma, a sessão de login e a situação do seu Pro.</p>
+<p>Essas informações ficam só no seu aparelho e não são cookies de rastreamento. Você as apaga com o botão Resetar, saindo da conta ou limpando os dados do site no navegador.</p><h2 id="compartilhamento"><span class="n">5</span>Com quem compartilhamos</h2>
+<p>Usamos fornecedores que tratam dados em nosso nome, apenas para fazer o GridGrid funcionar:</p>
+<ul><li><strong>Supabase:</strong> banco de dados e login. Os dados ficam em servidores em São Paulo.</li>
+<li><strong>Vercel:</strong> hospedagem do site.</li>
+<li><strong>Google Fonts:</strong> fornece a fonte do site e recebe o seu endereço IP ao entregá-la.</li>
+<li><strong>Provedor de envio de e-mail:</strong> envia os links de acesso.</li>
+<li><strong>Plataforma de pagamento:</strong> processa a compra com os dados que você informa no checkout, sob a política de privacidade dela.</li>
+<li><strong>Google:</strong> apenas se você escolher entrar com a conta Google.</li></ul>
+<p>Não vendemos nem alugamos dados pessoais.</p><h2 id="internacional"><span class="n">6</span>Transferência internacional</h2>
+<p>Alguns fornecedores, como Vercel e Google, podem tratar dados fora do Brasil. Essas transferências seguem as hipóteses do art. 33 da LGPD, como as cláusulas contratuais de proteção de dados desses fornecedores.</p><h2 id="prazo"><span class="n">7</span>Por quanto tempo guardamos</h2>
+<ul><li><strong>Conta:</strong> enquanto ela existir. Você pode pedir a exclusão a qualquer momento.</li>
+<li><strong>Registros de compra:</strong> por 5 anos, pelas obrigações fiscais e de consumo, mesmo depois da exclusão da conta.</li>
+<li><strong>Lista de espera:</strong> até você pedir para sair ou até 12 meses depois do aviso de abertura da venda.</li>
+<li><strong>Registros de acesso:</strong> por 6 meses, como exige o Marco Civil da Internet.</li></ul><h2 id="direitos"><span class="n">8</span>Seus direitos</h2>
+<p>Pela LGPD (art. 18), você pode pedir a qualquer momento:</p>
+<ul><li>confirmação de que tratamos os seus dados e acesso a eles;</li>
+<li>correção de dados incompletos ou desatualizados;</li>
+<li>anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desacordo com a lei;</li>
+<li>portabilidade dos dados;</li>
+<li>informação sobre com quem compartilhamos os seus dados;</li>
+<li>revogação do consentimento e eliminação dos dados tratados com base nele, como a lista de espera.</li></ul>
+<p>Faça o pedido por <a href="mailto:stu.noar@gmail.com">stu.noar@gmail.com</a>, a partir do e-mail da sua conta. Respondemos em até 15 dias.</p>
+<p>Você também pode reclamar à Autoridade Nacional de Proteção de Dados (ANPD).</p><h2 id="seguranca"><span class="n">9</span>Segurança</h2>
+<p>O site usa conexão criptografada (HTTPS). O login não usa senha. No banco de dados, as regras de acesso permitem que cada pessoa veja apenas o próprio registro, e a lista de espera não pode ser lida pelo site.</p><h2 id="alteracoes"><span class="n">10</span>Alterações nesta política</h2>
+<p>Podemos atualizar esta política. A data no topo indica a versão em vigor. Mudanças relevantes serão avisadas no site ou por e-mail a quem tem conta.</p></article>
+      <article data-l="en" lang="en" hidden><h1>Privacy<span>policy</span></h1><p class="meta">Last updated: October 16, 2026</p><p class="note">This English version is provided for convenience. If there is any difference, the Portuguese version prevails.</p><p class="lead">What data GridGrid processes, why, for how long and how to exercise your rights, under Brazil’s General Data Protection Law (LGPD, Law 13,709/2018).</p><div class="box"><p><strong>Summary:</strong> your logos never leave your computer. We keep your email for sign-in, purchases and the waitlist if you join it. We don’t sell data.</p></div><h2 id="controller"><span class="n">1</span>Who handles your data</h2>
+<p>The data controller is <strong>Studio Noar</strong>, a Brazilian sole proprietorship (MEI), CNPJ <mark class="ph">[CNPJ]</mark>, located at <mark class="ph">[ADDRESS]</mark>.</p>
+<p>For any personal data matter, email <a href="mailto:stu.noar@gmail.com">stu.noar@gmail.com</a>. As a small processing agent, we are not required to appoint a data protection officer (ANPD Resolution No. 2/2022). This email is our contact channel.</p><h2 id="not"><span class="n">2</span>What we don’t collect</h2>
+<ul><li><strong>Your SVG files:</strong> processed in your browser; they never reach our servers.</li>
+<li><strong>Card details:</strong> handled by the payment platform.</li>
+<li><strong>Tracking:</strong> we don’t use advertising cookies or third-party tracking tools.</li></ul><h2 id="data"><span class="n">3</span>Data we process</h2>
+<table><thead><tr><th>Data</th><th>Purpose</th><th>Legal basis (LGPD)</th></tr></thead><tbody>
+<tr><td>Email, account ID and login session</td><td>Give you access to your account and Pro</td><td>Performance of contract (art. 7, V)</td></tr>
+<tr><td>Google name, email and profile photo, if you sign in with Google</td><td>Create and identify your account</td><td>Performance of contract (art. 7, V)</td></tr>
+<tr><td>Purchase record: email, access status, order number and dates</td><td>Activate Pro, handle refunds and meet tax and consumer obligations</td><td>Performance of contract and legal obligation (art. 7, II and V)</td></tr>
+<tr><td>Waitlist: email, language and sign-up page</td><td>Tell you when Pro sales open</td><td>Consent (art. 7, I)</td></tr>
+<tr><td>Access logs: IP address, browser, date and time</td><td>Site security and operation</td><td>Legal obligation (Brazilian Internet Civil Framework, art. 15) and legitimate interest (art. 7, IX)</td></tr>
+</tbody></table><h2 id="browser"><span class="n">4</span>What stays in your browser</h2>
+<p>The site uses your browser’s local storage for: generator settings, the last logo you opened, the animation scene, the export count (used for the Pro notice), language, login session and Pro status.</p>
+<p>This information stays on your device and is not tracking cookies. You can delete it with the Reset button, by signing out or by clearing the site’s data in your browser.</p><h2 id="sharing"><span class="n">5</span>Who we share with</h2>
+<p>We use providers that process data on our behalf, only to run GridGrid:</p>
+<ul><li><strong>Supabase:</strong> database and login. Data is stored on servers in São Paulo, Brazil.</li>
+<li><strong>Vercel:</strong> site hosting.</li>
+<li><strong>Google Fonts:</strong> serves the site’s font and receives your IP address when doing so.</li>
+<li><strong>Email delivery provider:</strong> sends sign-in links.</li>
+<li><strong>Payment platform:</strong> processes your purchase with the details you enter at checkout, under its own privacy policy.</li>
+<li><strong>Google:</strong> only if you choose to sign in with Google.</li></ul>
+<p>We do not sell or rent personal data.</p><h2 id="international"><span class="n">6</span>International transfers</h2>
+<p>Some providers, such as Vercel and Google, may process data outside Brazil. These transfers rely on the grounds in article 33 of the LGPD, such as those providers’ contractual data protection clauses.</p><h2 id="retention"><span class="n">7</span>How long we keep data</h2>
+<ul><li><strong>Account:</strong> while it exists. You can ask for deletion at any time.</li>
+<li><strong>Purchase records:</strong> 5 years, for tax and consumer obligations, even after account deletion.</li>
+<li><strong>Waitlist:</strong> until you ask to leave or 12 months after the sales-open notice.</li>
+<li><strong>Access logs:</strong> 6 months, as required by the Brazilian Internet Civil Framework.</li></ul><h2 id="rights"><span class="n">8</span>Your rights</h2>
+<p>Under the LGPD (art. 18), you can ask at any time for:</p>
+<ul><li>confirmation that we process your data, and access to it;</li>
+<li>correction of incomplete or outdated data;</li>
+<li>anonymization, blocking or deletion of unnecessary data or data processed unlawfully;</li>
+<li>data portability;</li>
+<li>information on who we share your data with;</li>
+<li>withdrawal of consent and deletion of data processed on that basis, such as the waitlist.</li></ul>
+<p>Send your request to <a href="mailto:stu.noar@gmail.com">stu.noar@gmail.com</a> from your account email. We reply within 15 days.</p>
+<p>You can also file a complaint with Brazil’s data protection authority (ANPD).</p><h2 id="security"><span class="n">9</span>Security</h2>
+<p>The site uses an encrypted connection (HTTPS). Sign-in is password-free. In the database, access rules let each person see only their own record, and the waitlist cannot be read from the site.</p><h2 id="updates"><span class="n">10</span>Changes to this policy</h2>
+<p>We may update this policy. The date at the top shows the version in force. Relevant changes will be announced on the site or by email to account holders.</p></article>
+    </main>
+  </div>
+  <footer>
+    <span><strong>GridGrid</strong>, 2026 · Studio Noar</span>
+    <nav aria-label="Legal"><a href="/termos">Termos de uso e venda</a><a href="/privacidade">Política de privacidade</a><a href="mailto:stu.noar@gmail.com">stu.noar@gmail.com</a></nav>
+  </footer>
+</div>
+<script>(function(){var l=(window.gg&&gg.lang)||"pt";document.documentElement.lang=l==="en"?"en":"pt-BR";document.querySelectorAll("[data-l]").forEach(function(e){e.hidden=e.getAttribute("data-l")!==l});if(l==="en"&&location.hash==="#arrependimento")location.hash="#withdrawal";})();</script>
+</body>
+</html>

@@ -76,6 +76,7 @@
   ".ggprice s{font-weight:600;font-size:18px;color:#76777B}"+
   ".ggprice em{font-style:normal;align-self:center;height:22px;display:inline-flex;align-items:center;padding:0 9px;border-radius:11px;box-shadow:inset 0 0 0 1.5px #E3FF3A;color:#E3FF3A;font-weight:700;font-size:12px}"+
   ".ggprice small{flex-basis:100%;font-size:13.5px;color:#9FA0A4}"+
+  ".gglegal{margin:0;font-size:12.5px;color:#9FA0A4}.gglegal a{color:#fff;font-weight:600}"+
   ".ggm .x{justify-self:end;margin:-8px -8px 0 0;width:36px;height:36px;border-radius:50%;border:0;background:rgba(127,127,127,.15);color:inherit;cursor:pointer;font-size:18px;line-height:1}"+
   ".ggm .pro{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:11px;background:#E3FF3A;color:#000;font-weight:800;font-size:12px;justify-self:start}"+
   ".ggacc{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 6px;border:0;border-radius:18px;background:#EFEFED;color:#000;font:inherit;font-weight:700;font-size:14px;cursor:pointer;flex:none;max-width:240px}"+
@@ -177,7 +178,8 @@
         '<ul><li><i></i>Vídeo MP4 e GIF em até 4K</li><li><i></i>Lottie para apps e After Effects</li><li><i></i>Os quatro estilos, com ajuste de tempo por camada</li></ul>'+
         price+
         '<div class="row">'+buy+(logged?'<button class="ggb line" type="button" data-check>Já comprei</button>':'<button class="ggb line" type="button" data-in>Já comprei, entrar</button>')+'</div>'+
-        '<p class="msg" aria-live="polite"></p>',true);
+        '<p class="msg" aria-live="polite"></p>'+
+        '<p class="gglegal">'+L('Ao comprar, você aceita os <a href="/termos" target="_blank">Termos</a>. Você pode desistir em até 7 dias. <a href="/privacidade" target="_blank">Privacidade</a>','By buying, you accept the <a href="/termos" target="_blank">Terms</a>. You can cancel within 7 days. <a href="/privacidade" target="_blank">Privacy</a>')+'</p>',true);
       var done=false;box._onclose=function(){if(!done){done=true;resolve(api.isPro)}};
       var msg=box.querySelector(".msg");
       var wb=box.querySelector("[data-wait]");if(wb){
